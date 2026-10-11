@@ -374,7 +374,7 @@ export class ControlPanel extends LitElement implements Controller {
     const { greenPercent, orangePercent } = this.calculateTroopBar();
     return html`
       <div
-        class="w-full h-6 border border-gray-600 rounded-md bg-gray-900/60 overflow-hidden relative"
+        class="w-full h-6 border border-gray-600 rounded-md bg-gray-900/60 overflow-hidden relative chrome:chrome-frame chrome:bg-chrome-950/80"
       >
         <div class="relative h-full">
           <div
@@ -432,7 +432,7 @@ export class ControlPanel extends LitElement implements Controller {
     const { greenPercent, orangePercent } = this.calculateTroopBar();
     return html`
       <div
-        class="w-full h-6 border border-gray-600 rounded-md bg-gray-900/60 overflow-hidden relative"
+        class="w-full h-6 border border-gray-600 rounded-md bg-gray-900/60 overflow-hidden relative chrome:chrome-frame chrome:bg-chrome-950/80"
       >
         <div class="relative h-full">
           <div

@@ -1,0 +1,116 @@
+/*
+ * "Chrome & Silver" UI theme. Opt-in from the settings: it puts the
+ * `theme-chrome` class on <html> (see UiTheme.ts), and components opt in with
+ * the `chrome:` variant, e.g. `chrome:chrome-panel`. Without the class none of
+ * this applies, so the default look is untouched.
+ *
+ * Shadow-DOM components don't see <html>'s class through `.theme-chrome *`;
+ * they put `theme-chrome` on their own root element instead.
+ */
+
+@theme {
+  --color-chrome-50: #f8f9fb;
+  --color-chrome-100: #eceff3;
+  --color-chrome-200: #d6dbe1;
+  --color-chrome-300: #b9c0c9;
+  --color-chrome-400: #98a1ac;
+  --color-chrome-500: #79838f;
+  --color-chrome-600: #5b6470;
+  --color-chrome-700: #3d444d;
+  --color-chrome-800: #22262c;
+  --color-chrome-900: #121418;
+  --color-chrome-950: #07080a;
+}
+
+/* Dark, slightly glossy surface inside a polished silver frame. The frame is
+   a gradient border (padding-box/border-box backgrounds) so it keeps the
+   element's border radius. */
+@utility chrome-panel {
+  background:
+    linear-gradient(180deg, rgb(32 36 42 / 0.94), rgb(9 10 12 / 0.96))
+      padding-box,
+    linear-gradient(
+        160deg,
+        #f8f9fb 0%,
+        #98a1ac 22%,
+        #e6e9ee 45%,
+        #5b6470 70%,
+        #c9ced6 100%
+      )
+      border-box;
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 8px 24px rgb(0 0 0 / 0.6);
+}
+
+/* A lighter-weight frame for small boxes and table rows. */
+@utility chrome-frame {
+  border-color: rgb(201 206 214 / 0.45);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+/* Main action: brushed, shiny silver with dark text. */
+@utility chrome-button {
+  background:
+    linear-gradient(
+        180deg,
+        #fbfcfd 0%,
+        #d6dbe1 38%,
+        #98a1ac 52%,
+        #c5cbd2 78%,
+        #eef1f4 100%
+      )
+      padding-box,
+    linear-gradient(180deg, #ffffff, #5b6470) border-box;
+  border: 1px solid transparent;
+  color: #15181c;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.6);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 2px 6px rgb(0 0 0 / 0.5);
+  &:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+  &:active:not(:disabled) {
+    filter: brightness(0.92);
+  }
+  &:disabled {
+    background: linear-gradient(180deg, #4b5157, #2f3338);
+    color: #8a919a;
+    text-shadow: none;
+    box-shadow: none;
+  }
+}
+
+/* Secondary action: gunmetal with a silver frame and silver text. */
+@utility chrome-button-dark {
+  background:
+    linear-gradient(180deg, #4a515a 0%, #2a2f35 50%, #1b1e22 100%) padding-box,
+    linear-gradient(180deg, #e6e9ee, #5b6470) border-box;
+  border: 1px solid transparent;
+  color: #e6e9ee;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    0 2px 6px rgb(0 0 0 / 0.5);
+  &:hover:not(:disabled) {
+    filter: brightness(1.15);
+  }
+  &:disabled {
+    color: #79838f;
+    filter: none;
+  }
+}
+
+/* Metallic gradient text, for headings. */
+@utility chrome-text {
+  background: linear-gradient(180deg, #ffffff 0%, #aeb5bf 55%, #eef1f4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Thin polished highlight, e.g. the active tab underline. */
+@utility chrome-bar {
+  background: linear-gradient(90deg, #5b6470, #f8f9fb, #5b6470);
+}

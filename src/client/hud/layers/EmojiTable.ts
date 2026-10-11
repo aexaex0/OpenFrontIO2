@@ -130,7 +130,7 @@ export class EmojiTable extends LitElement {
           </button>
 
           <div
-            class="bg-zinc-900/95 p-3 rounded-xl z-10003 shadow-2xl shadow-black/50 ring-1 ring-white/10
+            class="bg-zinc-900/95 p-3 rounded-xl z-10003 shadow-2xl shadow-black/50 ring-1 ring-white/10 chrome:chrome-panel chrome:ring-0
                    max-w-[calc(100vw-32px)] max-h-[calc(100vh-60px)] overflow-y-auto
                    flex flex-col gap-3"
             @contextmenu=${(e: MouseEvent) => e.preventDefault()}

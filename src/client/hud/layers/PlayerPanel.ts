@@ -1084,7 +1084,7 @@ export class PlayerPanel extends LitElement implements Controller {
               class="absolute inset-2 -z-10 rounded-2xl bg-black/25 backdrop-blur-[2px]"
             ></div>
             <div
-              class=${`relative w-full bg-zinc-900/95 rounded-2xl text-zinc-100 shadow-2xl shadow-black/50
+              class=${`relative w-full bg-zinc-900/95 rounded-2xl text-zinc-100 shadow-2xl shadow-black/50 chrome:chrome-panel
                  ${other.isTraitor() ? "traitor-ring" : "ring-1 ring-white/5"}`}
             >
               <div class="overflow-visible">

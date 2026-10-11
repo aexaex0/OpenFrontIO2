@@ -1,5 +1,10 @@
-import { LitElement, html } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
+import {
+  CHROME_THEME_CLASS,
+  isChromeTheme,
+  UI_THEME_CHANGED_EVENT,
+} from "../../UiTheme";
 import { documentStylesSheet } from "./SharedStyles";
 
 export type OModalTab = { key: string; label: string };
@@ -9,6 +14,13 @@ export class OModal extends LitElement {
   static styles = [documentStylesSheet()];
 
   @state() public isModalOpen = false;
+
+  // In the shadow DOM `.theme-chrome *` can't see <html>, so the modal puts
+  // the theme class on its own root.
+  @state() private chromeTheme = isChromeTheme();
+  private readonly onThemeChange = () => {
+    this.chromeTheme = isChromeTheme();
+  };
 
   @query("[data-modal-scroll]") private scrollContainer?: HTMLElement;
 
@@ -74,7 +86,14 @@ export class OModal extends LitElement {
     }
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.chromeTheme = isChromeTheme();
+    globalThis.addEventListener(UI_THEME_CHANGED_EVENT, this.onThemeChange);
+  }
+
   disconnectedCallback() {
+    globalThis.removeEventListener(UI_THEME_CHANGED_EVENT, this.onThemeChange);
     // Ensure global counter is decremented if this modal is removed while open.
     if (this.isModalOpen && !this.inline) {
       OModal.openCount = Math.max(0, OModal.openCount - 1);
@@ -102,14 +121,14 @@ export class OModal extends LitElement {
               data-key=${tab.key}
               aria-selected=${active}
               class="px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all relative cursor-pointer ${active
-                ? "text-aquarius"
+                ? "text-aquarius chrome:text-chrome-50"
                 : "text-white/40 hover:text-white/70"}"
               @click=${() => this.handleTabClick(tab.key)}
             >
               ${tab.label}
               ${active
                 ? html`<div
-                    class="absolute bottom-0 left-0 right-0 h-0.5 bg-malibu-blue"
+                    class="absolute bottom-0 left-0 right-0 h-0.5 bg-malibu-blue chrome:chrome-bar"
                   ></div>`
                 : ""}
             </button>
@@ -139,11 +158,11 @@ export class OModal extends LitElement {
 
     const hasTabs = this.tabs.length > 0;
     const sectionClass =
-      "relative flex-1 min-h-0 flex flex-col text-white bg-black/70 backdrop-blur-xl lg:rounded-2xl lg:border border-white/10 overflow-hidden";
+      "relative flex-1 min-h-0 flex flex-col text-white bg-black/70 backdrop-blur-xl lg:rounded-2xl lg:border border-white/10 overflow-hidden chrome:chrome-panel";
 
     return html`
       <aside
-        class="${backdropClass}"
+        class="${backdropClass} ${this.chromeTheme ? CHROME_THEME_CLASS : ""}"
         @click=${this.inline ? null : () => this.close()}
       >
         <div
@@ -161,7 +180,7 @@ export class OModal extends LitElement {
               </div>`}
           ${!this.hideHeader && this.title
             ? html`<div
-                class="px-[1.4rem] py-[1rem] text-2xl font-bold text-white"
+                class="px-[1.4rem] py-[1rem] text-2xl font-bold text-white chrome:chrome-text"
               >
                 ${this.title}
               </div>`

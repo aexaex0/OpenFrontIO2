@@ -119,7 +119,7 @@ export class ChatModal extends LitElement {
             ✕
           </button>
           <div
-            class="bg-zinc-900/95 p-3 rounded-xl shadow-2xl shadow-black/50 ring-1 ring-white/10 text-white
+            class="bg-zinc-900/95 p-3 rounded-xl shadow-2xl shadow-black/50 ring-1 ring-white/10 text-white chrome:chrome-panel chrome:ring-0
                    w-[min(44rem,calc(100vw-32px))] max-h-[calc(100vh-60px)] overflow-y-auto
                    flex flex-col gap-3"
             @contextmenu=${(e: MouseEvent) => e.preventDefault()}
@@ -151,7 +151,7 @@ export class ChatModal extends LitElement {
         <span
           class="relative inline-block w-8 h-4.5 rounded-full transition-colors ${this
             .showAll
-            ? "bg-blue-500"
+            ? "bg-blue-500 chrome:bg-chrome-300"
             : "bg-zinc-600"}"
         >
           <span
@@ -198,7 +198,8 @@ export class ChatModal extends LitElement {
               return html`
                 <button
                   class="max-w-[15rem] truncate px-2.5 py-1 rounded-md text-sm text-left
-                         bg-white/5 hover:bg-white/15 active:bg-white/25 transition-colors cursor-pointer"
+                         bg-white/5 hover:bg-white/15 active:bg-white/25 transition-colors cursor-pointer
+                         chrome:bg-chrome-800/80 chrome:text-chrome-100 chrome:hover:bg-chrome-600/80 chrome:ring-1 chrome:ring-chrome-400/30"
                   title=${full.replace(PLAYER_PLACEHOLDER, "___")}
                   @click=${() => this.pickPhrase(category, phrase)}
                 >
@@ -239,7 +240,7 @@ export class ChatModal extends LitElement {
     return html`
       <div class="flex items-center gap-2">
         <button
-          class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/15 cursor-pointer"
+          class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/15 cursor-pointer chrome:chrome-button-dark"
           aria-label=${translateText("common.back")}
           @click=${() => (this.pending = null)}
         >
@@ -252,7 +253,7 @@ export class ChatModal extends LitElement {
         </span>
       </div>
       <input
-        class="px-2 py-1.5 rounded-md bg-zinc-800 ring-1 ring-white/10 text-sm outline-none focus:ring-white/30"
+        class="px-2 py-1.5 rounded-md bg-zinc-800 ring-1 ring-white/10 text-sm outline-none focus:ring-white/30 chrome:bg-chrome-900 chrome:ring-chrome-400/50 chrome:focus:ring-chrome-200"
         type="text"
         placeholder=${translateText("chat.search")}
         .value=${this.search}
@@ -270,7 +271,8 @@ export class ChatModal extends LitElement {
           (player) => html`
             <button
               class="truncate px-2.5 py-1.5 rounded-md text-sm text-left border-l-4
-                     bg-white/5 hover:bg-white/15 active:bg-white/25 transition-colors cursor-pointer"
+                     bg-white/5 hover:bg-white/15 active:bg-white/25 transition-colors cursor-pointer
+                     chrome:bg-chrome-800/80 chrome:text-chrome-100 chrome:hover:bg-chrome-600/80 chrome:ring-1 chrome:ring-chrome-400/30"
               style="border-left-color: ${player.territoryColor().toHex()}"
               @click=${() => this.sendPending(player)}
             >

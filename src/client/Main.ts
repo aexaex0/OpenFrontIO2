@@ -131,6 +131,7 @@ import {
   type TurnstileToken,
 } from "./TurnstileToken";
 // Before the first userMeResponse, for the modals that load after it.
+import { initUiTheme } from "./UiTheme";
 import "./UserMeBroadcast";
 import { UserSettings } from "./UserSettings";
 import "./UsernameInput";
@@ -2137,6 +2138,7 @@ const bootstrap = () => {
   // of the map. See issue #5098.
   installCtrlWheelZoomBlocker();
 
+  initUiTheme();
   initLayout();
   new Client().initialize();
   initNavigation();

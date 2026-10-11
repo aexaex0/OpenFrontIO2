@@ -106,7 +106,7 @@ export class WinModal extends LitElement implements Controller {
     return html`
       <div
         class="${this.isVisible
-          ? "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-800/70 p-4 md:p-6 shrink-0 rounded-lg z-[10010] shadow-2xl backdrop-blur-xs text-white w-[min(90vw,700px)] max-w-[90%] max-h-[90dvh] overflow-hidden flex flex-col"
+          ? "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-800/70 chrome:chrome-panel p-4 md:p-6 shrink-0 rounded-lg z-[10010] shadow-2xl backdrop-blur-xs text-white w-[min(90vw,700px)] max-w-[90%] max-h-[90dvh] overflow-hidden flex flex-col"
           : "hidden"}"
       >
         <h2 class="m-0 mb-4 text-[26px] text-center text-white shrink-0">
@@ -356,7 +356,9 @@ export class WinModal extends LitElement implements Controller {
 
   renderYoutubeTutorial() {
     return html`
-      <div class="text-center mb-6 bg-black/30 p-2.5 rounded-sm">
+      <div
+        class="text-center mb-6 bg-black/30 p-2.5 rounded-sm chrome:border chrome:chrome-frame"
+      >
         <h3 class="text-xl font-semibold text-white mb-3">
           ${translateText("win_modal.youtube_tutorial")}
         </h3>
@@ -384,7 +386,9 @@ export class WinModal extends LitElement implements Controller {
 
   renderPatternButton() {
     return html`
-      <div class="text-center mb-6 bg-black/30 p-2.5 rounded-sm">
+      <div
+        class="text-center mb-6 bg-black/30 p-2.5 rounded-sm chrome:border chrome:chrome-frame"
+      >
         <h3 class="text-xl font-semibold text-white mb-3">
           ${translateText("win_modal.support_openfront")}
         </h3>
@@ -451,7 +455,9 @@ export class WinModal extends LitElement implements Controller {
 
   steamWishlist(): TemplateResult {
     return html`
-      <div class="text-center mb-6 bg-black/30 p-2.5 rounded-sm">
+      <div
+        class="text-center mb-6 bg-black/30 p-2.5 rounded-sm chrome:border chrome:chrome-frame"
+      >
         <h3 class="text-xl font-semibold text-white mb-3">
           ${translateText("steam_wishlist.buy_on_steam")}
         </h3>
@@ -465,7 +471,9 @@ export class WinModal extends LitElement implements Controller {
 
   discordDisplay(): TemplateResult {
     return html`
-      <div class="text-center mb-6 bg-black/30 p-2.5 rounded-sm">
+      <div
+        class="text-center mb-6 bg-black/30 p-2.5 rounded-sm chrome:border chrome:chrome-frame"
+      >
         <h3 class="text-xl font-semibold text-white mb-3">
           ${translateText("win_modal.join_discord")}
         </h3>

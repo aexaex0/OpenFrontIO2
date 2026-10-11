@@ -31,7 +31,7 @@ export class SettingToggle extends LitElement {
 
     return html`
       <label
-        class="flex flex-row items-center justify-between w-full p-4 bg-white/5 border border-white/10 rounded-xl transition-all gap-4 ${this
+        class="flex flex-row items-center justify-between w-full p-4 bg-white/5 border border-white/10 rounded-xl transition-all gap-4 chrome:chrome-frame chrome:bg-chrome-900/60 ${this
           .disabled
           ? "opacity-50 cursor-not-allowed"
           : "hover:bg-white/10 cursor-pointer"} ${rainbowClass}"
@@ -58,7 +58,8 @@ export class SettingToggle extends LitElement {
             class="absolute inset-0 bg-black/60 border border-white/10 transition-all duration-300 rounded-full
             before:absolute before:content-[''] before:h-5 before:w-5 before:left-[3px] before:top-[3px]
             before:bg-white/40 before:transition-all before:duration-300 before:rounded-full before:shadow-sm hover:before:bg-white/60
-            peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:before:translate-x-[24px] peer-checked:before:bg-white"
+            peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:before:translate-x-[24px] peer-checked:before:bg-white
+            chrome:peer-checked:bg-chrome-300 chrome:peer-checked:border-chrome-100"
           ></span>
         </div>
       </label>

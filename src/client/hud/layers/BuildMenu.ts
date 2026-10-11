@@ -25,6 +25,7 @@ import {
   SendUpgradeStructureIntentEvent,
 } from "../../Transport";
 import { UIState } from "../../UIState";
+import { CHROME_THEME_CLASS, isChromeTheme } from "../../UiTheme";
 import { GameView } from "../../view";
 const warshipIcon = assetUrl("images/BattleshipIconWhite.svg");
 const cityIcon = assetUrl("images/CityIconWhite.svg");
@@ -227,6 +228,49 @@ export class BuildMenu extends LitElement implements Controller {
       cursor: not-allowed;
       opacity: 0.7;
     }
+    /* Chrome & Silver theme (see styles/core/chrome-theme.css). */
+    .build-menu.theme-chrome {
+      background:
+        linear-gradient(180deg, rgb(32 36 42 / 0.96), rgb(9 10 12 / 0.98))
+          padding-box,
+        linear-gradient(
+            160deg,
+            #f8f9fb,
+            #98a1ac 22%,
+            #e6e9ee 45%,
+            #5b6470 70%,
+            #c9ced6
+          )
+          border-box;
+      border: 1px solid transparent;
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.12),
+        0 8px 24px rgb(0 0 0 / 0.6);
+    }
+    .theme-chrome .build-button {
+      background: linear-gradient(
+        180deg,
+        #4a515a 0%,
+        #2a2f35 50%,
+        #1b1e22 100%
+      );
+      border-color: #98a1ac;
+      color: #eceff3;
+      box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+    }
+    .theme-chrome .build-button:not(:disabled):hover {
+      background: linear-gradient(
+        180deg,
+        #5b6470 0%,
+        #3d444d 50%,
+        #22262c 100%
+      );
+      border-color: #eceff3;
+    }
+    .theme-chrome .build-button:disabled {
+      background: #121418;
+      border-color: #3d444d;
+    }
     .build-button:disabled img {
       opacity: 0.5;
     }
@@ -406,7 +450,9 @@ export class BuildMenu extends LitElement implements Controller {
   render() {
     return html`
       <div
-        class="build-menu ${this._hidden ? "hidden" : ""}"
+        class="build-menu ${this._hidden ? "hidden" : ""} ${isChromeTheme()
+          ? CHROME_THEME_CLASS
+          : ""}"
         @contextmenu=${(e: MouseEvent) => e.preventDefault()}
       >
         ${this.filteredBuildTable.map(

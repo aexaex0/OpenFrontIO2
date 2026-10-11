@@ -204,6 +204,8 @@ export const ACTIVE_LOADOUT_KEY = "settings.activeLoadout";
 export const PLAYER_STATS_COLUMNS_KEY = "settings.leaderboardColumns";
 export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
+export const UI_THEME_KEY = "settings.uiTheme";
+export type UiTheme = "default" | "chrome";
 const STATS_COLUMNS_KEYS: Record<StatsTableKind, string> = {
   player: PLAYER_STATS_COLUMNS_KEY,
   team: TEAM_STATS_COLUMNS_KEY,
@@ -398,6 +400,16 @@ export class UserSettings {
 
   emojis() {
     return this.getBool("settings.emojis", true);
+  }
+
+  uiTheme(): UiTheme {
+    return this.getString(UI_THEME_KEY, "default") === "chrome"
+      ? "chrome"
+      : "default";
+  }
+
+  setUiTheme(theme: UiTheme) {
+    this.setString(UI_THEME_KEY, theme);
   }
 
   performanceOverlay() {

@@ -390,6 +390,12 @@ export class UserSettingModal extends BaseModal {
     console.log("🤡 Emojis:", this.userSettings.emojis() ? "ON" : "OFF");
   }
 
+  private toggleChromeTheme() {
+    this.userSettings.setUiTheme(
+      this.userSettings.uiTheme() === "chrome" ? "default" : "chrome",
+    );
+  }
+
   private toggleAlertFrame() {
     this.userSettings.toggleAlertFrame();
 
@@ -1690,6 +1696,15 @@ export class UserSettingModal extends BaseModal {
         id="emoji-toggle"
         .checked=${this.userSettings.emojis()}
         @change=${this.toggleEmojis}
+      ></setting-toggle>
+
+      <!-- 🪞 Chrome & Silver theme -->
+      <setting-toggle
+        label="${translateText("user_setting.chrome_theme_label")}"
+        description="${translateText("user_setting.chrome_theme_desc")}"
+        id="chrome-theme-toggle"
+        .checked=${this.userSettings.uiTheme() === "chrome"}
+        @change=${this.toggleChromeTheme}
       ></setting-toggle>
 
       <!-- 📱 Performance Overlay -->

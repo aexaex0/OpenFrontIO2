@@ -2412,6 +2412,8 @@
     "camera_movement": "Camera Movement",
     "center_camera": "Center Camera",
     "center_camera_desc": "Center camera on player",
+    "chrome_theme_desc": "Give menus, buttons, panels and chat a polished chrome and silver look on a dark background.",
+    "chrome_theme_label": "Chrome & Silver Theme",
     "coordinate_grid_desc": "Toggle the alphanumeric grid overlay",
     "coordinate_grid_label": "Coordinate Grid",
     "cursor_cost_label_desc": "Show a cost pill under the build cursor icon",
