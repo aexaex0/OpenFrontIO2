@@ -8,6 +8,7 @@ import type {
   SnapshotReader,
   SnapshotWriter,
 } from "../snapshot/SnapshotContext";
+import { nationChatBehavior } from "./NationExecution";
 
 export class QuickChatExecution implements Execution {
   private recipient: Player;
@@ -65,6 +66,16 @@ export class QuickChatExecution implements Execution {
 
     console.log(
       `[QuickChat] ${this.sender.name} → ${this.recipient.displayName}: ${message}`,
+    );
+
+    const target =
+      this.target !== undefined && this.mg.hasPlayer(this.target)
+        ? this.mg.player(this.target)
+        : null;
+    nationChatBehavior(this.mg, this.recipient)?.respondToQuickChat(
+      this.sender,
+      this.quickChatKey,
+      target,
     );
 
     this.active = false;

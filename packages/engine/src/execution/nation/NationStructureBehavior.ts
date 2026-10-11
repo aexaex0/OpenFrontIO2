@@ -259,7 +259,37 @@ export class NationStructureBehavior {
       allowed = Math.ceil(ratio / DEFENSE_POST_RATIO_PER_POST);
     }
 
-    const frontTiles = this.getAttackFrontTiles(attacks);
+    return this.placeDefensePost(this.getAttackFrontTiles(attacks), allowed);
+  }
+
+  /**
+   * Tries to place one defense post on our land border with `enemy`, e.g.
+   * after it threatened us. Not on Easy, and at most one post per front.
+   */
+  buildDefensePostFacing(enemy: Player): boolean {
+    if (this.game.config().gameConfig().difficulty === Difficulty.Easy) {
+      return false;
+    }
+    if (this.game.config().isUnitDisabled(UnitType.DefensePost)) return false;
+
+    const game = this.game;
+    const frontTiles: TileRef[] = [];
+    const nbuf = NEIGHBOR_SCRATCH;
+    this.player.borderTiles().forEach((borderTile) => {
+      const n = game.neighbors4(borderTile, nbuf);
+      for (let i = 0; i < n; i++) {
+        if (game.owner(nbuf[i]) === enemy) {
+          frontTiles.push(borderTile);
+          return;
+        }
+      }
+    });
+    return this.placeDefensePost(frontTiles, 1);
+  }
+
+  private placeDefensePost(frontTiles: TileRef[], allowed: number): boolean {
+    const player = this.player;
+    if (frontTiles.length === 0) return false;
     if (this.countDefensePostsNearFront(frontTiles, allowed) >= allowed)
       return false;
 

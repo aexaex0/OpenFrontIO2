@@ -33,6 +33,7 @@ import type {
   SnapshotWriter,
 } from "../snapshot/SnapshotContext";
 import { NationAllianceBehavior } from "./nation/NationAllianceBehavior";
+import { NationChatBehavior } from "./nation/NationChatBehavior";
 import { NationEmojiBehavior } from "./nation/NationEmojiBehavior";
 import { NationMIRVBehavior } from "./nation/NationMIRVBehavior";
 import { NationNukeBehavior } from "./nation/NationNukeBehavior";
@@ -280,6 +281,28 @@ export class NationExecution implements Execution {
     this.behaviorsInitialized = true;
   }
 
+  /**
+   * Built on demand rather than stored: it only holds references to the
+   * other behaviors, so there is nothing to snapshot.
+   */
+  chatBehavior(): NationChatBehavior | null {
+    if (!this.behaviorsInitialized || this.player === null) return null;
+    return new NationChatBehavior(
+      this.random,
+      this.mg,
+      this.player,
+      this.reserveRatio,
+      this.emojiBehavior,
+      this.allianceBehavior,
+      this.attackBehavior,
+      this.structureBehavior,
+    );
+  }
+
+  nationPlayer(): Player | null {
+    return this.player;
+  }
+
   private randomSpawnLand(): TileRef | null {
     if (this.nation.spawnCell === undefined) throw new Error("not initialized");
 
@@ -522,3 +545,20 @@ export const NationExecutionSnapshot = execSnapshotType({
   schema: NationStateSchema,
   cls: () => NationExecution,
 });
+
+/**
+ * The chat behavior of the nation controlling `player`, or null if `player`
+ * isn't a nation or hasn't started playing yet.
+ */
+export function nationChatBehavior(
+  game: Game,
+  player: Player,
+): NationChatBehavior | null {
+  if (player.type() !== PlayerType.Nation) return null;
+  for (const exec of game.executions()) {
+    if (exec instanceof NationExecution && exec.nationPlayer() === player) {
+      return exec.chatBehavior();
+    }
+  }
+  return null;
+}

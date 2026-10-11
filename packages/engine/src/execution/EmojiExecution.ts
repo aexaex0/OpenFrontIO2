@@ -14,7 +14,9 @@ import type {
   SnapshotReader,
   SnapshotWriter,
 } from "../snapshot/SnapshotContext";
+import { THREAT_EMOJIS } from "./nation/NationChatBehavior";
 import { respondToEmoji } from "./nation/NationEmojiBehavior";
+import { nationChatBehavior } from "./NationExecution";
 
 export class EmojiExecution implements Execution {
   private recipient: Player | typeof AllPlayers;
@@ -61,6 +63,14 @@ export class EmojiExecution implements Execution {
         this.recipient,
         emojiString,
       );
+      if (
+        this.recipient !== AllPlayers &&
+        THREAT_EMOJIS.includes(emojiString)
+      ) {
+        nationChatBehavior(this.mg, this.recipient)?.respondToThreat(
+          this.requestor,
+        );
+      }
     } else {
       console.warn(
         `cannot send emoji from ${this.requestor} to ${this.recipient}`,

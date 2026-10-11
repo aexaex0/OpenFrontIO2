@@ -57,6 +57,8 @@ export const EMOJI_HANDSHAKE = (["🤝"] as const).map(emojiId);
 export const EMOJI_DONATION_OK = (["👍"] as const).map(emojiId);
 export const EMOJI_DONATION_TOO_SMALL = (["❓", "🥱"] as const).map(emojiId);
 export const EMOJI_GREET = (["👋"] as const).map(emojiId);
+export const EMOJI_REQUEST_DECLINED = (["👎", "🥱"] as const).map(emojiId);
+export const EMOJI_CANT_AFFORD = (["😞", "🫴"] as const).map(emojiId);
 
 export class NationEmojiBehavior {
   private lastEmojiSent = new Map<Player, Tick>();

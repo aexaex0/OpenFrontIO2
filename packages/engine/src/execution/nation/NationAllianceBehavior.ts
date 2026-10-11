@@ -115,10 +115,7 @@ export class NationAllianceBehavior {
     }
   }
 
-  private getAllianceDecision(
-    otherPlayer: Player,
-    isResponse: boolean,
-  ): boolean {
+  getAllianceDecision(otherPlayer: Player, isResponse: boolean): boolean {
     // Easy (dumb) nations sometimes get confused and accept/reject randomly (Just like dumb humans do)
     if (this.isConfused()) {
       return this.random.chance(2);
