@@ -102,7 +102,11 @@ export async function renderHtmlContent(
         ? undefined
         : JSON.stringify(ServerEnv.faroCollectorUrl()),
     manifestHref: buildAssetUrl("manifest.json", assetManifest, cdnBase),
-    faviconHref: buildAssetUrl("images/Favicon.svg", assetManifest, cdnBase),
+    faviconHref: buildAssetUrl(
+      "images/AlexFrontIcon.svg",
+      assetManifest,
+      cdnBase,
+    ),
     gameplayScreenshotUrl: buildAssetUrl(
       "images/GameplayScreenshot.png",
       assetManifest,
@@ -114,11 +118,11 @@ export async function renderHtmlContent(
       cdnBase,
     ),
     desktopLogoImageUrl: buildAssetUrl(
-      "images/OpenFront.png",
+      "images/AlexFront.png",
       assetManifest,
       cdnBase,
     ),
-    mobileLogoImageUrl: buildAssetUrl("images/OF.png", assetManifest, cdnBase),
+    mobileLogoImageUrl: buildAssetUrl("images/AF.png", assetManifest, cdnBase),
   });
 }
 
