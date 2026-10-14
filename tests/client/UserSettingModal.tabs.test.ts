@@ -43,13 +43,14 @@ describe("user-setting tabs", () => {
     vi.unstubAllGlobals();
   });
 
-  it("groups the settings as Gameplay, Graphics, Audio and Keybinds, in that order", async () => {
+  it("groups the settings as Gameplay, Graphics, Audio, Keybinds and Help, in that order", async () => {
     const el = await mount(false);
     expect(el.modalConfig().tabs?.map((t) => t.key)).toEqual([
       "gameplay",
       "graphics",
       "audio",
       "keybinds",
+      "help",
     ]);
   });
 

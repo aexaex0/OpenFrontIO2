@@ -247,7 +247,7 @@ describe("Keybinds tab on touch devices", () => {
   it("leaves the order of the remaining tabs alone", async () => {
     vi.spyOn(Platform, "isTouch", "get").mockReturnValue(true);
     const el = await mount();
-    expect(tabKeys(el)).toEqual(["gameplay", "graphics", "audio"]);
+    expect(tabKeys(el)).toEqual(["gameplay", "graphics", "audio", "help"]);
   });
 
   // The Display tab is orthogonal: a touch device with a desktop shell is not
@@ -256,7 +256,13 @@ describe("Keybinds tab on touch devices", () => {
     vi.spyOn(Platform, "isTouch", "get").mockReturnValue(true);
     fakeBridge().install();
     const el = await mount();
-    expect(tabKeys(el)).toEqual(["gameplay", "graphics", "display", "audio"]);
+    expect(tabKeys(el)).toEqual([
+      "gameplay",
+      "graphics",
+      "display",
+      "audio",
+      "help",
+    ]);
   });
 });
 
