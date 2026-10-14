@@ -218,43 +218,6 @@
       window.ramp.que = window.ramp.que || [];
       window.ramp.passiveMode = true;
     </script>
-
-    <script>
-      window.googletag = window.googletag || { cmd: [] };
-      googletag.cmd.push(function () {
-        googletag.pubads().set("page_url", "http://openfront.io ");
-      });
-    </script>
-
-    <!-- Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=AW-16702609763"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-
-      gtag("js", new Date());
-      gtag("config", "AW-16702609763");
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-WQGQQ8RDN4"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-
-      gtag("config", "G-WQGQQ8RDN4");
-    </script>
   </head>
 
   <body
@@ -315,7 +278,6 @@
       <homepage-promos></homepage-promos>
       <banned-modal></banned-modal>
       <marketing-consent-toast></marketing-consent-toast>
-      <purchase-nudge-modal></purchase-nudge-modal>
 
       <!-- Main container with responsive padding -->
       <main-layout class="contents">
@@ -506,7 +468,6 @@
          home container) so the Twitch iframe is never display:none'd during a game,
          which would unmount the player and break ToS-compliant playback. The
          component is position:fixed and self-manages visibility (pauses in-game). -->
-    <featured-stream></featured-stream>
 
     <!-- Steam shell status bar. A direct <body> child, like
          featured-stream above, so it is not inside the home container -- but

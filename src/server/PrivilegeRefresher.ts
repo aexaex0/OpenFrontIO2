@@ -1,5 +1,6 @@
 import { ReservedClanTagsResponseSchema } from "@openfront/shared/ClanApiSchemas";
 import { CosmeticsSchema } from "@openfront/shared/CosmeticSchemas";
+import { FREE_COSMETICS } from "@openfront/shared/FreeCosmetics";
 import { base64url } from "jose";
 import { Logger } from "winston";
 import { startPolling } from "./PollingLoop";
@@ -35,8 +36,15 @@ export class PrivilegeRefresher {
     startPolling(() => this.loadPrivilegeChecker(), this.refreshInterval);
   }
 
+  // This fork resolves cosmetics against its own free catalog, never the
+  // API's paid one (see FreeCosmetics.ts).
+  private freePrivilegeChecker: PrivilegeChecker = new PrivilegeCheckerImpl(
+    FREE_COSMETICS,
+    base64url.decode,
+  );
+
   public get(): PrivilegeChecker {
-    return this.privilegeChecker ?? this.failOpenPrivilegeChecker;
+    return this.freePrivilegeChecker;
   }
 
   private async loadPrivilegeChecker(): Promise<void> {

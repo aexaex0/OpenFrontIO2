@@ -1,6 +1,7 @@
 import { ID, isValidGameID } from "@openfront/engine-api/Schemas";
 import { CloseCode, CloseReason } from "@openfront/shared/CloseCodes";
 import { GameEnv } from "@openfront/shared/configuration/Env";
+import { withFreeFlares } from "@openfront/shared/FreeCosmetics";
 import { generateID, replacer } from "@openfront/shared/SharedUtil";
 import {
   ClientMessage,
@@ -787,7 +788,7 @@ export async function startWorker() {
 
         const cosmeticResult = privilegeRefresher
           .get()
-          .isAllowed(flares ?? [], clientMsg.cosmetics ?? {});
+          .isAllowed(withFreeFlares(flares), clientMsg.cosmetics ?? {});
 
         if (cosmeticResult.type === "forbidden") {
           log.warn(`Forbidden: ${cosmeticResult.reason}`, {

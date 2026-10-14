@@ -1,4 +1,5 @@
 import type { MapLayer } from "@openfront/engine-api/game/MapFiles";
+import { assetUrl } from "@openfront/shared/AssetUrls";
 import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { formatKeyForDisplay, translateText } from "../client/Utils";
@@ -766,6 +767,7 @@ export class UserSettingModal extends BaseModal {
                 label: translateText("user_setting.tab_keybinds"),
               },
             ]),
+        { key: "help", label: translateText("user_setting.tab_help") },
       ],
     };
   }
@@ -794,11 +796,138 @@ export class UserSettingModal extends BaseModal {
       case "display":
         body = this.renderDisplaySettings();
         break;
+      case "help":
+        body = this.renderHelp();
+        break;
       default:
         body = this.renderGameplaySettings();
     }
     return html`
       <div class="flex flex-col gap-2 p-4 lg:p-[1.4rem]">${body}</div>
+    `;
+  }
+
+  /** The Help tab: one card per thing a player can build or launch. */
+  private renderHelp() {
+    const sections: {
+      title: string;
+      items: { icon: string; name: string; desc: string }[];
+    }[] = [
+      {
+        title: "user_setting.help_section_buildings",
+        items: [
+          {
+            icon: "CityIconWhite.svg",
+            name: "unit_type.city",
+            desc: "help_modal.build_city_desc",
+          },
+          {
+            icon: "PortIcon.svg",
+            name: "unit_type.port",
+            desc: "help_modal.build_port_desc",
+          },
+          {
+            icon: "FactoryIconWhite.svg",
+            name: "unit_type.factory",
+            desc: "help_modal.build_factory_desc",
+          },
+          {
+            icon: "ShieldIconWhite.svg",
+            name: "unit_type.defense_post",
+            desc: "help_modal.build_defense_desc",
+          },
+          {
+            icon: "MissileSiloIconWhite.svg",
+            name: "unit_type.missile_silo",
+            desc: "help_modal.build_silo_desc",
+          },
+          {
+            icon: "SamLauncherIconWhite.svg",
+            name: "unit_type.sam_launcher",
+            desc: "help_modal.build_sam_desc",
+          },
+        ],
+      },
+      {
+        title: "user_setting.help_section_ships",
+        items: [
+          {
+            icon: "BattleshipIconWhite.svg",
+            name: "unit_type.warship",
+            desc: "help_modal.build_warship_desc",
+          },
+          {
+            icon: "BoatIconWhite.svg",
+            name: "unit_type.boat",
+            desc: "user_setting.help_boat_desc",
+          },
+          {
+            icon: "TradeShipIconWhite.svg",
+            name: "user_setting.help_trade_ship_name",
+            desc: "user_setting.help_trade_ship_desc",
+          },
+          {
+            icon: "FactoryIconWhite.svg",
+            name: "user_setting.help_train_name",
+            desc: "user_setting.help_train_desc",
+          },
+        ],
+      },
+      {
+        title: "user_setting.help_section_nukes",
+        items: [
+          {
+            icon: "NukeIconWhite.svg",
+            name: "unit_type.atom_bomb",
+            desc: "help_modal.build_atom_desc",
+          },
+          {
+            icon: "MushroomCloudIconWhite.svg",
+            name: "unit_type.hydrogen_bomb",
+            desc: "help_modal.build_hydrogen_desc",
+          },
+          {
+            icon: "MIRVIcon.svg",
+            name: "unit_type.mirv",
+            desc: "help_modal.build_mirv_desc",
+          },
+        ],
+      },
+    ];
+    return html`
+      <p class="text-sm text-zinc-300">
+        ${translateText("user_setting.help_intro")}
+      </p>
+      ${sections.map(
+        (section) => html`
+          <h3
+            class="mt-3 text-base font-semibold text-white chrome:text-chrome-100"
+          >
+            ${translateText(section.title)}
+          </h3>
+          ${section.items.map(
+            (item) => html`
+              <div
+                class="flex items-start gap-3 rounded-lg border border-white/10 bg-white/5 p-3"
+              >
+                <img
+                  src=${assetUrl(`images/${item.icon}`)}
+                  alt=""
+                  class="size-8 shrink-0"
+                />
+                <div class="min-w-0">
+                  <div class="font-medium text-white">
+                    ${translateText(item.name)}
+                  </div>
+                  <div class="text-sm text-zinc-300">
+                    ${translateText(item.desc)}
+                  </div>
+                </div>
+              </div>
+            `,
+          )}
+        `,
+      )}
     `;
   }
 

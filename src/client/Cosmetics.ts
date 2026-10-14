@@ -9,7 +9,6 @@ import {
   CosmeticPack,
   CosmeticPackItem,
   Cosmetics,
-  CosmeticsSchema,
   Crown,
   Effect,
   findEffectForSlot,
@@ -20,6 +19,10 @@ import {
   Subscription,
 } from "@openfront/shared/CosmeticSchemas";
 import {
+  FREE_COSMETICS,
+  withFreeFlares,
+} from "@openfront/shared/FreeCosmetics";
+import {
   PlayerCosmeticRefs,
   PlayerCosmetics,
   PlayerEffect,
@@ -27,7 +30,6 @@ import {
 } from "@openfront/shared/WireSchemas";
 import {
   changeSubscriptionTier,
-  getApiBase,
   getUserMe,
   invalidateUserMe,
   openSubscriptionPortal,
@@ -856,29 +858,12 @@ export async function fetchCosmetics(): Promise<Cosmetics | null> {
   if (__cosmetics !== null) {
     return __cosmetics;
   }
+  // This fork ships its own free catalog instead of the API's paid one.
   const request = (async () => {
-    try {
-      const response = await fetch(`${getApiBase()}/cosmetics.json`, {
-        signal: AbortSignal.timeout(COSMETICS_FETCH_TIMEOUT_MS),
-      });
-      if (!response.ok) {
-        console.warn(`HTTP error! status: ${response.status}`);
-        return null;
-      }
-      const result = CosmeticsSchema.safeParse(await response.json());
-      if (!result.success) {
-        console.error(`Invalid cosmetics: ${result.error.message}`);
-        return null;
-      }
-      const patternKeys = Object.keys(result.data.patterns).sort();
-      const hashInput = patternKeys.join(",");
-      __cosmeticsHash = simpleHash(hashInput);
-      __cosmeticsCache = result.data;
-      return result.data;
-    } catch (error) {
-      console.warn("Error getting cosmetics:", error);
-      return null;
-    }
+    const data = FREE_COSMETICS;
+    __cosmeticsHash = simpleHash(Object.keys(data.patterns).sort().join(","));
+    __cosmeticsCache = data;
+    return data;
   })();
   __cosmetics = request;
   void request.then((result) => {
@@ -938,8 +923,9 @@ export function cosmeticRelationship(
   },
   userMeResponse: UserMeResponse | false,
 ): "owned" | "purchasable" | "blocked" {
-  const flares =
-    userMeResponse === false ? [] : (userMeResponse.player.flares ?? []);
+  const flares = withFreeFlares(
+    userMeResponse === false ? [] : userMeResponse.player.flares,
+  );
 
   if (flares.includes(opts.wildcardFlare)) {
     return "owned";
@@ -969,8 +955,9 @@ export function patternRelationship(
 ): "owned" | "purchasable" | "blocked" {
   if (colorPalette === null) {
     // For backwards compatibility only show non-colored patterns if they are owned.
-    const flares =
-      userMeResponse === false ? [] : (userMeResponse.player.flares ?? []);
+    const flares = withFreeFlares(
+      userMeResponse === false ? [] : userMeResponse.player.flares,
+    );
     if (
       flares.includes("pattern:*") ||
       flares.includes(`pattern:${pattern.name}`)
@@ -982,8 +969,9 @@ export function patternRelationship(
 
   if (colorPalette.isArchived) {
     // Check ownership first — if owned, show it even if archived.
-    const flares =
-      userMeResponse === false ? [] : (userMeResponse.player.flares ?? []);
+    const flares = withFreeFlares(
+      userMeResponse === false ? [] : userMeResponse.player.flares,
+    );
     if (
       flares.includes("pattern:*") ||
       flares.includes(`pattern:${pattern.name}:${colorPalette.name}`)
@@ -1112,8 +1100,9 @@ export function ownedPackItems(
   pack: CosmeticPack,
   userMeResponse: UserMeResponse | false,
 ): CosmeticPackItem[] {
-  const flares =
-    userMeResponse === false ? [] : (userMeResponse.player.flares ?? []);
+  const flares = withFreeFlares(
+    userMeResponse === false ? [] : userMeResponse.player.flares,
+  );
   return pack.items.filter(
     (item) =>
       flares.includes(packItemFlare(item)) || flares.includes(`${item.type}:*`),
@@ -1308,8 +1297,9 @@ export function resolveCosmetics(
   }
 
   // Subscriptions
-  const flares =
-    userMeResponse === false ? [] : (userMeResponse.player.flares ?? []);
+  const flares = withFreeFlares(
+    userMeResponse === false ? [] : userMeResponse.player.flares,
+  );
   const currentSub =
     userMeResponse === false
       ? null
@@ -1420,7 +1410,7 @@ export async function getPlayerCosmeticsRefs(
         pattern.colorPalette?.name === undefined
           ? `pattern:${pattern.name}`
           : `pattern:${pattern.name}:${pattern.colorPalette.name}`;
-      const flares = userMe.player.flares ?? [];
+      const flares = withFreeFlares(userMe.player.flares);
       const hasWildcard = flares.includes("pattern:*");
       if (!hasWildcard && !flares.includes(flareName)) {
         pattern = null;
@@ -1452,7 +1442,7 @@ export async function getPlayerCosmeticsRefs(
     } else {
       const userMe = await getUserMe();
       if (userMe) {
-        const flares = userMe.player.flares ?? [];
+        const flares = withFreeFlares(userMe.player.flares);
         const hasWildcard = flares.includes("flag:*");
         if (!hasWildcard && !flares.includes(`flag:${flagData.name}`)) {
           flag = null;
@@ -1484,7 +1474,7 @@ export async function getPlayerCosmeticsRefs(
     } else if (skin) {
       const userMe = await getUserMe();
       if (userMe) {
-        const flares = userMe.player.flares ?? [];
+        const flares = withFreeFlares(userMe.player.flares);
         const hasWildcard = flares.includes("skin:*");
         if (!hasWildcard && !flares.includes(`skin:${skin.name}`)) {
           skinName = undefined;
@@ -1505,7 +1495,7 @@ export async function getPlayerCosmeticsRefs(
     } else if (crown) {
       const userMe = await getUserMe();
       if (userMe) {
-        const flares = userMe.player.flares ?? [];
+        const flares = withFreeFlares(userMe.player.flares);
         const hasWildcard = flares.includes("crown:*");
         if (!hasWildcard && !flares.includes(`crown:${crown.name}`)) {
           crownName = undefined;
@@ -1533,7 +1523,7 @@ export async function getPlayerCosmeticsRefs(
     if (effect) {
       const userMe = await getUserMe();
       if (userMe) {
-        const flares = userMe.player.flares ?? [];
+        const flares = withFreeFlares(userMe.player.flares);
         const hasWildcard = flares.includes("effect:*");
         if (!hasWildcard && !flares.includes(`effect:${effect.name}`)) {
           userSettings.setSelectedEffectName(slot, undefined);

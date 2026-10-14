@@ -1,0 +1,852 @@
+{
+  "colorPalettes": {
+    "chrome": {
+      "name": "chrome",
+      "primaryColor": "#e5e7eb",
+      "secondaryColor": "#6b7280"
+    },
+    "silver": {
+      "name": "silver",
+      "primaryColor": "#cbd5e1",
+      "secondaryColor": "#334155"
+    },
+    "neon": {
+      "name": "neon",
+      "primaryColor": "#22d3ee",
+      "secondaryColor": "#d946ef"
+    },
+    "ocean": {
+      "name": "ocean",
+      "primaryColor": "#38bdf8",
+      "secondaryColor": "#1e3a8a"
+    },
+    "sunset": {
+      "name": "sunset",
+      "primaryColor": "#fb923c",
+      "secondaryColor": "#9f1239"
+    },
+    "forest": {
+      "name": "forest",
+      "primaryColor": "#86efac",
+      "secondaryColor": "#14532d"
+    },
+    "gold": {
+      "name": "gold",
+      "primaryColor": "#fde68a",
+      "secondaryColor": "#a16207"
+    },
+    "midnight": {
+      "name": "midnight",
+      "primaryColor": "#a5b4fc",
+      "secondaryColor": "#0f172a"
+    }
+  },
+  "patterns": {
+    "stripes": {
+      "name": "stripes",
+      "product": null,
+      "rarity": "common",
+      "artist": "OpenFront fork",
+      "pattern": "ADEY__8AAAAAAAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "checker": {
+      "name": "checker",
+      "product": null,
+      "rarity": "common",
+      "artist": "OpenFront fork",
+      "pattern": "ADEY8PDw8A8PDw8",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "diagonal": {
+      "name": "diagonal",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYA4HAYDAYDAY",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "dots": {
+      "name": "dots",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYAAAYPDwYAAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "grid": {
+      "name": "grid",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "pattern": "ADEY_wEBAQEBAQE",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "diamonds": {
+      "name": "diamonds",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYAAAYPDwYAAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "waves": {
+      "name": "waves",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "pattern": "AHEYABAAfAD-AYODAf4AfAAQAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "scales": {
+      "name": "scales",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYgcPDfjx-w8M",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "circuit": {
+      "name": "circuit",
+      "product": null,
+      "rarity": "legendary",
+      "artist": "OpenFront fork",
+      "pattern": "AHA4AAAAAAAE_w8ABAAEAAQQBDgEEAQQBBAEEPwQABAAEAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    }
+  },
+  "flags": {},
+  "skins": {
+    "chrome_star": {
+      "name": "chrome_star",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/chrome_star.png"
+    },
+    "silver_shield": {
+      "name": "silver_shield",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/silver_shield.png"
+    },
+    "neon_bolt": {
+      "name": "neon_bolt",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/neon_bolt.png"
+    },
+    "golden_crown": {
+      "name": "golden_crown",
+      "product": null,
+      "rarity": "legendary",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/golden_crown.png"
+    },
+    "target_rings": {
+      "name": "target_rings",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/target_rings.png"
+    }
+  },
+  "effects": {
+    "transportShipTrail": {
+      "rainbow_wake": {
+        "name": "rainbow_wake",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "gradient",
+          "colors": [
+            "#ff0000",
+            "#ff8800",
+            "#ffee00",
+            "#22cc44",
+            "#0088ff",
+            "#8833ff"
+          ],
+          "colorSize": 3,
+          "movementSpeed": 6
+        }
+      },
+      "chrome_wake": {
+        "name": "chrome_wake",
+        "product": null,
+        "rarity": "uncommon",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "colorSize": 2,
+          "movementSpeed": 4
+        }
+      },
+      "neon_pulse": {
+        "name": "neon_pulse",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "transition",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "frequency": 2
+        }
+      },
+      "ice_wake": {
+        "name": "ice_wake",
+        "product": null,
+        "rarity": "common",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#ecfeff", "#67e8f9", "#0e7490"],
+          "colorSize": 3,
+          "movementSpeed": 3
+        }
+      }
+    },
+    "nukeTrail": {
+      "fire_tail": {
+        "name": "fire_tail",
+        "product": null,
+        "rarity": "uncommon",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#fef08a", "#fb923c", "#dc2626", "#450a0a"],
+          "colorSize": 3,
+          "movementSpeed": 8
+        }
+      },
+      "chrome_spiral": {
+        "name": "chrome_spiral",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "spiral",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "radius": 6,
+          "strands": 3,
+          "rotationSpeed": 6
+        }
+      },
+      "plasma_spiral": {
+        "name": "plasma_spiral",
+        "product": null,
+        "rarity": "legendary",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "spiral",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "radius": 8,
+          "strands": 4,
+          "rotationSpeed": 8
+        }
+      },
+      "rainbow_tail": {
+        "name": "rainbow_tail",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "gradient",
+          "colors": [
+            "#ff0000",
+            "#ff8800",
+            "#ffee00",
+            "#22cc44",
+            "#0088ff",
+            "#8833ff"
+          ],
+          "colorSize": 4,
+          "movementSpeed": 10
+        }
+      }
+    },
+    "nukeExplosion": {
+      "chrome_shockwave_atom": {
+        "name": "chrome_shockwave_atom",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "shockwave",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "size": 40.0,
+          "speed": 30,
+          "thickness": 3,
+          "transitionSpeed": 2,
+          "nukeType": "atom"
+        }
+      },
+      "neon_sparkles_atom": {
+        "name": "neon_sparkles_atom",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "sparkles",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "size": 45.0,
+          "speed": 25,
+          "thickness": 1.5,
+          "transitionSpeed": 3,
+          "density": 120,
+          "nukeType": "atom"
+        }
+      },
+      "fire_embers_atom": {
+        "name": "fire_embers_atom",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "embers",
+          "colors": ["#fef08a", "#fb923c", "#dc2626", "#450a0a"],
+          "size": 40.0,
+          "speed": 20,
+          "thickness": 1.5,
+          "transitionSpeed": 2,
+          "density": 150,
+          "nukeType": "atom"
+        }
+      },
+      "chrome_shockwave_hydro": {
+        "name": "chrome_shockwave_hydro",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "shockwave",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "size": 88.0,
+          "speed": 30,
+          "thickness": 3,
+          "transitionSpeed": 2,
+          "nukeType": "hydro"
+        }
+      },
+      "neon_sparkles_hydro": {
+        "name": "neon_sparkles_hydro",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "sparkles",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "size": 99.0,
+          "speed": 25,
+          "thickness": 1.5,
+          "transitionSpeed": 3,
+          "density": 120,
+          "nukeType": "hydro"
+        }
+      },
+      "fire_embers_hydro": {
+        "name": "fire_embers_hydro",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "embers",
+          "colors": ["#fef08a", "#fb923c", "#dc2626", "#450a0a"],
+          "size": 88.0,
+          "speed": 20,
+          "thickness": 1.5,
+          "transitionSpeed": 2,
+          "density": 150,
+          "nukeType": "hydro"
+        }
+      },
+      "chrome_shockwave_mirvwarhead": {
+        "name": "chrome_shockwave_mirvwarhead",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "shockwave",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "size": 24.0,
+          "speed": 30,
+          "thickness": 3,
+          "transitionSpeed": 2,
+          "nukeType": "mirvWarhead"
+        }
+      },
+      "neon_sparkles_mirvwarhead": {
+        "name": "neon_sparkles_mirvwarhead",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "sparkles",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "size": 27.0,
+          "speed": 25,
+          "thickness": 1.5,
+          "transitionSpeed": 3,
+          "density": 120,
+          "nukeType": "mirvWarhead"
+        }
+      },
+      "fire_embers_mirvwarhead": {
+        "name": "fire_embers_mirvwarhead",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeExplosion",
+        "attributes": {
+          "type": "embers",
+          "colors": ["#fef08a", "#fb923c", "#dc2626", "#450a0a"],
+          "size": 24.0,
+          "speed": 20,
+          "thickness": 1.5,
+          "transitionSpeed": 2,
+          "density": 150,
+          "nukeType": "mirvWarhead"
+        }
+      }
+    },
+    "structures": {
+      "chrome_shine": {
+        "name": "chrome_shine",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "structures",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "colorSize": 2,
+          "movementSpeed": 3
+        }
+      },
+      "rainbow_buildings": {
+        "name": "rainbow_buildings",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "structures",
+        "attributes": {
+          "type": "transition",
+          "colors": [
+            "#ff0000",
+            "#ff8800",
+            "#ffee00",
+            "#22cc44",
+            "#0088ff",
+            "#8833ff"
+          ],
+          "frequency": 1
+        }
+      }
+    },
+    "warship": {
+      "chrome_fleet": {
+        "name": "chrome_fleet",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "warship",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "colorSize": 2,
+          "movementSpeed": 3
+        }
+      },
+      "neon_fleet": {
+        "name": "neon_fleet",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "warship",
+        "attributes": {
+          "type": "transition",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "frequency": 1.5
+        }
+      }
+    },
+    "train": {
+      "gold_express": {
+        "name": "gold_express",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "train",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#fef3c7", "#facc15", "#a16207"],
+          "colorSize": 2,
+          "movementSpeed": 4
+        }
+      },
+      "rainbow_express": {
+        "name": "rainbow_express",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "train",
+        "attributes": {
+          "type": "transition",
+          "colors": [
+            "#ff0000",
+            "#ff8800",
+            "#ffee00",
+            "#22cc44",
+            "#0088ff",
+            "#8833ff"
+          ],
+          "frequency": 2
+        }
+      }
+    },
+    "railroad": {
+      "silver_rails": {
+        "name": "silver_rails",
+        "product": null,
+        "rarity": "uncommon",
+        "artist": "OpenFront fork",
+        "effectType": "railroad",
+        "attributes": {
+          "type": "gradient",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "colorSize": 3,
+          "movementSpeed": 2
+        }
+      },
+      "neon_rails": {
+        "name": "neon_rails",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "railroad",
+        "attributes": {
+          "type": "transition",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "frequency": 1
+        }
+      }
+    }
+  }
+}
