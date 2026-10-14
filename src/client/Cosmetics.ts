@@ -9,6 +9,7 @@ import {
   CosmeticPack,
   CosmeticPackItem,
   Cosmetics,
+  CosmeticsSchema,
   Crown,
   Effect,
   findEffectForSlot,
@@ -18,10 +19,7 @@ import {
   Skin,
   Subscription,
 } from "@openfront/shared/CosmeticSchemas";
-import {
-  FREE_COSMETICS,
-  withFreeFlares,
-} from "@openfront/shared/FreeCosmetics";
+import { withFreeFlares } from "@openfront/shared/FreeCosmetics";
 import {
   PlayerCosmeticRefs,
   PlayerCosmetics,
@@ -858,12 +856,31 @@ export async function fetchCosmetics(): Promise<Cosmetics | null> {
   if (__cosmetics !== null) {
     return __cosmetics;
   }
-  // This fork ships its own free catalog instead of the API's paid one.
   const request = (async () => {
-    const data = FREE_COSMETICS;
-    __cosmeticsHash = simpleHash(Object.keys(data.patterns).sort().join(","));
-    __cosmeticsCache = data;
-    return data;
+    try {
+      // This fork serves its own free catalog (resources/cosmetics) instead of
+      // the API's paid one.
+      const response = await fetch(assetUrl("cosmetics/cosmetics.json"), {
+        signal: AbortSignal.timeout(COSMETICS_FETCH_TIMEOUT_MS),
+      });
+      if (!response.ok) {
+        console.warn(`HTTP error! status: ${response.status}`);
+        return null;
+      }
+      const result = CosmeticsSchema.safeParse(await response.json());
+      if (!result.success) {
+        console.error(`Invalid cosmetics: ${result.error.message}`);
+        return null;
+      }
+      const patternKeys = Object.keys(result.data.patterns).sort();
+      const hashInput = patternKeys.join(",");
+      __cosmeticsHash = simpleHash(hashInput);
+      __cosmeticsCache = result.data;
+      return result.data;
+    } catch (error) {
+      console.warn("Error getting cosmetics:", error);
+      return null;
+    }
   })();
   __cosmetics = request;
   void request.then((result) => {

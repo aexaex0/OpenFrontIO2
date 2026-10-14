@@ -77,7 +77,7 @@ export class ChatModal extends LitElement {
   } | null = null;
   @state() private search = "";
   /** Kept across opens: a player who wants every phrase keeps seeing them. */
-  @state() private showAll = true;
+  @state() private showAll = false;
 
   createRenderRoot() {
     return this;
