@@ -8,3 +8,18 @@ import "./domTeardown";
 // ServerEnv.gitCommit() throws when unset; the dev server sets GIT_COMMIT=DEV,
 // so tests exercising server code (e.g. the lobby feed) mirror that.
 process.env.GIT_COMMIT ??= "DEV";
+
+// This fork makes every cosmetic free (packages/shared/src/FreeCosmetics.ts).
+// The upstream tests exercise the original ownership rules, so by default they
+// run without the free wildcard flares. tests/FreeCosmetics.test.ts unmocks
+// the module to test the free behaviour itself.
+vi.mock("@openfront/shared/FreeCosmetics", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@openfront/shared/FreeCosmetics")>();
+  return {
+    ...actual,
+    withFreeFlares: (flares: readonly string[] | undefined) => [
+      ...(flares ?? []),
+    ],
+  };
+});

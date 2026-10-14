@@ -4,8 +4,15 @@ import {
 } from "@openfront/shared/FreeCosmetics";
 import { decodePatternData } from "@openfront/shared/PatternDecoder";
 import { base64url } from "jose";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import {
+  cosmeticRelationship,
+  crownRelationship,
+} from "../src/client/Cosmetics";
 import { PrivilegeCheckerImpl } from "../src/server/Privilege";
+
+// tests/setup.ts mocks the free wildcards away for upstream tests.
+vi.unmock("@openfront/shared/FreeCosmetics");
 
 describe("free cosmetics catalog", () => {
   it("has patterns, skins and every kind of effect", () => {
@@ -49,5 +56,27 @@ describe("free cosmetics catalog", () => {
       effects: { nukeTrail: trail.name, atom: "chrome_shockwave_atom" },
     });
     expect(result.type).toBe("allowed");
+  });
+});
+
+describe("store ownership (everything free)", () => {
+  for (const type of ["flag", "pattern", "skin", "crown", "effect"]) {
+    it(`treats every ${type} as owned, logged in or not`, () => {
+      const opts = {
+        wildcardFlare: `${type}:*`,
+        requiredFlare: `${type}:cool`,
+        priceSoft: 500,
+        priceHard: undefined,
+        affiliateCode: null,
+        itemAffiliateCode: "someone_else",
+      };
+      expect(cosmeticRelationship(opts, false)).toBe("owned");
+    });
+  }
+
+  it("treats a crown as owned without any flares", () => {
+    expect(
+      crownRelationship({ name: "gold", url: "/x.png" } as never, false, null),
+    ).toBe("owned");
   });
 });
