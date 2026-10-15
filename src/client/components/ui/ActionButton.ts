@@ -15,6 +15,8 @@ export interface ActionButtonProps {
   title: string;
   label: string;
   disabled?: boolean;
+  /** "row" puts the icon left of the label (for compact grids). */
+  layout?: "stack" | "row";
 }
 
 const ICON_SIZE =
@@ -49,14 +51,18 @@ export const actionButton = (props: ActionButtonProps): TemplateResult => {
     title,
     label,
     disabled = false,
+    layout = "stack",
   } = props;
   const buttonStyles = getButtonStyles();
-  const buttonClass = buttonStyles[type];
+  const buttonClass =
+    layout === "row"
+      ? `${buttonStyles[type]} !flex-row !justify-start gap-2 px-2.5 py-2`
+      : buttonStyles[type];
 
   return html`
     <button
       @click=${onClick}
-      class="${buttonClass}"
+      class="${buttonClass} disabled:opacity-40 disabled:cursor-not-allowed"
       title="${title}"
       type="button"
       aria-label="${title}"

@@ -56,6 +56,7 @@ const donateGoldIcon = assetUrl("images/DonateGoldIconWhite.svg");
 const donateTroopIcon = assetUrl("images/DonateTroopIconWhite.svg");
 const emojiIcon = assetUrl("images/EmojiIconWhite.svg");
 const requestTroopIcon = assetUrl("images/DonateTroopIconWhite.svg");
+const requestGoldIcon = assetUrl("images/DonateGoldIconWhite.svg");
 const reportIcon = assetUrl("images/SirenIconWhite.svg");
 const shieldIcon = assetUrl("images/ShieldIconWhite.svg");
 const stopTradingIcon = assetUrl("images/StopIconWhite.svg");
@@ -320,6 +321,20 @@ export class PlayerPanel extends LitElement implements Controller {
     this.eventBus.emit(new SendQuickChatEvent(other, "help.troops"));
     showToast(
       translateText("player_panel.troops_requested", {
+        name: other.displayName(),
+      }),
+      "green",
+    );
+    this.hide();
+  }
+
+  // Asks an ally for gold with the "Please give me gold!" quick chat; allied
+  // nations answer it like the troops request.
+  private handleRequestGoldClick(e: Event, other: PlayerView) {
+    e.stopPropagation();
+    this.eventBus.emit(new SendQuickChatEvent(other, "help.gold"));
+    showToast(
+      translateText("player_panel.gold_requested", {
         name: other.displayName(),
       }),
       "green",
@@ -887,6 +902,94 @@ export class PlayerPanel extends LitElement implements Controller {
     `;
   }
 
+  // Troops and gold, sent or asked for, as a small labelled grid:
+  //            Troops   Gold
+  //   Send     [  ]     [  ]
+  //   Ask      [  ]     [  ]
+  private renderResourceActions(
+    my: PlayerView,
+    other: PlayerView,
+    canDonateTroops: boolean | undefined,
+    canDonateGold: boolean | undefined,
+  ) {
+    if (!canDonateTroops && !canDonateGold) return "";
+    const canAsk = other !== my;
+    const rowLabel = (key: string) =>
+      html`<span
+        class="text-[11px] font-bold uppercase tracking-wider text-zinc-400"
+        >${translateText(key)}</span
+      >`;
+    const cell = (b: unknown) => b ?? html`<span></span>`;
+    return html`
+      <div
+        class="grid grid-cols-[auto_1fr_1fr] items-center gap-x-2 gap-y-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-2"
+      >
+        ${rowLabel("player_panel.give")}
+        ${cell(
+          canDonateTroops
+            ? actionButton({
+                onClick: (e: MouseEvent) =>
+                  this.handleDonateTroopClick(e, my, other),
+                icon: donateTroopIcon,
+                iconAlt: "Troops",
+                title: translateText("player_panel.send_troops"),
+                label: translateText("player_panel.troops"),
+                type: "sky",
+                layout: "row",
+              })
+            : null,
+        )}
+        ${cell(
+          canDonateGold
+            ? actionButton({
+                onClick: (e: MouseEvent) =>
+                  this.handleDonateGoldClick(e, my, other),
+                icon: donateGoldIcon,
+                iconAlt: "Gold",
+                title: translateText("player_panel.send_gold"),
+                label: translateText("player_panel.gold"),
+                type: "sky",
+                layout: "row",
+              })
+            : null,
+        )}
+        ${canAsk
+          ? html`
+              ${rowLabel("player_panel.ask")}
+              ${cell(
+                canDonateTroops
+                  ? actionButton({
+                      onClick: (e: MouseEvent) =>
+                        this.handleRequestTroopsClick(e, other),
+                      icon: requestTroopIcon,
+                      iconAlt: "Request troops",
+                      title: translateText("player_panel.request_troops"),
+                      label: translateText("player_panel.troops"),
+                      type: "yellow",
+                      layout: "row",
+                    })
+                  : null,
+              )}
+              ${cell(
+                canDonateGold
+                  ? actionButton({
+                      onClick: (e: MouseEvent) =>
+                        this.handleRequestGoldClick(e, other),
+                      icon: requestGoldIcon,
+                      iconAlt: "Request gold",
+                      title: translateText("player_panel.request_gold"),
+                      label: translateText("player_panel.gold"),
+                      type: "yellow",
+                      layout: "row",
+                    })
+                  : null,
+              )}
+            `
+          : ""}
+      </div>
+    `;
+  }
+
   private renderActions(my: PlayerView, other: PlayerView) {
     const myPlayer = this.g.myPlayer();
     const canDonateGold = this.actions?.interaction?.canDonateGold;
@@ -903,7 +1006,7 @@ export class PlayerPanel extends LitElement implements Controller {
 
     return html`
       <div class="flex flex-col gap-2.5">
-        <div class="grid auto-cols-fr grid-flow-col gap-1">
+        <div class="grid auto-cols-fr grid-flow-col gap-1.5">
           ${actionButton({
             onClick: (e: MouseEvent) => this.handleChat(e, my, other),
             icon: chatIcon,
@@ -931,40 +1034,8 @@ export class PlayerPanel extends LitElement implements Controller {
                 type: "normal",
               })
             : ""}
-          ${canDonateTroops
-            ? actionButton({
-                onClick: (e: MouseEvent) =>
-                  this.handleDonateTroopClick(e, my, other),
-                icon: donateTroopIcon,
-                iconAlt: "Troops",
-                title: translateText("player_panel.send_troops"),
-                label: translateText("player_panel.troops"),
-                type: "normal",
-              })
-            : ""}
-          ${canDonateTroops && other !== my
-            ? actionButton({
-                onClick: (e: MouseEvent) =>
-                  this.handleRequestTroopsClick(e, other),
-                icon: requestTroopIcon,
-                iconAlt: "Request troops",
-                title: translateText("player_panel.request_troops"),
-                label: translateText("player_panel.request"),
-                type: "normal",
-              })
-            : ""}
-          ${canDonateGold
-            ? actionButton({
-                onClick: (e: MouseEvent) =>
-                  this.handleDonateGoldClick(e, my, other),
-                icon: donateGoldIcon,
-                iconAlt: "Gold",
-                title: translateText("player_panel.send_gold"),
-                label: translateText("player_panel.gold"),
-                type: "normal",
-              })
-            : ""}
         </div>
+        ${this.renderResourceActions(my, other, canDonateTroops, canDonateGold)}
         <ui-divider></ui-divider>
         ${other === my
           ? html``

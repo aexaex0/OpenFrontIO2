@@ -141,78 +141,90 @@ export class UnitDisplay extends LitElement implements Controller {
       return null;
     }
 
+    const k = (name: string, fallback: string) =>
+      this.keybinds[name]?.key ?? fallback;
+    const divider = html`<div
+      class="mx-0.5 h-8 w-px self-center bg-white/15"
+      aria-hidden="true"
+    ></div>`;
+
     return html`
-      <div class="border-t border-white/10 p-0.5 w-full">
-        <div class="grid grid-rows-1 grid-flow-col gap-0.5 w-fit mx-auto">
+      <div class="border-t border-white/10 px-1 pt-1 pb-0.5 w-full">
+        <div class="flex items-end gap-1 w-fit mx-auto">
           ${this.renderUnitItem(
             cityIcon,
             this._cities,
             UnitType.City,
             "city",
-            this.keybinds["buildCity"]?.key ?? "1",
+            k("buildCity", "1"),
           )}
           ${this.renderUnitItem(
             factoryIcon,
             this._factories,
             UnitType.Factory,
             "factory",
-            this.keybinds["buildFactory"]?.key ?? "2",
+            k("buildFactory", "2"),
           )}
           ${this.renderUnitItem(
             portIcon,
             this._port,
             UnitType.Port,
             "port",
-            this.keybinds["buildPort"]?.key ?? "3",
+            k("buildPort", "3"),
           )}
           ${this.renderUnitItem(
             defensePostIcon,
             this._defensePost,
             UnitType.DefensePost,
             "defense_post",
-            this.keybinds["buildDefensePost"]?.key ?? "4",
+            k("buildDefensePost", "4"),
           )}
           ${this.renderUnitItem(
             missileSiloIcon,
             this._missileSilo,
             UnitType.MissileSilo,
             "missile_silo",
-            this.keybinds["buildMissileSilo"]?.key ?? "5",
+            k("buildMissileSilo", "5"),
           )}
           ${this.renderUnitItem(
             samLauncherIcon,
             this._samLauncher,
             UnitType.SAMLauncher,
             "sam_launcher",
-            this.keybinds["buildSamLauncher"]?.key ?? "6",
+            k("buildSamLauncher", "6"),
           )}
+          ${divider}
           ${this.renderUnitItem(
             warshipIcon,
             this._warships,
             UnitType.Warship,
             "warship",
-            this.keybinds["buildWarship"]?.key ?? "7",
+            k("buildWarship", "7"),
           )}
+          ${divider}
           ${this.renderUnitItem(
             atomBombIcon,
             null,
             UnitType.AtomBomb,
             "atom_bomb",
-            this.keybinds["buildAtomBomb"]?.key ?? "8",
+            k("buildAtomBomb", "8"),
+            true,
           )}
           ${this.renderUnitItem(
             hydrogenBombIcon,
             null,
             UnitType.HydrogenBomb,
             "hydrogen_bomb",
-            this.keybinds["buildHydrogenBomb"]?.key ?? "9",
+            k("buildHydrogenBomb", "9"),
+            true,
           )}
           ${this.renderUnitItem(
             mirvIcon,
             null,
             UnitType.MIRV,
             "mirv",
-            this.keybinds["buildMIRV"]?.key ?? "0",
+            k("buildMIRV", "0"),
+            true,
           )}
         </div>
       </div>
@@ -225,6 +237,7 @@ export class UnitDisplay extends LitElement implements Controller {
     unitType: PlayerBuildableUnitType,
     structureKey: string,
     hotkey: string,
+    nuke = false,
   ) {
     if (this.game.config().isUnitDisabled(unitType)) {
       return html``;
@@ -278,11 +291,13 @@ export class UnitDisplay extends LitElement implements Controller {
             `
           : null}
         <div
-          class="${this.canBuild(unitType)
-            ? ""
-            : "opacity-40"} border border-slate-500 rounded-sm px-0.5 pb-0.5 flex items-center gap-0.5 cursor-pointer
-             ${selected ? "hover:bg-gray-400/10" : "hover:bg-gray-800"}
-             rounded-sm text-white ${selected ? "bg-slate-400/20" : ""}
+          class="relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
+             ${selected
+            ? "border-sky-400 bg-sky-500/25 shadow-[0_0_10px_rgba(56,189,248,0.55)]"
+            : nuke
+              ? "border-red-400/30 bg-red-950/30 hover:border-red-300/60 hover:bg-red-900/40"
+              : "border-white/15 bg-white/5 hover:border-white/40 hover:bg-white/10"}
+             ${this.canBuild(unitType) ? "" : "opacity-40 grayscale"}
              ${this.tutorialHighlight === unitType ? "tutorial-highlight" : ""}"
           @click=${() => {
             if (selected) {
@@ -313,15 +328,17 @@ export class UnitDisplay extends LitElement implements Controller {
           @mouseleave=${() =>
             this.eventBus?.emit(new ToggleStructureEvent(null))}
         >
-          ${html`<div class="ml-0.5 text-[10px] relative -top-1 text-gray-400">
-            ${displayHotkey}
-          </div>`}
-          <div class="flex items-center gap-0.5 pt-0.5">
-            <img src=${icon} alt=${structureKey} class="align-middle size-5" />
-            ${number !== null
-              ? html`<span class="text-xs">${renderNumber(number)}</span>`
-              : null}
-          </div>
+          <span
+            class="absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
+            >${displayHotkey}</span
+          >
+          <img src=${icon} alt=${structureKey} class="size-5 sm:size-6" />
+          ${number !== null && number > 0
+            ? html`<span
+                class="absolute -bottom-1 -right-1 min-w-4 rounded-full bg-zinc-800 px-1 text-center text-[10px] font-bold leading-4 text-white ring-1 ring-white/25"
+                >${renderNumber(number)}</span
+              >`
+            : null}
         </div>
       </div>
     `;
