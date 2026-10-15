@@ -1,3 +1,4 @@
+import { assetUrl } from "@openfront/shared/AssetUrls";
 import {
   Effect,
   isNukeExplosionEffect,
@@ -262,7 +263,11 @@ export class CosmeticRenderCanvas extends LitElement {
   ): CosmeticPreviewConfig {
     if (resolved.type === "skin") {
       const skin = resolved.cosmetic as Skin;
-      return { mode: "SKIN", skinUrl: skin?.url };
+      return {
+        mode: "SKIN",
+        // Resolve catalog-relative paths (this fork's own skins) to real URLs.
+        skinUrl: skin?.url ? assetUrl(skin.url) : undefined,
+      };
     }
     if (resolved.type === "pattern") {
       const pattern = resolved.cosmetic as Pattern;

@@ -1,3 +1,4 @@
+import { assetUrl } from "@openfront/shared/AssetUrls";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import {
   Cosmetics,
@@ -91,7 +92,7 @@ export class EquippedCosmeticsRow extends LitElement {
     }
     if (equipped.imageUrl !== null) {
       return html`<img
-        src=${equipped.imageUrl}
+        src=${assetUrl(equipped.imageUrl)}
         alt=""
         class="h-full w-full object-contain pointer-events-none"
         draggable="false"

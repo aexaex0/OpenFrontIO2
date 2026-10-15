@@ -1,3 +1,4 @@
+import { assetUrl } from "@openfront/shared/AssetUrls";
 import {
   Crown,
   Effect,
@@ -109,7 +110,7 @@ export class CosmeticPreview extends LitElement {
         return this.renderDefaultPreview();
       }
       return html`<img
-        src=${cosmetic.url}
+        src=${assetUrl(cosmetic.url)}
         alt=${cosmeticDisplayName(this.resolved)}
         class="w-full h-full object-contain pointer-events-none"
         draggable="false"
@@ -146,7 +147,7 @@ export class CosmeticPreview extends LitElement {
         return this.renderDefaultPreview();
       }
       return html`<img
-        src=${cosmetic.url}
+        src=${assetUrl(cosmetic.url)}
         alt=${cosmeticDisplayName(this.resolved)}
         class="w-full h-full object-contain pointer-events-none"
         draggable="false"

@@ -803,11 +803,13 @@ export class GameModeSelector extends LitElement {
       !shouldBlockMultiplayerAction(
         this.desktopUpdateState,
         this.desktopSessionState,
-        this.backendOutage,
+        // The account API this checks is not part of this fork; lobbies and
+        // games run on our own game server, so an "outage" never blocks play.
+        false,
       )
     )
       return false;
-    reportMultiplayerRefusal(this.backendOutage);
+    reportMultiplayerRefusal(false);
     return true;
   }
 
@@ -1012,7 +1014,7 @@ export class GameModeSelector extends LitElement {
       shouldBlockMultiplayerAction(
         this.desktopUpdateState,
         this.desktopSessionState,
-        this.backendOutage,
+        false, // see blockedFromApiAction
       );
     return html`
       <button

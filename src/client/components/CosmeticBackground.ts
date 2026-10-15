@@ -1,3 +1,4 @@
+import { assetUrl } from "@openfront/shared/AssetUrls";
 import { PlayerPattern, PlayerSkin } from "@openfront/shared/WireSchemas";
 import { html, LitElement, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -50,8 +51,9 @@ export class CosmeticBackground extends LitElement {
     if (this.skin) {
       return html`<div
         class="w-full h-full pointer-events-none"
-        style="background-image:url('${this.skin
-          .url}');background-size:cover;background-position:center"
+        style="background-image:url('${assetUrl(
+          this.skin.url,
+        )}');background-size:cover;background-position:center"
       ></div>`;
     }
     if (this.pattern) {
