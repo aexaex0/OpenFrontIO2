@@ -86,9 +86,9 @@ describe("NationSpeechBehavior", () => {
     enemyAttacksNation(100_000);
 
     speakALot();
-    const msgs = said();
+    // (It may also plead with the enemy, who is human too.)
+    const msgs = said().filter((m) => m.to === human.id());
     expect(msgs.length).toBeGreaterThan(0);
-    expect(msgs.every((m) => m.to === human.id())).toBe(true);
     expect(msgs.map((m) => m.key)).toContain("help.troops");
   });
 

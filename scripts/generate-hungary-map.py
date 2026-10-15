@@ -208,11 +208,16 @@ def main(geojson_path):
         "name": "Hungary",
         "translation_key": "map.hungary",
         "categories": ["europe", "countries"],
-        "multiplayer_frequency": 0,
+        "multiplayer_frequency": 1,
         "custom_tribes": tribes,
         "nations": nations,
         "themes": ["europe"],
     }
+    # Nation and town names must stay within Latin-1 (no ő/ű).
+    latin1 = str.maketrans("őűŐŰ", "öüÖÜ")
+    for n in nations:
+        n["name"] = n["name"].translate(latin1)
+    info["custom_tribes"] = [t.translate(latin1) for t in tribes]
     with open(os.path.join(OUT, "info.json"), "w") as f:
         json.dump(info, f, ensure_ascii=False, indent=2)
         f.write("\n")

@@ -12,13 +12,13 @@
     "Eger",
     "Érd",
     "Esztergom",
-    "Gödöllő",
+    "Gödöllö",
     "Gyöngyös",
-    "Győr",
+    "Györ",
     "Gyula",
     "Hajdúböszörmény",
     "Hatvan",
-    "Hódmezővásárhely",
+    "Hódmezövásárhely",
     "Jászberény",
     "Kaposvár",
     "Karcag",
@@ -27,7 +27,7 @@
     "Keszthely",
     "Kiskunfélegyháza",
     "Kiskunhalas",
-    "Kőszeg",
+    "Köszeg",
     "Makó",
     "Miskolc",
     "Mohács",
@@ -73,7 +73,7 @@
     "num_land_tiles": 318089,
     "width": 1000
   },
-  "multiplayer_frequency": 0,
+  "multiplayer_frequency": 1,
   "name": "Hungary",
   "nations": [
     {
@@ -91,7 +91,7 @@
     {
       "coordinates": [479, 427],
       "flag": "hu",
-      "name": "Győr-Moson-Sopron",
+      "name": "Györ-Moson-Sopron",
       "strength": 2
     },
     {
