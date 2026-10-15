@@ -12,7 +12,8 @@ uniform usampler2D uSkinLayer;    // R8UI — 1D buffer, 1 px per owner. 0=no sk
 uniform usampler2D uSkinAnchor;   // RG16UI — 1D buffer, anchor tile (cx, cy) per owner. (0,0) = world origin
 uniform int uShowPatterns;
 uniform int uIsTeamMode;          // 1 = teams (tint skin by team color), 0 = FFA (raw skin colors)
-const float SKIN_DIM = 1024.0;    // atlas cell size in tiles — must match SkinAtlasArray.SKIN_DIM
+const float SKIN_DIM = 1024.0;    // atlas cell size in texels — must match SkinAtlasArray.SKIN_DIM
+const float SKIN_REPEAT = 40.0;   // tiles per repeat of a skin's image across the territory
 
 uniform vec2 uMapSize;
 uniform int uAltView;
@@ -73,20 +74,23 @@ void main() {
       ? texelFetch(uSkinLayer, ivec2(int(owner), 0), 0).r
       : 0u;
   if (skinLayerPlus1 > 0u) {
-    // Skin overrides pattern entirely (mutually exclusive). The image is a
-    // single stamp centered at the player's spawn tile — UVs outside [0,1]
-    // are treated as transparent so tiles beyond the image bounds fall back
-    // to the regular palette color. (0,0) anchor sentinel = world origin.
+    // Skin overrides pattern entirely (mutually exclusive). The image repeats
+    // across the whole territory, one copy every SKIN_REPEAT tiles, lined up
+    // on the player's spawn tile. Transparent pixels fall back to the regular
+    // palette color. (0,0) anchor sentinel = world origin.
     uvec2 anchor = texelFetch(uSkinAnchor, ivec2(int(owner), 0), 0).rg;
     vec2 anchorOffset = (anchor == uvec2(0u)) ? vec2(0.0) : vec2(anchor);
 
-    vec2 skinUV = (vec2(tc) - anchorOffset) / vec2(SKIN_DIM) + vec2(0.5);
-    vec4 skin = texture(uSkinAtlas, vec3(skinUV, float(skinLayerPlus1) - 1.0));
-    bool inBounds =
-      skinUV.x >= 0.0 && skinUV.x <= 1.0 &&
-      skinUV.y >= 0.0 && skinUV.y <= 1.0;
-    float skinAlpha = inBounds ? skin.a : 0.0;
-    // Transparent (or out-of-bounds) pixels fall through to the player color;
+    vec2 skinUV = fract((vec2(tc) + 0.5 - anchorOffset) / SKIN_REPEAT + 0.5);
+    // Fixed LOD: one atlas cell squeezed into SKIN_REPEAT tiles.
+    float skinLod = log2(SKIN_DIM / SKIN_REPEAT);
+    vec4 skin = textureLod(
+      uSkinAtlas,
+      vec3(skinUV, float(skinLayerPlus1) - 1.0),
+      skinLod
+    );
+    float skinAlpha = skin.a;
+    // Transparent pixels fall through to the player color;
     // opaque pixels show the skin (tinted by team color in team games).
     vec3 skinColor = (uIsTeamMode == 1) ? color.rgb * skin.rgb : skin.rgb;
     color.rgb = mix(color.rgb, skinColor, skinAlpha);

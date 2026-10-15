@@ -11,12 +11,15 @@
  * `uSkinAtlas` sampler still has something to read from (the shader's
  * skinLayer table will be all zeros, so it never actually samples).
  *
- * Sampler wrap is CLAMP_TO_EDGE — the shader treats UVs outside [0,1] as
- * transparent so the image appears as a single stamp centered at the anchor.
+ * Each image is scaled to fit a cell with a transparent margin, and the
+ * shader repeats the cell across the owner's territory (REPEAT wrap), so a
+ * skin reads as a repeating motif rather than one giant stamp.
  */
 
 /** Per-side dimension for every atlas layer. Larger images are downscaled. */
 export const SKIN_DIM = 1024;
+/** Share of the cell the image fills; the rest is the gap between repeats. */
+const SKIN_FILL = 0.78;
 
 export class SkinAtlasArray {
   private gl: WebGL2RenderingContext;
@@ -74,20 +77,19 @@ export class SkinAtlasArray {
   }
 
   /**
-   * Draw image centered in a SKIN_DIM×SKIN_DIM canvas, downscale if larger,
-   * keep native size if smaller. The shader samples cell-center as the spawn
-   * anchor (UV 0.5), so centering keeps the image aligned with the spawn tile.
+   * Draw the image centered in a SKIN_DIM×SKIN_DIM canvas, scaled to fill
+   * SKIN_FILL of it. The shader puts a cell center on the spawn tile, so
+   * centering keeps one copy of the image on the spawn.
    */
   private uploadImage(img: HTMLImageElement, layer: number): void {
     const canvas = document.createElement("canvas");
     canvas.width = SKIN_DIM;
     canvas.height = SKIN_DIM;
     const ctx = canvas.getContext("2d", { willReadFrequently: false })!;
-    const scale = Math.min(
-      1,
-      SKIN_DIM / img.naturalWidth,
-      SKIN_DIM / img.naturalHeight,
-    );
+    // Fit (up- or downscaled) into the cell, leaving a transparent margin so
+    // neighbouring repeats don't touch.
+    const fit = SKIN_DIM * SKIN_FILL;
+    const scale = Math.min(fit / img.naturalWidth, fit / img.naturalHeight);
     const drawW = (img.naturalWidth * scale) | 0;
     const drawH = (img.naturalHeight * scale) | 0;
     const offX = ((SKIN_DIM - drawW) / 2) | 0;
@@ -130,8 +132,8 @@ export class SkinAtlasArray {
       gl.LINEAR_MIPMAP_LINEAR,
     );
     gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D_ARRAY, gl.TEXTURE_WRAP_T, gl.REPEAT);
     return tex;
   }
 
