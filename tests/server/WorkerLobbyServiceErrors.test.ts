@@ -14,6 +14,10 @@ describe("WorkerLobbyService lobbies socket errors", () => {
     const gm = {
       publicLobbies: vi.fn().mockReturnValue([]),
       listedLobbies: vi.fn().mockReturnValue([]),
+      // The broadcast advertises every private lobby; mirror the listed ones.
+      advertisedLobbies: vi.fn(function (this: any) {
+        return this.listedLobbies();
+      }),
       game: vi.fn().mockReturnValue(null),
       activeGames: vi.fn().mockReturnValue(0),
     };

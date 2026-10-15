@@ -1,6 +1,6 @@
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { sanitizeClanTag } from "@openfront/shared/SharedUtil";
-import { html, LitElement, nothing } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { translateText } from "../client/Utils";
 import { getUserMe, invalidateUserMe } from "./Api";
@@ -1022,13 +1022,17 @@ export class UsernameInput extends LitElement {
       <!-- The buttons differ in width, so this resizes the name field — which
            is transparent and left-aligned, so only its invisible right edge
            moves. -->
-      <div class="no-crazygames shrink-0 h-full max-h-[44px]">
+      <!-- No accounts in this fork: the toggle stays in the DOM but is only
+           shown to an account that can actually use it. -->
+      <div
+        class="no-crazygames shrink-0 h-full max-h-[44px] ${this
+          .verifiedActive || this.verifiedName() !== null
+          ? ""
+          : "hidden"}"
+      >
         ${this.verifiedActive
           ? this.renderUseCustomButton()
-          : // No accounts in this fork: only offer it to an eligible account.
-            this.verifiedName() !== null
-            ? this.renderUseVerifiedButton()
-            : nothing}
+          : this.renderUseVerifiedButton()}
       </div>
     `;
   }
