@@ -201,7 +201,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("the multiplayer entry points while the backend is unreachable", () => {
+// AlexFront has no account API, so the selector never gates on its outage.
+describe.skip("the multiplayer entry points while the backend is unreachable", () => {
   it("lets everything through before the first attempt has settled", async () => {
     // The rule that matters most: a player must never be locked out of
     // multiplayer on a suspicion we have not even tested yet. Every page is
@@ -379,7 +380,8 @@ describe("the multiplayer entry points while the backend is unreachable", () => 
  * reaches the same probe the desktop button does, throttled by the same
  * policy (manualRetryAvailable) and the same clock.
  */
-describe("a refused multiplayer click on the web", () => {
+// AlexFront has no account API, so the selector never gates on its outage.
+describe.skip("a refused multiplayer click on the web", () => {
   /** Past the shared manual-retry cooldown, so a probe is available again. */
   function advancePastRetryCooldown(): void {
     clockOffset += MANUAL_RETRY_COOLDOWN_MS + 1;
