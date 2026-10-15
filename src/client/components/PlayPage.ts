@@ -2,10 +2,9 @@ import { assetUrl } from "@openfront/shared/AssetUrls";
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import "./CosmeticBackground";
-import "./NavAccountMenu";
+import "./ThemePicker";
 import "./NavUtilityIcons";
 import "./NewsBox";
-import "./SteamWishlist";
 import "./StreamingNow";
 
 @customElement("play-page")
@@ -65,14 +64,12 @@ export class PlayPage extends LitElement {
               />
             </div>
 
-            <!-- Right slot: bell, help, settings and the profile control. The menu is
-                 the account affordance on every platform now — on CrazyGames
-                 its "Sign in" item hands off to their SDK prompt. -->
+            <!-- Right slot: bell, help, settings and the UI style picker. -->
             <div
               class="col-start-3 justify-self-end shrink-0 flex items-center gap-0.5"
             >
               <nav-utility-icons size="mobile"></nav-utility-icons>
-              <nav-account-menu variant="mobile"></nav-account-menu>
+              <theme-picker class="ml-1"></theme-picker>
             </div>
           </div>
         </div>
@@ -118,12 +115,6 @@ export class PlayPage extends LitElement {
         </div>
 
         <game-mode-selector></game-mode-selector>
-
-        <!-- Desktop gets the compact footer button instead. -->
-        <steam-wishlist
-          campaign="home_mobile"
-          class="block px-2 pb-4 lg:hidden"
-        ></steam-wishlist>
       </div>
     `;
   }

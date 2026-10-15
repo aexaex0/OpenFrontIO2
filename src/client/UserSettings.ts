@@ -205,7 +205,8 @@ export const PLAYER_STATS_COLUMNS_KEY = "settings.leaderboardColumns";
 export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
 export const UI_THEME_KEY = "settings.uiTheme";
-export type UiTheme = "default" | "chrome";
+export const UI_THEMES = ["default", "chrome", "neon", "ember"] as const;
+export type UiTheme = (typeof UI_THEMES)[number];
 const STATS_COLUMNS_KEYS: Record<StatsTableKind, string> = {
   player: PLAYER_STATS_COLUMNS_KEY,
   team: TEAM_STATS_COLUMNS_KEY,
@@ -403,9 +404,11 @@ export class UserSettings {
   }
 
   uiTheme(): UiTheme {
-    return this.getString(UI_THEME_KEY, "default") === "chrome"
-      ? "chrome"
-      : "default";
+    // New players start on Chrome & Silver, this fork's signature look.
+    const stored = this.getString(UI_THEME_KEY, "chrome");
+    return (UI_THEMES as readonly string[]).includes(stored)
+      ? (stored as UiTheme)
+      : "chrome";
   }
 
   setUiTheme(theme: UiTheme) {

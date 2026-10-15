@@ -101,13 +101,14 @@ describe("the nav bars that host the cluster", () => {
     window.currentPageId = "page-play";
   });
 
-  it("puts the cogwheel in the desktop bar, immediately left of the avatar", async () => {
+  it("puts the cogwheel in the desktop bar, at the end of the bar", async () => {
     const bar = await mount("desktop-nav-bar");
     expect(settingsButton(bar)).not.toBeNull();
 
     const cluster = bar.querySelector("nav-utility-icons")!;
+    // No account menu in this fork: the UI style picker follows the cluster.
     expect(cluster.nextElementSibling?.tagName.toLowerCase()).toBe(
-      "nav-account-menu",
+      "theme-picker",
     );
   });
 
@@ -117,7 +118,7 @@ describe("the nav bars that host the cluster", () => {
     expect(cluster.getAttribute("size")).toBe("mobile");
     expect(settingsButton(cluster)).not.toBeNull();
     expect(cluster.nextElementSibling?.tagName.toLowerCase()).toBe(
-      "nav-account-menu",
+      "theme-picker",
     );
   });
 });

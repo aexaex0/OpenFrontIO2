@@ -40,6 +40,8 @@ import {
   getDefaultKeybinds,
   GRAPHICS_KEY,
   keysMayBeShared,
+  UI_THEMES,
+  UiTheme,
   USER_SETTINGS_CHANGED_EVENT,
   UserSettings,
 } from "./UserSettings";
@@ -391,10 +393,11 @@ export class UserSettingModal extends BaseModal {
     console.log("🤡 Emojis:", this.userSettings.emojis() ? "ON" : "OFF");
   }
 
-  private toggleChromeTheme() {
-    this.userSettings.setUiTheme(
-      this.userSettings.uiTheme() === "chrome" ? "default" : "chrome",
-    );
+  private changeUiTheme(e: CustomEvent<{ value: string | number }>) {
+    const value = String(e.detail.value);
+    if ((UI_THEMES as readonly string[]).includes(value)) {
+      this.userSettings.setUiTheme(value as UiTheme);
+    }
   }
 
   private toggleAlertFrame() {
@@ -1827,14 +1830,18 @@ export class UserSettingModal extends BaseModal {
         @change=${this.toggleEmojis}
       ></setting-toggle>
 
-      <!-- 🪞 Chrome & Silver theme -->
-      <setting-toggle
-        label="${translateText("user_setting.chrome_theme_label")}"
-        description="${translateText("user_setting.chrome_theme_desc")}"
-        id="chrome-theme-toggle"
-        .checked=${this.userSettings.uiTheme() === "chrome"}
-        @change=${this.toggleChromeTheme}
-      ></setting-toggle>
+      <!-- 🪞 UI style (also on the main menu, top right) -->
+      <setting-select
+        id="ui-theme-select"
+        label=${translateText("user_setting.ui_theme_label")}
+        description=${translateText("user_setting.ui_theme_desc")}
+        .options=${UI_THEMES.map((t) => ({
+          value: t,
+          label: translateText(`ui_theme.${t}`),
+        }))}
+        .value=${this.userSettings.uiTheme()}
+        @change=${this.changeUiTheme}
+      ></setting-select>
 
       <!-- 📱 Performance Overlay -->
       <setting-toggle

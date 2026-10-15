@@ -884,6 +884,10 @@
     "withdraw": "Withdraw",
     "your_friends": "Your Friends"
   },
+  "friends_lobbies": {
+    "join": "Join",
+    "title": "Friends' lobbies"
+  },
   "fullscreen": {
     "enter": "Enter fullscreen",
     "exit": "Exit fullscreen"
@@ -1708,6 +1712,8 @@
     "report_submit": "Submit report",
     "report_title": "Report player",
     "reported": "Reported",
+    "request": "Request",
+    "request_troops": "Request Troops",
     "send_alliance": "Send Alliance",
     "send_gold": "Send Gold",
     "send_troops": "Send Troops",
@@ -1719,7 +1725,8 @@
     "target": "Target",
     "trading": "Trading",
     "traitor": "Traitor",
-    "troops": "Troops"
+    "troops": "Troops",
+    "troops_requested": "Asked {name} for troops"
   },
   "player_profile": {
     "loading": "Loading profile...",
@@ -2325,6 +2332,13 @@
     },
     "title": "Tutorial"
   },
+  "ui_theme": {
+    "chrome": "Chrome & Silver",
+    "default": "Classic",
+    "ember": "War Ember",
+    "neon": "Neon Grid",
+    "picker": "UI style"
+  },
   "unit_type": {
     "atom_bomb": "Atom Bomb",
     "boat": "Boat",
@@ -2412,8 +2426,6 @@
     "camera_movement": "Camera Movement",
     "center_camera": "Center Camera",
     "center_camera_desc": "Center camera on player",
-    "chrome_theme_desc": "Give menus, buttons, panels and chat a polished chrome and silver look on a dark background.",
-    "chrome_theme_label": "Chrome & Silver Theme",
     "coordinate_grid_desc": "Toggle the alphanumeric grid overlay",
     "coordinate_grid_label": "Coordinate Grid",
     "cursor_cost_label_desc": "Show a cost pill under the build cursor icon",
@@ -2532,6 +2544,8 @@
     "toggle_view": "Toggle View",
     "toggle_view_desc": "Alternate view (terrain/countries)",
     "toggle_visibility": "Toggle Visibility",
+    "ui_theme_desc": "The look of menus, panels and buttons, each with its own animated main menu background",
+    "ui_theme_label": "UI style",
     "unbind": "Unbind",
     "view_options": "View Options",
     "zoom_controls": "Zoom Controls",

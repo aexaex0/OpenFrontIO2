@@ -7,7 +7,9 @@
  * entry holds color r in RGB (zero past the color list), and the alpha
  * channel of rows 0..3 carries [colorCount, styleId, scalar0, scalar1] with
  * styleId 0 = gradient (colorSize, movementSpeed), 1 = transition
- * (frequency), 2 = spiral (rotationSpeed). Used by the in-game
+ * (frequency), 2 = spiral (rotationSpeed), 3 = dashed (dashLength,
+ * movementSpeed), 4 = sparkle (density, twinkleSpeed), 5 = pulse
+ * (pulseLength, movementSpeed); 3-5 are trail-only. Used by the in-game
  * WebGLFrameBuilder and the store's cosmetic preview so both encode the
  * same catalog attributes the same way.
  */
@@ -62,6 +64,18 @@ export function packEffectEntry(
     styleId = 2;
     scalar0 = attrs.rotationSpeed;
     scalar1 = 0;
+  } else if (attrs.type === "dashed") {
+    styleId = 3;
+    scalar0 = attrs.dashLength;
+    scalar1 = attrs.movementSpeed;
+  } else if (attrs.type === "sparkle") {
+    styleId = 4;
+    scalar0 = attrs.density;
+    scalar1 = attrs.twinkleSpeed;
+  } else if (attrs.type === "pulse") {
+    styleId = 5;
+    scalar0 = attrs.pulseLength;
+    scalar1 = attrs.movementSpeed;
   } else {
     styleId = 0;
     scalar0 = attrs.colorSize;

@@ -1,6 +1,6 @@
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { sanitizeClanTag } from "@openfront/shared/SharedUtil";
-import { html, LitElement } from "lit";
+import { html, LitElement, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { translateText } from "../client/Utils";
 import { getUserMe, invalidateUserMe } from "./Api";
@@ -1025,7 +1025,10 @@ export class UsernameInput extends LitElement {
       <div class="no-crazygames shrink-0 h-full max-h-[44px]">
         ${this.verifiedActive
           ? this.renderUseCustomButton()
-          : this.renderUseVerifiedButton()}
+          : // No accounts in this fork: only offer it to an eligible account.
+            this.verifiedName() !== null
+            ? this.renderUseVerifiedButton()
+            : nothing}
       </div>
     `;
   }

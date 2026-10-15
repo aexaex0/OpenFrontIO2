@@ -48,6 +48,20 @@ export class GameManager {
     );
   }
 
+  // What the lobby browser and main menu advertise. In this fork every
+  // private lobby a player creates shows up (so friends can join without a
+  // link), not only the ones a subscriber listed. It does not mark them as
+  // listed, so no auto-start deadline and host cheats stay allowed. A lobby
+  // with a join whitelist is left out: everyone else would be turned away.
+  public advertisedLobbies(): GameServer[] {
+    return Array.from(this.games.values()).filter(
+      (g) =>
+        g.phase() === GamePhase.Lobby &&
+        !g.isPublic() &&
+        (g.isListed() || !g.hasJoinWhitelist()),
+    );
+  }
+
   joinClient(client: Client, gameID: GameID): JoinResult | "not_found" {
     const game = this.games.get(gameID);
     if (!game) return "not_found";

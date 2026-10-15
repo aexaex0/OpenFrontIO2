@@ -129,6 +129,7 @@ import {
   type TurnstileToken,
 } from "./TurnstileToken";
 // Before the first userMeResponse, for the modals that load after it.
+import "./components/ThemeBackground";
 import { initUiTheme } from "./UiTheme";
 import "./UserMeBroadcast";
 import { UserSettings } from "./UserSettings";

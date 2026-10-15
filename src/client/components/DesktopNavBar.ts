@@ -1,7 +1,7 @@
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import "./NavAccountMenu";
+import "./ThemePicker";
 import { NavNotificationsController } from "./NavNotificationsController";
 import "./NavUtilityIcons";
 
@@ -118,7 +118,7 @@ export class DesktopNavBar extends LitElement {
              item list. -->
         <div class="flex items-center gap-1 pl-5 ml-1 border-l border-white/10">
           <nav-utility-icons size="desktop"></nav-utility-icons>
-          <nav-account-menu variant="desktop"></nav-account-menu>
+          <theme-picker class="ml-2"></theme-picker>
         </div>
       </nav>
     `;

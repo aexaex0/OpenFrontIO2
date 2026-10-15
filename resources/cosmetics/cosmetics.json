@@ -370,6 +370,252 @@
         }
       ]
     },
+    "hexagons": {
+      "name": "hexagons",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "pattern": "AFAwoAAbEIExDEZABiyABkxADIYxEAEb",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "triangles": {
+      "name": "triangles",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYAQMHDx8_f_8",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "zigzag": {
+      "name": "zigzag",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYOA6D4DgOg-A",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "bricks": {
+      "name": "bricks",
+      "product": null,
+      "rarity": "common",
+      "artist": "OpenFront fork",
+      "pattern": "ADEY_wEBAf8QEBA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "stars": {
+      "name": "stars",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "pattern": "AEEgAAAAAx788IMHDAAAAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
+    "crosses": {
+      "name": "crosses",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "pattern": "ADEYABgYfn4YGAA",
+      "colorPalettes": [
+        {
+          "name": "chrome",
+          "isArchived": false
+        },
+        {
+          "name": "silver",
+          "isArchived": false
+        },
+        {
+          "name": "neon",
+          "isArchived": false
+        },
+        {
+          "name": "ocean",
+          "isArchived": false
+        },
+        {
+          "name": "sunset",
+          "isArchived": false
+        },
+        {
+          "name": "forest",
+          "isArchived": false
+        },
+        {
+          "name": "gold",
+          "isArchived": false
+        },
+        {
+          "name": "midnight",
+          "isArchived": false
+        }
+      ]
+    },
     "circuit": {
       "name": "circuit",
       "product": null,
@@ -448,6 +694,76 @@
       "rarity": "uncommon",
       "artist": "OpenFront fork",
       "url": "cosmetics/skins/target_rings.png"
+    },
+    "solar_crown": {
+      "name": "solar_crown",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/solar_crown.png"
+    },
+    "crescent_night": {
+      "name": "crescent_night",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/crescent_night.png"
+    },
+    "frost_flake": {
+      "name": "frost_flake",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/frost_flake.png"
+    },
+    "crossed_blades": {
+      "name": "crossed_blades",
+      "product": null,
+      "rarity": "legendary",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/crossed_blades.png"
+    },
+    "iron_anchor": {
+      "name": "iron_anchor",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/iron_anchor.png"
+    },
+    "star_rocket": {
+      "name": "star_rocket",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/star_rocket.png"
+    },
+    "wildfire": {
+      "name": "wildfire",
+      "product": null,
+      "rarity": "rare",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/wildfire.png"
+    },
+    "ninja_star": {
+      "name": "ninja_star",
+      "product": null,
+      "rarity": "legendary",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/ninja_star.png"
+    },
+    "bone_skull": {
+      "name": "bone_skull",
+      "product": null,
+      "rarity": "epic",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/bone_skull.png"
+    },
+    "big_heart": {
+      "name": "big_heart",
+      "product": null,
+      "rarity": "uncommon",
+      "artist": "OpenFront fork",
+      "url": "cosmetics/skins/big_heart.png"
     }
   },
   "effects": {
@@ -508,6 +824,58 @@
           "colors": ["#ecfeff", "#67e8f9", "#0e7490"],
           "colorSize": 3,
           "movementSpeed": 3
+        }
+      },
+      "morse_wake": {
+        "name": "morse_wake",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "dashed",
+          "colors": ["#f8fafc", "#94a3b8", "#e2e8f0", "#475569"],
+          "dashLength": 2,
+          "movementSpeed": 4
+        }
+      },
+      "candy_dash": {
+        "name": "candy_dash",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "dashed",
+          "colors": ["#f43f5e", "#ffffff"],
+          "dashLength": 1.5,
+          "movementSpeed": 3
+        }
+      },
+      "stardust_wake": {
+        "name": "stardust_wake",
+        "product": null,
+        "rarity": "legendary",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "sparkle",
+          "colors": ["#fef9c3", "#bae6fd", "#f5d0fe"],
+          "density": 0.45,
+          "twinkleSpeed": 6
+        }
+      },
+      "sonar_pulse": {
+        "name": "sonar_pulse",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "transportShipTrail",
+        "attributes": {
+          "type": "pulse",
+          "colors": ["#22d3ee"],
+          "pulseLength": 3,
+          "movementSpeed": 12
         }
       }
     },
@@ -571,6 +939,58 @@
           ],
           "colorSize": 4,
           "movementSpeed": 10
+        }
+      },
+      "tracer_dash": {
+        "name": "tracer_dash",
+        "product": null,
+        "rarity": "rare",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "dashed",
+          "colors": ["#fde047", "#f97316"],
+          "dashLength": 3,
+          "movementSpeed": 15
+        }
+      },
+      "comet_sparks": {
+        "name": "comet_sparks",
+        "product": null,
+        "rarity": "legendary",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "sparkle",
+          "colors": ["#fef08a", "#fb923c", "#dc2626", "#450a0a"],
+          "density": 0.6,
+          "twinkleSpeed": 10
+        }
+      },
+      "ion_pulse": {
+        "name": "ion_pulse",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "pulse",
+          "colors": ["#22d3ee", "#d946ef", "#a3e635"],
+          "pulseLength": 4,
+          "movementSpeed": 25
+        }
+      },
+      "ghost_sparks": {
+        "name": "ghost_sparks",
+        "product": null,
+        "rarity": "epic",
+        "artist": "OpenFront fork",
+        "effectType": "nukeTrail",
+        "attributes": {
+          "type": "sparkle",
+          "colors": ["#f8fafc", "#a5b4fc"],
+          "density": 0.3,
+          "twinkleSpeed": 4
         }
       }
     },

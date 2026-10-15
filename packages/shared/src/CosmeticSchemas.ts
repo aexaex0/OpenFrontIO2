@@ -195,6 +195,32 @@ export const TrailEffectAttributesSchema = z.discriminatedUnion("type", [
     strands: z.number().positive(),
     rotationSpeed: z.number(),
   }),
+  // AlexFront trail shapes (trail.frag.glsl styles 3-5):
+  //  - "dashed": the trail breaks into dashes `dashLength` tiles long that
+  //    march along at `movementSpeed` tiles/sec, each dash the next color.
+  //  - "sparkle": scattered twinkling points; `density` (0-1) is the share
+  //    of trail tiles lit at a time, `twinkleSpeed` how often they reshuffle
+  //    per second.
+  //  - "pulse": bright pulses `pulseLength` tiles long racing along a dim
+  //    trail at `movementSpeed` tiles/sec.
+  z.object({
+    type: z.literal("dashed"),
+    colors: z.array(z.string()),
+    dashLength: z.number().positive(),
+    movementSpeed: z.number(),
+  }),
+  z.object({
+    type: z.literal("sparkle"),
+    colors: z.array(z.string()),
+    density: z.number().positive().max(1),
+    twinkleSpeed: z.number(),
+  }),
+  z.object({
+    type: z.literal("pulse"),
+    colors: z.array(z.string()),
+    pulseLength: z.number().positive(),
+    movementSpeed: z.number(),
+  }),
 ]);
 
 // The bomb a nuke-explosion effect applies to. The store/selection UI groups

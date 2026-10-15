@@ -61,6 +61,43 @@ PATTERNS = {
         1,
         "epic",
     ),
+    "hexagons": (
+        grid(
+            12,
+            14,
+            lambda x, y: min(
+                abs(abs(x - 6) * 0.866 + abs((y % 14) - 7) * 0.5 - 4.2),
+                abs(abs((x + 6) % 12 - 6) * 0.866 + abs(((y + 7) % 14) - 7) * 0.5 - 4.2),
+            )
+            < 0.55,
+        ),
+        0,
+        "rare",
+    ),
+    "triangles": (grid(8, 8, lambda x, y: x <= y), 1, "uncommon"),
+    "zigzag": (grid(8, 8, lambda x, y: abs(((x + 2 * y) % 8) - 4) < 1.2), 1, "uncommon"),
+    "bricks": (
+        grid(8, 8, lambda x, y: y % 4 == 0 or (x == (0 if y < 4 else 4))),
+        1,
+        "common",
+    ),
+    "stars": (
+        grid(
+            10,
+            10,
+            lambda x, y: (abs(x - 4.5) < 0.6 and abs(y - 4.5) < 2.6)
+            or (abs(y - 4.5) < 0.6 and abs(x - 4.5) < 2.6)
+            or (abs(x - y) < 0.8 and abs(x - 4.5) < 1.6)
+            or (abs(x + y - 9) < 0.8 and abs(x - 4.5) < 1.6),
+        ),
+        1,
+        "epic",
+    ),
+    "crosses": (
+        grid(8, 8, lambda x, y: (x in (3, 4) and 1 <= y <= 6) or (y in (3, 4) and 1 <= x <= 6)),
+        1,
+        "rare",
+    ),
     "circuit": (
         grid(
             16,
@@ -187,11 +224,134 @@ def make_skins():
             (153, 27, 27),
         ),
     }
+    def ngon(cx, cy, r, n, rot=-math.pi / 2):
+        return [(cx + r * math.cos(rot + 2 * math.pi * i / n), cy + r * math.sin(rot + 2 * math.pi * i / n)) for i in range(n)]
+
+    def draw_sun(d):
+        d.ellipse([c - 120, c - 120, c + 120, c + 120], fill=255)
+        for i in range(12):
+            a = i * math.pi / 6
+            d.polygon(
+                [
+                    (c + 140 * math.cos(a - 0.12), c + 140 * math.sin(a - 0.12)),
+                    (c + 235 * math.cos(a), c + 235 * math.sin(a)),
+                    (c + 140 * math.cos(a + 0.12), c + 140 * math.sin(a + 0.12)),
+                ],
+                fill=255,
+            )
+
+    def draw_moon(d):
+        d.ellipse([60, 40, 470, 450], fill=255)
+        d.ellipse([170, 10, 540, 380], fill=0)
+        d.polygon(star_points(390, 330, 55, 22), fill=255)
+
+    def draw_snowflake(d):
+        for i in range(6):
+            a = i * math.pi / 3
+            ex, ey = c + 220 * math.cos(a), c + 220 * math.sin(a)
+            d.line([(c, c), (ex, ey)], fill=255, width=30)
+            for t in (0.5, 0.75):
+                bx, by = c + 220 * t * math.cos(a), c + 220 * t * math.sin(a)
+                for s_ in (-1, 1):
+                    b = a + s_ * math.pi / 4
+                    d.line([(bx, by), (bx + 70 * math.cos(b), by + 70 * math.sin(b))], fill=255, width=22)
+        d.polygon(ngon(c, c, 55, 6), fill=255)
+
+    def draw_swords(d):
+        for sgn in (-1, 1):
+            a = math.pi / 4 * sgn
+            dx, dy = math.sin(a), -math.cos(a)
+            px, py = -dy, dx
+            tip = (c + dx * 230, c + dy * 230)
+            base = (c - dx * 150, c - dy * 150)
+            d.polygon(
+                [tip, (base[0] + px * 26, base[1] + py * 26), (base[0] - px * 26, base[1] - py * 26)], fill=255
+            )
+            g = (c - dx * 150, c - dy * 150)
+            d.line([(g[0] + px * 80, g[1] + py * 80), (g[0] - px * 80, g[1] - py * 80)], fill=255, width=28)
+            d.line([g, (c - dx * 235, c - dy * 235)], fill=255, width=30)
+
+    def draw_anchor(d):
+        d.ellipse([c - 50, 40, c + 50, 140], outline=255, width=26)
+        d.line([(c, 140), (c, 440)], fill=255, width=40)
+        d.line([(c - 120, 200), (c + 120, 200)], fill=255, width=32)
+        d.arc([c - 190, 230, c + 190, 470], 10, 170, fill=255, width=40)
+        d.polygon([(c - 210, 330), (c - 150, 300), (c - 160, 370)], fill=255)
+        d.polygon([(c + 210, 330), (c + 150, 300), (c + 160, 370)], fill=255)
+
+    def draw_rocket(d):
+        d.polygon([(c, 30), (c + 85, 170), (c + 85, 360), (c - 85, 360), (c - 85, 170)], fill=255)
+        d.polygon([(c - 85, 260), (c - 170, 400), (c - 85, 360)], fill=255)
+        d.polygon([(c + 85, 260), (c + 170, 400), (c + 85, 360)], fill=255)
+        d.polygon([(c - 50, 370), (c + 50, 370), (c, 480)], fill=255)
+
+    def draw_flame(d):
+        # Main teardrop: round base, pointed wavy tip.
+        pts = []
+        for i in range(181):
+            t = i / 180 * 2 * math.pi
+            x = 150 * math.sin(t)
+            y = 150 * math.cos(t)
+            if y < 0:  # upper half stretches into a point
+                k = -y / 150
+                x *= (1 - k) ** 0.8
+                y = -150 - 230 * k
+                x += 30 * math.sin(k * 5)
+            pts.append((c + x, c + 120 + y))
+        d.polygon(pts, fill=255)
+        # Two side tongues.
+        d.polygon([(c - 120, c + 120), (c - 205, c - 90), (c - 60, c - 20)], fill=255)
+        d.polygon([(c + 120, c + 120), (c + 190, c - 60), (c + 60, c - 10)], fill=255)
+
+    def draw_shuriken(d):
+        pts = []
+        for i in range(8):
+            r = 235 if i % 2 == 0 else 70
+            ang = math.pi / 4 * i + (0.25 if i % 2 else 0)
+            pts.append((c + r * math.cos(ang), c + r * math.sin(ang)))
+        d.polygon(pts, fill=255)
+        d.ellipse([c - 32, c - 32, c + 32, c + 32], fill=0)
+
+    def draw_skull(d):
+        d.ellipse([c - 170, 40, c + 170, 360], fill=255)
+        d.rounded_rectangle([c - 100, 300, c + 100, 450], radius=30, fill=255)
+        d.ellipse([c - 120, 170, c - 30, 270], fill=0)
+        d.ellipse([c + 30, 170, c + 120, 270], fill=0)
+        d.polygon([(c, 280), (c - 25, 330), (c + 25, 330)], fill=0)
+        for x in (-50, 0, 50):
+            d.rectangle([c + x - 8, 390, c + x + 8, 450], fill=0)
+
+    def draw_heart(d):
+        pts = []
+        for i in range(200):
+            t = i / 200 * 2 * math.pi
+            x = 16 * math.sin(t) ** 3
+            y = 13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)
+            pts.append((c + x * 13, c - 20 - y * 13))
+        d.polygon(pts, fill=255)
+
+    more = {
+        "solar_crown": (draw_sun, (254, 249, 195), (194, 65, 12), "epic"),
+        "crescent_night": (draw_moon, (224, 231, 255), (55, 48, 163), "rare"),
+        "frost_flake": (draw_snowflake, (236, 254, 255), (14, 116, 144), "epic"),
+        "crossed_blades": (draw_swords, (241, 245, 249), (71, 85, 105), "legendary"),
+        "iron_anchor": (draw_anchor, (219, 234, 254), (30, 58, 138), "rare"),
+        "star_rocket": (draw_rocket, (254, 226, 226), (127, 29, 29), "epic"),
+        "wildfire": (draw_flame, (254, 240, 138), (194, 65, 12), "rare"),
+        "ninja_star": (draw_shuriken, (250, 250, 249), (68, 64, 60), "legendary"),
+        "bone_skull": (draw_skull, (250, 250, 250), (82, 82, 91), "epic"),
+        "big_heart": (draw_heart, (254, 205, 211), (159, 18, 57), "uncommon"),
+    }
+    rarities = ["rare", "rare", "epic", "legendary", "uncommon"]
+    for name, (fn, light, dark, rarity) in more.items():
+        skins[name] = stamp(mask_of(fn), light, dark)
+        rarities.append(rarity)
+
     for name, img in skins.items():
         img.save(os.path.join(SKIN_DIR, f"{name}.png"), optimize=True)
     return {
         name: cosmetic(name, rarity, url=f"cosmetics/skins/{name}.png")
-        for name, rarity in zip(skins, ["rare", "rare", "epic", "legendary", "uncommon"])
+        for name, rarity in zip(skins, rarities)
     }
 
 
@@ -215,12 +375,20 @@ def make_effects():
             ("chrome_wake", "uncommon", {"type": "gradient", "colors": CHROME, "colorSize": 2, "movementSpeed": 4}),
             ("neon_pulse", "rare", {"type": "transition", "colors": NEON, "frequency": 2}),
             ("ice_wake", "common", {"type": "gradient", "colors": ICE, "colorSize": 3, "movementSpeed": 3}),
+            ("morse_wake", "rare", {"type": "dashed", "colors": CHROME, "dashLength": 2, "movementSpeed": 4}),
+            ("candy_dash", "epic", {"type": "dashed", "colors": ["#f43f5e", "#ffffff"], "dashLength": 1.5, "movementSpeed": 3}),
+            ("stardust_wake", "legendary", {"type": "sparkle", "colors": ["#fef9c3", "#bae6fd", "#f5d0fe"], "density": 0.45, "twinkleSpeed": 6}),
+            ("sonar_pulse", "epic", {"type": "pulse", "colors": ["#22d3ee"], "pulseLength": 3, "movementSpeed": 12}),
         ],
         "nukeTrail": [
             ("fire_tail", "uncommon", {"type": "gradient", "colors": FIRE, "colorSize": 3, "movementSpeed": 8}),
             ("chrome_spiral", "epic", {"type": "spiral", "colors": CHROME, "radius": 6, "strands": 3, "rotationSpeed": 6}),
             ("plasma_spiral", "legendary", {"type": "spiral", "colors": NEON, "radius": 8, "strands": 4, "rotationSpeed": 8}),
             ("rainbow_tail", "rare", {"type": "gradient", "colors": RAINBOW, "colorSize": 4, "movementSpeed": 10}),
+            ("tracer_dash", "rare", {"type": "dashed", "colors": ["#fde047", "#f97316"], "dashLength": 3, "movementSpeed": 15}),
+            ("comet_sparks", "legendary", {"type": "sparkle", "colors": FIRE, "density": 0.6, "twinkleSpeed": 10}),
+            ("ion_pulse", "epic", {"type": "pulse", "colors": NEON, "pulseLength": 4, "movementSpeed": 25}),
+            ("ghost_sparks", "epic", {"type": "sparkle", "colors": ["#f8fafc", "#a5b4fc"], "density": 0.3, "twinkleSpeed": 4}),
         ],
         "nukeExplosion": [],
         "structures": [

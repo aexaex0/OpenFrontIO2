@@ -162,7 +162,14 @@ function effectPaint(
   space: GradientSpace,
 ): { paint: Paint; defs: SVGTemplateResult | typeof nothing } {
   const n = colors.length;
-  if (n === 1 || attrs.type === "spiral") {
+  if (
+    n === 1 ||
+    attrs.type === "spiral" ||
+    // Trail shapes the preview band can't draw: shown in their first color.
+    attrs.type === "dashed" ||
+    attrs.type === "sparkle" ||
+    attrs.type === "pulse"
+  ) {
     return { paint: solid(colors[0]), defs: nothing };
   }
   if (attrs.type === "transition") {

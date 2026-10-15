@@ -228,48 +228,31 @@ export class BuildMenu extends LitElement implements Controller {
       cursor: not-allowed;
       opacity: 0.7;
     }
-    /* Chrome & Silver theme (see styles/core/chrome-theme.css). */
+    /* AlexFront UI styles (see styles/core/chrome-theme.css); the colors
+       come from the style's CSS variables, which inherit into this shadow
+       root. */
     .build-menu.theme-chrome {
       background:
-        linear-gradient(180deg, rgb(32 36 42 / 0.96), rgb(9 10 12 / 0.98))
-          padding-box,
-        linear-gradient(
-            160deg,
-            #f8f9fb,
-            #98a1ac 22%,
-            #e6e9ee 45%,
-            #5b6470 70%,
-            #c9ced6
-          )
-          border-box;
+        var(--ui-panel) padding-box,
+        var(--ui-frame) border-box;
       border: 1px solid transparent;
       box-shadow:
         inset 0 1px 0 rgb(255 255 255 / 0.12),
-        0 8px 24px rgb(0 0 0 / 0.6);
+        0 8px 24px var(--ui-glow);
     }
     .theme-chrome .build-button {
-      background: linear-gradient(
-        180deg,
-        #4a515a 0%,
-        #2a2f35 50%,
-        #1b1e22 100%
-      );
-      border-color: #98a1ac;
-      color: #eceff3;
+      background: var(--ui-button-dark);
+      border-color: var(--ui-400);
+      color: var(--ui-100);
       box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
     }
     .theme-chrome .build-button:not(:disabled):hover {
-      background: linear-gradient(
-        180deg,
-        #5b6470 0%,
-        #3d444d 50%,
-        #22262c 100%
-      );
-      border-color: #eceff3;
+      background: var(--ui-button-dark-hover);
+      border-color: var(--ui-100);
     }
     .theme-chrome .build-button:disabled {
-      background: #121418;
-      border-color: #3d444d;
+      background: var(--ui-900);
+      border-color: var(--ui-700);
     }
     .build-button:disabled img {
       opacity: 0.5;

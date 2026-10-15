@@ -9,6 +9,7 @@ import {
   cosmeticRelationship,
   crownRelationship,
 } from "../src/client/Cosmetics";
+import rawCatalog from "../resources/cosmetics/cosmetics.json";
 import { PrivilegeCheckerImpl } from "../src/server/Privilege";
 
 // tests/setup.ts mocks the free wildcards away for upstream tests.
@@ -31,6 +32,18 @@ describe("free cosmetics catalog", () => {
         Object.keys(FREE_COSMETICS.effects?.[type] ?? {}).length,
         type,
       ).toBeGreaterThan(0);
+    }
+  });
+
+  it("keeps every effect when parsing (none silently dropped)", () => {
+    const raw = rawCatalog.effects as Record<string, Record<string, unknown>>;
+    for (const [type, effects] of Object.entries(raw)) {
+      expect(
+        Object.keys(
+          (FREE_COSMETICS.effects as Record<string, object>)[type] ?? {},
+        ),
+        type,
+      ).toEqual(Object.keys(effects));
     }
   });
 

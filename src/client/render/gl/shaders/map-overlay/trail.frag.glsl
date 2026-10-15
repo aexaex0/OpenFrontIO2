@@ -11,7 +11,8 @@ uniform sampler2D  uEffect;       // RGBA32F — trail effect, keyed by ownerID.
                                   //   block 1 = nukeTrail. Within a block (rowBase = block start):
                                   //   row r = color r's rgb; spare alphas hold scalars:
                                   //   row 0.a = color count (0 = no effect → territory color),
-                                  //   row 1.a = styleId (0 = gradient, 1 = transition, 2 = spiral),
+                                  //   row 1.a = styleId (0 = gradient, 1 = transition, 2 = spiral,
+                                  //            3 = dashed, 4 = sparkle, 5 = pulse),
                                   //   row 2.a = scalar0 (gradient colorSize / transition freq),
                                   //   row 3.a = scalar1 (gradient movementSpeed)
 uniform vec2 uMapSize;
@@ -21,6 +22,17 @@ uniform int uAltView;
 
 in vec2 vWorldPos;
 out vec4 fragColor;
+
+// Cheap per-tile hash in [0,1), for the sparkle style.
+float hash12(vec2 p) {
+  vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
+
+vec3 effectColor(int o, int rowBase, int i) {
+  return texelFetch(uEffect, ivec2(o, rowBase + i), 0).rgb;
+}
 
 void main() {
   ivec2 tc = ivec2(floor(vWorldPos));
@@ -43,6 +55,41 @@ void main() {
     // MAX_TRAIL_COLORS). The effect attributes are otherwise identical.
     int rowBase = isNuke == 1u ? MAX_TRAIL_COLORS : 0;
     int count = int(texelFetch(uEffect, ivec2(o, rowBase), 0).a + 0.5);
+    int styleId = int(texelFetch(uEffect, ivec2(o, rowBase + 1), 0).a + 0.5);
+    float s0 = texelFetch(uEffect, ivec2(o, rowBase + 2), 0).a;
+    float s1 = texelFetch(uEffect, ivec2(o, rowBase + 3), 0).a;
+    float along = vWorldPos.x + vWorldPos.y;
+    if (count > 0 && styleId == 3) {
+      // dashed — gaps every other dash, dashes march along the trail and
+      // step through the color list.
+      float dash = max(s0, 0.5);
+      float k = (along - uTime * s1) / dash;
+      if (mod(floor(k), 2.0) > 0.5) discard;
+      int i = int(mod(floor(k * 0.5), float(count)));
+      fragColor = vec4(effectColor(o, rowBase, i), uTrailAlpha);
+      return;
+    } else if (count > 0 && styleId == 4) {
+      // sparkle — only a twinkling share of tiles is lit, each a random
+      // color from the list, brightest at the start of its twinkle.
+      float tw = floor(uTime * max(s1, 0.0));
+      float h = hash12(vec2(tc) + tw * 17.0);
+      if (h > s0) discard;
+      int i = int(hash12(vec2(tc) * 1.7 + tw) * float(count)) % count;
+      float glow = 0.6 + 0.4 * (1.0 - fract(uTime * max(s1, 0.0)));
+      fragColor = vec4(effectColor(o, rowBase, i) * glow, uTrailAlpha);
+      return;
+    } else if (count > 0 && styleId == 5) {
+      // pulse — short bright pulses race along a dim trail.
+      float len = max(s0, 1.0);
+      float cycle = len * 4.0;
+      float phase = fract((along - uTime * s1) / cycle);
+      float bright = smoothstep(0.0, 0.08, phase) *
+        (1.0 - smoothstep(0.25, 0.3, phase));
+      int i = int(mod(floor((along - uTime * s1) / cycle), float(count)));
+      vec3 c = effectColor(o, rowBase, i);
+      fragColor = vec4(mix(c * 0.3, c, bright), uTrailAlpha * (0.45 + 0.55 * bright));
+      return;
+    }
     if (count <= 0) {
       // No effect — fall back to the player's territory color.
       float u = (float(owner) + 0.5) / float(PALETTE_SIZE);

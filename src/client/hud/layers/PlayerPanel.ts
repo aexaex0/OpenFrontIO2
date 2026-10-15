@@ -38,6 +38,7 @@ import {
   SendEmbargoAllIntentEvent,
   SendEmbargoIntentEvent,
   SendEmojiIntentEvent,
+  SendQuickChatEvent,
   SendTargetPlayerIntentEvent,
 } from "../../Transport";
 import { UIState } from "../../UIState";
@@ -54,6 +55,7 @@ const chatIcon = assetUrl("images/ChatIconWhite.svg");
 const donateGoldIcon = assetUrl("images/DonateGoldIconWhite.svg");
 const donateTroopIcon = assetUrl("images/DonateTroopIconWhite.svg");
 const emojiIcon = assetUrl("images/EmojiIconWhite.svg");
+const requestTroopIcon = assetUrl("images/DonateTroopIconWhite.svg");
 const reportIcon = assetUrl("images/SirenIconWhite.svg");
 const shieldIcon = assetUrl("images/ShieldIconWhite.svg");
 const stopTradingIcon = assetUrl("images/StopIconWhite.svg");
@@ -309,6 +311,21 @@ export class PlayerPanel extends LitElement implements Controller {
     this.closeSend();
     if (e.detail?.closePanel) this.hide();
   };
+
+  // Asks an ally for troops with the "Please give me troops!" quick chat. A
+  // human ally sees it in chat; an allied nation answers by sending troops
+  // (NationChatBehavior). The quick chat cooldown limits spam.
+  private handleRequestTroopsClick(e: Event, other: PlayerView) {
+    e.stopPropagation();
+    this.eventBus.emit(new SendQuickChatEvent(other, "help.troops"));
+    showToast(
+      translateText("player_panel.troops_requested", {
+        name: other.displayName(),
+      }),
+      "green",
+    );
+    this.hide();
+  }
 
   private handleEmbargoClick(
     e: Event,
@@ -922,6 +939,17 @@ export class PlayerPanel extends LitElement implements Controller {
                 iconAlt: "Troops",
                 title: translateText("player_panel.send_troops"),
                 label: translateText("player_panel.troops"),
+                type: "normal",
+              })
+            : ""}
+          ${canDonateTroops && other !== my
+            ? actionButton({
+                onClick: (e: MouseEvent) =>
+                  this.handleRequestTroopsClick(e, other),
+                icon: requestTroopIcon,
+                iconAlt: "Request troops",
+                title: translateText("player_panel.request_troops"),
+                label: translateText("player_panel.request"),
                 type: "normal",
               })
             : ""}

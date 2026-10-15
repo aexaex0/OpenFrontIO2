@@ -201,7 +201,7 @@ export class WorkerLobbyService {
     // reduced to the publicLobbyGameConfig allowlist. A lobby the host paid
     // to queue is reported as Special with its queuedAt, which puts it right
     // behind the counting-down Special lobby.
-    const hostedLobbies = this.gm.listedLobbies().map((g) => {
+    const hostedLobbies = this.gm.advertisedLobbies().map((g) => {
       const gi = g.gameInfo();
       return {
         gameID: gi.gameID,

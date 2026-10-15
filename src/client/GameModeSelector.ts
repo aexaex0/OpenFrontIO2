@@ -46,6 +46,7 @@ import {
   calculateServerTimeOffset,
   getGameModeLabel,
   getGamesPlayed,
+  getMapName,
   getSecondsUntilServerTimestamp,
   reloadForUpdate,
   renderDuration,
@@ -669,9 +670,12 @@ export class GameModeSelector extends LitElement {
       <div
         class="flex flex-col gap-4 w-full px-4 pb-4 mx-auto sm:px-0 sm:pb-0 sm:grid sm:grid-cols-[2fr_1fr] sm:grid-rows-[auto_min(24rem,40vh)_auto_auto] desktop:sm:grid-rows-[auto_40vh_auto_auto] sm:[reading-flow:grid-rows]"
       >
-        <ios-add-to-home-screen-banner
-          class="no-crazygames [&:empty]:hidden sm:col-span-2 sm:row-start-1"
-        ></ios-add-to-home-screen-banner>
+        <div class="flex flex-col gap-4 sm:col-span-2 sm:row-start-1">
+          <ios-add-to-home-screen-banner
+            class="no-crazygames [&:empty]:hidden"
+          ></ios-add-to-home-screen-banner>
+          ${this.renderFriendsLobbies()}
+        </div>
 
         <div class="flex gap-4 h-14 sm:col-span-2 sm:row-start-3">
           <div class="flex-[2]">
@@ -859,6 +863,67 @@ export class GameModeSelector extends LitElement {
       (document.querySelector("host-lobby-modal") as HostLobbyModal)?.open(),
     );
   };
+
+  /**
+   * Every lobby a player has created on this server (they are all listed
+   * automatically in this fork), right on the main menu, so friends can join
+   * with one click instead of sharing a link.
+   */
+  private renderFriendsLobbies() {
+    const lobbies = this.lobbies?.games?.hosted ?? [];
+    if (lobbies.length === 0) return nothing;
+    return html`
+      <section
+        class="friends-lobbies rounded-xl border border-white/15 bg-black/40 p-3 backdrop-blur-sm"
+      >
+        <h2
+          class="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/70"
+        >
+          <span class="size-2 rounded-full bg-green-400 animate-pulse"></span>
+          ${translateText("friends_lobbies.title")}
+        </h2>
+        <div class="flex flex-col gap-2">
+          ${lobbies.map((lobby) => {
+            const c = lobby.gameConfig;
+            const mapName = c ? (getMapName(c.gameMap) ?? c.gameMap) : "";
+            const mode = c ? getGameModeLabel(c) : "";
+            const max = c?.maxPlayers;
+            return html`
+              <button
+                class="friends-lobby-row flex w-full items-center gap-3 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-left text-white transition-colors hover:bg-white/15 cursor-pointer"
+                data-game-id=${lobby.gameID}
+                @click=${() => this.joinFriendsLobby(lobby)}
+              >
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate font-semibold">${mapName}</span>
+                  <span class="block truncate text-xs text-white/60"
+                    >${mode}</span
+                  >
+                </span>
+                <span class="shrink-0 text-sm text-white/80"
+                  >${lobby.numClients}${max ? `/${max}` : ""}</span
+                >
+                <span
+                  class="shrink-0 rounded-md bg-green-600 px-3 py-1 text-xs font-bold uppercase tracking-wider"
+                  >${translateText("friends_lobbies.join")}</span
+                >
+              </button>
+            `;
+          })}
+        </div>
+      </section>
+    `;
+  }
+
+  private joinFriendsLobby(lobby: PublicGameInfo) {
+    if (this.blockedFromApiAction()) return;
+    if (!this.validateUsername()) return;
+    whenModalLoaded("join-lobby-modal", () =>
+      (document.querySelector("join-lobby-modal") as JoinLobbyModal)?.open({
+        lobbyId: lobby.gameID,
+      }),
+    );
+  }
 
   private openJoinLobby = () => {
     if (this.blockedFromApiAction()) return;
