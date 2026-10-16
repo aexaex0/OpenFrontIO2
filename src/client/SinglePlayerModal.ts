@@ -7,6 +7,7 @@ import {
   maps,
   UnitType,
 } from "@openfront/engine-api/game/GameTypes";
+import { dailyChallenge, recordDailyAttempt } from "./DailyChallenge";
 import { TeamCountConfig } from "@openfront/engine-api/Schemas";
 import { DoomsdayClockSpeed } from "@openfront/engine-lib/game/DoomsdayClock";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
@@ -666,6 +667,25 @@ export class SinglePlayerModal extends BaseModal {
     await this.startGame();
   }
 
+  /** Set when the next start is the daily challenge (its fixed game id). */
+  private dailyGameID: string | null = null;
+
+  /**
+   * Starts today's daily challenge without opening the modal: the same map,
+   * difficulty and game id (so the same seed) for everyone, default options.
+   */
+  public async startDailyChallenge(): Promise<void> {
+    void prewarmCosmetics();
+    this.resetOptions();
+    const daily = dailyChallenge();
+    this.selectedMap = daily.map;
+    this.selectedDifficulty = daily.difficulty;
+    await this.loadNationCount();
+    this.dailyGameID = daily.gameID;
+    recordDailyAttempt(daily.day);
+    await this.startGame();
+  }
+
   // Reset all transient form state to ensure clean slate
   private resetOptions(): void {
     // Belt and braces with the finally in startGame(): closing and reopening
@@ -1089,7 +1109,8 @@ export class SinglePlayerModal extends BaseModal {
         `Starting single player game with map: ${GameMapType[this.selectedMap as keyof typeof GameMapType]}${this.useRandomMap ? " (Randomly selected)" : ""}`,
       );
       const clientID = generateID();
-      const gameID = generateID();
+      const gameID = this.dailyGameID ?? generateID();
+      this.dailyGameID = null;
 
       const usernameInput = document.querySelector(
         "username-input",

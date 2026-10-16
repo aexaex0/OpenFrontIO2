@@ -1,4 +1,9 @@
-import { GameMapType, GameType } from "@openfront/engine-api/game/GameTypes";
+import {
+  GameMapType,
+  GameType,
+  maps,
+} from "@openfront/engine-api/game/GameTypes";
+import { dailyChallenge, dailyResult, formatDailyTime } from "./DailyChallenge";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { PublicGameInfo, PublicGames } from "@openfront/shared/WireSchemas";
 import { html, LitElement, nothing, type TemplateResult } from "lit";
@@ -54,6 +59,10 @@ import {
   translateText,
 } from "./Utils";
 import { isReplayShellHost } from "./VersionedReplay";
+
+// AlexFront hides the suggested public lobbies (FFA / Teams / special cards and
+// the upcoming list). They stay in the DOM so the join/gating wiring is intact.
+const SUGGESTED_LOBBIES_HIDDEN = "display:none";
 
 const PRIMARY_ACTION =
   "bg-malibu-blue hover:bg-aquarius active:bg-malibu-blue/80 hover:scale-y-105 hover:scale-x-[1.01] chrome:chrome-button-dark";
@@ -668,7 +677,7 @@ export class GameModeSelector extends LitElement {
     // reading-flow keeps focus order following the rows (Chromium only).
     return html`
       <div
-        class="flex flex-col gap-4 w-full px-4 pb-4 mx-auto sm:px-0 sm:pb-0 sm:grid sm:grid-cols-[2fr_1fr] sm:grid-rows-[auto_min(24rem,40vh)_auto_auto] desktop:sm:grid-rows-[auto_40vh_auto_auto] sm:[reading-flow:grid-rows]"
+        class="flex flex-col gap-4 w-full px-4 pb-4 mx-auto sm:px-0 sm:pb-0 sm:grid sm:grid-cols-[2fr_1fr] sm:grid-rows-[auto_auto_auto_auto] sm:[reading-flow:grid-rows]"
       >
         <div class="flex flex-col gap-4 sm:col-span-2 sm:row-start-1">
           <ios-add-to-home-screen-banner
@@ -685,6 +694,7 @@ export class GameModeSelector extends LitElement {
               PRIMARY_ACTION,
             )}
           </div>
+          <div class="flex-[1.4]">${this.renderDailyChallengeCard()}</div>
           ${getGamesPlayed() < TUTORIAL_CARD_MAX_GAMES
             ? html`<div class="flex-1">
                 ${this.renderSmallActionCard(
@@ -733,7 +743,10 @@ export class GameModeSelector extends LitElement {
         </div>
 
         ${heroSlot
-          ? html`<div class="min-w-0 sm:col-start-1 sm:row-start-2">
+          ? html`<div
+              class="min-w-0 sm:col-start-1 sm:row-start-2"
+              style=${SUGGESTED_LOBBIES_HIDDEN}
+            >
               ${ffa
                 ? this.renderLobbyCard(ffa, getGameModeLabel(ffa.gameConfig!))
                 : this.offlineForLobbies()
@@ -753,6 +766,7 @@ export class GameModeSelector extends LitElement {
           class="flex flex-col gap-4 min-w-0 sm:grid sm:grid-rows-[auto_1fr_1fr] sm:row-start-2 sm:min-h-0 sm:[reading-flow:grid-rows] ${heroSlot
             ? "sm:col-start-2"
             : "sm:col-start-1 sm:col-span-2"}"
+          style=${SUGGESTED_LOBBIES_HIDDEN}
         >
           ${teams
             ? html`<div class="min-w-0 sm:min-h-0 ${cardRows.teams}">
@@ -853,6 +867,43 @@ export class GameModeSelector extends LitElement {
   };
 
   // Handled in Main, which also serves the help page's tutorial button.
+  private startDailyChallenge = () => {
+    if (!this.validateUsername()) return;
+    document.dispatchEvent(new CustomEvent("start-daily-challenge"));
+  };
+
+  /** Today's daily challenge: map, difficulty and your best time. */
+  private renderDailyChallengeCard() {
+    const daily = dailyChallenge();
+    const result = dailyResult(daily.day);
+    const mapKey = maps.find((m) => m.type === daily.map)?.translationKey;
+    const mapName = mapKey ? translateText(mapKey) : daily.map;
+    const status =
+      result.bestSeconds !== null
+        ? translateText("main.daily_best", {
+            time: formatDailyTime(result.bestSeconds),
+          })
+        : translateText("main.daily_not_won");
+    return html`
+      <button
+        @click=${this.startDailyChallenge}
+        ?disabled=${!this.inputValid}
+        title=${`${mapName} · ${translateText(`difficulty.${daily.difficulty.toLowerCase()}`)}`}
+        class="relative flex flex-col items-center justify-center w-full h-full rounded-lg bg-gradient-to-br from-fuchsia-600 to-orange-500 hover:brightness-110 hover:scale-y-105 transition-all duration-200 text-white text-center leading-tight ${!this
+          .inputValid
+          ? DISABLED
+          : ""}"
+      >
+        <span class="text-xs lg:text-sm font-bold uppercase tracking-wider"
+          >${translateText("main.daily_challenge")}</span
+        >
+        <span class="text-[10px] lg:text-xs opacity-90 truncate max-w-full px-1"
+          >${mapName} · ${status}</span
+        >
+      </button>
+    `;
+  }
+
   private startTutorial = () => {
     if (!this.validateUsername()) return;
     document.dispatchEvent(new CustomEvent("start-tutorial"));

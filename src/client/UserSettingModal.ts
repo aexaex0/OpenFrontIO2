@@ -1672,6 +1672,16 @@ export class UserSettingModal extends BaseModal {
       ></setting-keybind>
 
       <setting-keybind
+        action="allyPing"
+        label=${translateText("user_setting.ally_ping")}
+        description=${translateText("user_setting.ally_ping_desc")}
+        defaultKey=${this.defaultKeybinds.allyPing}
+        .value=${this.getKeyValue("allyPing")}
+        .display=${this.getKeyChar("allyPing")}
+        @change=${this.handleKeybindChange}
+      ></setting-keybind>
+
+      <setting-keybind
         action="breakAlliance"
         label=${translateText("user_setting.break_alliance")}
         description=${translateText("user_setting.break_alliance_desc")}

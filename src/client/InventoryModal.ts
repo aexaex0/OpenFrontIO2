@@ -7,7 +7,11 @@ import {
   isNukeExplosionEffect,
   Skin,
 } from "@openfront/shared/CosmeticSchemas";
-import { PlayerPattern } from "@openfront/shared/WireSchemas";
+import {
+  CUSTOM_SKIN_MAX_LENGTH,
+  CUSTOM_SKIN_NAME,
+  PlayerPattern,
+} from "@openfront/shared/WireSchemas";
 import type { TemplateResult } from "lit";
 import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -467,6 +471,107 @@ export class InventoryModal extends BaseModal {
     </p>`;
   }
 
+  /**
+   * AlexFront: upload your own picture as a territory skin. It is shrunk to a
+   * small square, kept in this browser and sent with your cosmetics, so the
+   * other players in the game see it too.
+   */
+  private renderCustomSkinPanel(): TemplateResult {
+    const data = this.userSettings.getCustomSkinData();
+    const equipped =
+      data !== null &&
+      this.userSettings.getSelectedSkinName() === CUSTOM_SKIN_NAME;
+    const btn =
+      "rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-white/10 cursor-pointer";
+    return html`<div
+      data-inventory-custom-skin
+      class="mx-3 mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+    >
+      <div
+        class="size-16 shrink-0 rounded-lg border border-white/15 bg-black/30 bg-repeat"
+        style=${data
+          ? `background-image:url('${data}');background-size:32px 32px`
+          : ""}
+      ></div>
+      <div class="min-w-40 flex-1">
+        <div class="font-bold text-white">
+          ${translateText("inventory.custom_skin_title")}
+        </div>
+        <div class="text-xs text-white/60">
+          ${translateText("inventory.custom_skin_desc")}
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <label class=${btn}>
+          ${translateText("inventory.custom_skin_upload")}
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            class="hidden"
+            @change=${(e: Event) => this.onCustomSkinFile(e)}
+          />
+        </label>
+        ${data !== null && !equipped
+          ? html`<button
+              type="button"
+              class=${btn}
+              @click=${() => this.equipCustomSkin()}
+            >
+              ${translateText("inventory.custom_skin_equip")}
+            </button>`
+          : nothing}
+        ${equipped
+          ? html`<span
+              class="rounded-lg bg-emerald-500/20 px-3 py-2 text-xs font-black uppercase tracking-wider text-emerald-300"
+              >${translateText("inventory.equipped")}</span
+            >`
+          : nothing}
+        ${data !== null
+          ? html`<button
+              type="button"
+              class=${btn}
+              @click=${() => this.removeCustomSkin()}
+            >
+              ${translateText("inventory.custom_skin_remove")}
+            </button>`
+          : nothing}
+      </div>
+    </div>`;
+  }
+
+  private async onCustomSkinFile(e: Event): Promise<void> {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    try {
+      const data = await shrinkToSkin(file);
+      if (data === null) {
+        this.showMessage(translateText("inventory.custom_skin_too_big"));
+        return;
+      }
+      this.userSettings.setCustomSkinData(data);
+      this.equipCustomSkin();
+    } catch (err) {
+      console.warn("Custom skin upload failed:", err);
+      this.showMessage(translateText("inventory.custom_skin_failed"));
+    }
+  }
+
+  private equipCustomSkin(): void {
+    this.selectSkin(CUSTOM_SKIN_NAME);
+    this.showMessage(translateText("inventory.custom_skin_equipped"));
+    this.requestUpdate();
+  }
+
+  private removeCustomSkin(): void {
+    if (this.userSettings.getSelectedSkinName() === CUSTOM_SKIN_NAME) {
+      this.userSettings.setSelectedPatternName(undefined);
+    }
+    this.userSettings.setCustomSkinData(null);
+    this.requestUpdate();
+  }
+
   /** Combined patterns + skins grid. To the user they're the same: "skins". */
   private renderSkinGrid(): TemplateResult {
     const items = this.resolvedItems().filter(
@@ -598,7 +703,11 @@ export class InventoryModal extends BaseModal {
       <button
         type="button"
         data-inventory-unequip
-        ?disabled=${equipped === null}
+        ?disabled=${equipped === null &&
+        !(
+          category === "skins" &&
+          this.userSettings.getSelectedSkinName() === CUSTOM_SKIN_NAME
+        )}
         class="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
         @click=${() => {
           if (category === "skins") {
@@ -732,7 +841,9 @@ export class InventoryModal extends BaseModal {
         ></effects-grid>
       </div>`;
     } else {
-      grid = html`${this.renderUnequip("skins")}${this.renderSkinGrid()}`;
+      grid = html`${this.renderCustomSkinPanel()}${this.renderUnequip(
+        "skins",
+      )}${this.renderSkinGrid()}`;
     }
     const category = tab as InventoryCategory;
     return html`
@@ -849,5 +960,41 @@ export class InventoryModal extends BaseModal {
 
   public async refresh() {
     this.requestUpdate();
+  }
+}
+
+/**
+ * Shrinks an uploaded picture to a square skin tile (center crop) and encodes
+ * it small enough to send with the player's cosmetics. Tries a few sizes and
+ * qualities; null if even the smallest is too big.
+ */
+async function shrinkToSkin(file: File): Promise<string | null> {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const side = Math.min(bitmap.width, bitmap.height);
+    const sx = (bitmap.width - side) / 2;
+    const sy = (bitmap.height - side) / 2;
+    for (const [dim, quality] of [
+      [256, 0.85],
+      [192, 0.75],
+      [128, 0.7],
+      [96, 0.6],
+    ] as const) {
+      const canvas = document.createElement("canvas");
+      canvas.width = dim;
+      canvas.height = dim;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+      ctx.drawImage(bitmap, sx, sy, side, side, 0, 0, dim, dim);
+      let data = canvas.toDataURL("image/webp", quality);
+      // Browsers without WebP encoding fall back to PNG.
+      if (!data.startsWith("data:image/webp")) {
+        data = canvas.toDataURL("image/png");
+      }
+      if (data.length <= CUSTOM_SKIN_MAX_LENGTH) return data;
+    }
+    return null;
+  } finally {
+    bitmap.close();
   }
 }

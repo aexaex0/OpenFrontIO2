@@ -25,6 +25,7 @@ import {
   resolveCosmetics,
 } from "../../Cosmetics";
 import { crazyGamesSDK } from "../../CrazyGamesSDK";
+import { recordDailyWin } from "../../DailyChallenge";
 import { isDesktopShell } from "../../DesktopShell";
 import { Platform } from "../../Platform";
 import { MAX_PRESTIGE, reachedLegendThisGame } from "../../Progression";
@@ -616,6 +617,7 @@ export class WinModal extends LitElement implements Controller {
         ) {
           this._title = translateText("win_modal.you_won");
           this.isWin = true;
+          recordDailyWin(this.game.gameID(), this.game.elapsedGameSeconds());
           crazyGamesSDK.happytime();
         } else {
           this._title = translateText("win_modal.other_won", {

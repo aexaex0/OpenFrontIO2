@@ -28,6 +28,7 @@ export enum GameMapType {
   BranchingPaths = "Branching Paths", // map-generator/assets/maps/branchingpaths/info.json
   Britannia = "Britannia", // map-generator/assets/maps/britannia/info.json
   BritanniaClassic = "Britannia Classic", // map-generator/assets/maps/britanniaclassic/info.json
+  Budapest = "Budapest", // map-generator/assets/maps/budapest/info.json
   CanaryIslands = "Canary Islands", // map-generator/assets/maps/canaryislands/info.json
   CapeCod = "Cape Cod", // map-generator/assets/maps/capecod/info.json
   CapeOfGoodHope = "Cape Of Good Hope", // map-generator/assets/maps/capeofgoodhope/info.json
@@ -556,6 +557,53 @@ export const maps: readonly MapInfo[] = [
     specialFrequency: -1,
     defaultNationCount: 23,
     themes: ["europe"],
+  },
+  {
+    id: "Budapest",
+    type: GameMapType.Budapest,
+    translationKey: "map.budapest",
+    categories: ["europe", "countries"],
+    multiplayerFrequency: 1,
+    ffaFrequency: -1,
+    teamFrequency: -1,
+    specialFrequency: -1,
+    defaultNationCount: 23,
+    themes: ["europe"],
+    customTribes: [
+      { name: "Albertfalva" },
+      { name: "Angyalföld" },
+      { name: "Békásmegyer" },
+      { name: "Budafok" },
+      { name: "Cinkota" },
+      { name: "Csillaghegy" },
+      { name: "Csillagtelep" },
+      { name: "Gazdagrét" },
+      { name: "Herminamezö" },
+      { name: "Káposztásmegyer" },
+      { name: "Kelenföld" },
+      { name: "Krisztinaváros" },
+      { name: "Lágymányos" },
+      { name: "Mátyásföld" },
+      { name: "Máriaremete" },
+      { name: "Nagytétény" },
+      { name: "Pasarét" },
+      { name: "Pesthidegkút" },
+      { name: "Pestszentimre" },
+      { name: "Rákoscsaba" },
+      { name: "Rákoshegy" },
+      { name: "Rákoskeresztúr" },
+      { name: "Rákosliget" },
+      { name: "Rákospalota" },
+      { name: "Rákosszentmihály" },
+      { name: "Rózsadomb" },
+      { name: "Sashalom" },
+      { name: "Svábhegy" },
+      { name: "Tabán" },
+      { name: "Újpalota" },
+      { name: "Vízivaros" },
+      { name: "Wekerletelep" },
+      { name: "Zugliget" },
+    ],
   },
   {
     id: "CanaryIslands",

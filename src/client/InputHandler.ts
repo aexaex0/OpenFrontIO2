@@ -5,6 +5,7 @@ import {
   UnitType,
 } from "@openfront/engine-api/game/GameTypes";
 import { EventBus, GameEvent } from "@openfront/shared/EventBus";
+import { AllyPingKeyEvent } from "./AllyPing";
 import { favoriteSlotForKey } from "./EmojiKeys";
 import { Platform } from "./Platform";
 import { UIState } from "./UIState";
@@ -453,6 +454,9 @@ export class InputHandler {
     });
     this.addKeybindAndEvent(this.keybinds.targetPlayer, () => {
       this.eventBus.emit(new DoTargetPlayerEvent());
+    });
+    this.addKeybindAndEvent(this.keybinds.allyPing, () => {
+      this.eventBus.emit(new AllyPingKeyEvent());
     });
     // Shares R with reset graphics, which needs its modifier held, so quick
     // chat only takes the key on its own.

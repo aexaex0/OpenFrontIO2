@@ -670,6 +670,14 @@ class Client {
     // Tutorial entry points (play-page card, help page): back to the play page
     // if needed (so a username problem is visible), then a default solo game
     // with the guide on.
+    document.addEventListener("start-daily-challenge", () => {
+      if (this.usernameInput && !this.usernameInput.canPlay()) return;
+      whenModalLoaded("single-player-modal", () => {
+        void (
+          document.querySelector("single-player-modal") as SinglePlayerModal
+        )?.startDailyChallenge();
+      });
+    });
     document.addEventListener("start-tutorial", () => {
       // The help modal loads on demand (see LazyModals); until it has, it
       // can't be open.

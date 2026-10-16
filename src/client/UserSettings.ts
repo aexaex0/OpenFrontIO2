@@ -39,6 +39,7 @@ export function getDefaultKeybinds(isMac: boolean): Record<string, string> {
     requestAlliance: "KeyK",
     breakAlliance: "KeyL",
     targetPlayer: "KeyN",
+    allyPing: "KeyV",
     emojiMenu: "KeyF",
     quickChat: "KeyR",
     swapDirection: "KeyU",
@@ -188,6 +189,8 @@ const AUDIO_LEGACY_KEY: Partial<Record<AudioCategory, string>> = {
  * mutually exclusive, so they share one slot.
  */
 export const PATTERN_KEY = "territoryPattern";
+/** AlexFront: the uploaded territory skin's data URL. */
+const CUSTOM_SKIN_KEY = "customSkinData";
 export const FLAG_KEY = "flag";
 export const CROWN_KEY = "crown";
 export const COLOR_KEY = "settings.territoryColor";
@@ -609,6 +612,17 @@ export class UserSettings {
       this.setCached(PATTERN_KEY, value);
     }
     this.syncActiveLoadout();
+  }
+
+  /** The uploaded custom skin (a data URL), equipped or not. */
+  getCustomSkinData(): string | null {
+    return this.getCached(CUSTOM_SKIN_KEY);
+  }
+
+  /** Stores (or with null, deletes) the uploaded custom skin. */
+  setCustomSkinData(data: string | null): void {
+    if (data === null) this.removeCached(CUSTOM_SKIN_KEY);
+    else this.setCached(CUSTOM_SKIN_KEY, data);
   }
 
   /** Returns the bare skin name (no `skin:` prefix), or null if a pattern (or nothing) is selected. */

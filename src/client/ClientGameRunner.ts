@@ -1,4 +1,10 @@
 import { ClientID, GameID } from "@openfront/engine-api/Schemas";
+import {
+  ALLY_PING_COOLDOWN_MS,
+  AllyPingKeyEvent,
+  AllyPingReceivedEvent,
+  SendAllyPingIntentEvent,
+} from "./AllyPing";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   BuildableUnit,
@@ -27,7 +33,7 @@ import {
   WireGameStartInfo,
 } from "@openfront/shared/WireSchemas";
 import { ClientEnv } from "../client/ClientEnv";
-import { reloadForUpdate, translateText } from "../client/Utils";
+import { reloadForUpdate, showToast, translateText } from "../client/Utils";
 import { isDesktopShell } from "./DesktopShell";
 import { GameMetrics } from "./GameMetrics";
 import { showInGameAlert } from "./InGameModal";
@@ -603,6 +609,30 @@ function mountWebGLFrameLoop(
   // animated chevron pass at the target tile. The renderer needs the target's
   // tile x/y and the warship's owner smallID (so the chevrons use the right
   // color).
+  // Ally pings: show the chevrons where an ally (or we) pinged, in the
+  // pinger's color. Everyone else's pings are not ours to see.
+  eventBus.on(AllyPingReceivedEvent, (e) => {
+    const me = gameView.myPlayer();
+    if (me === null) return;
+    const pinger = gameView.playerBySmallID(e.playerSmallID);
+    if (!pinger.isPlayer()) return;
+    const mine = pinger.smallID() === me.smallID();
+    if (!mine && !me.isFriendly(pinger)) return;
+    view.showMoveIndicator(
+      gameView.x(e.tile),
+      gameView.y(e.tile),
+      pinger.smallID(),
+    );
+    if (!mine) {
+      showToast(
+        translateText("user_setting.ally_ping_received", {
+          name: pinger.displayName(),
+        }),
+        "green",
+      );
+    }
+  });
+
   eventBus.on(MoveWarshipIntentEvent, (e) => {
     const tile = e.tile;
     const tx = gameView.x(tile);
@@ -984,6 +1014,7 @@ export class ClientGameRunner {
       DoBoatAttackEvent,
       this.doBoatAttackUnderCursor.bind(this),
     );
+    this.eventBus.on(AllyPingKeyEvent, this.pingUnderCursor.bind(this));
     this.eventBus.on(
       DoGroundAttackEvent,
       this.doGroundAttackUnderCursor.bind(this),
@@ -1026,6 +1057,11 @@ export class ClientGameRunner {
       gu.updates[GameUpdateType.Hash].forEach((hu: HashUpdate) => {
         this.eventBus.emit(new SendHashEvent(hu.tick, hu.hash));
       });
+      for (const ping of gu.updates[GameUpdateType.AllyPing] ?? []) {
+        this.eventBus.emit(
+          new AllyPingReceivedEvent(ping.tile, ping.playerSmallID),
+        );
+      }
       this.gameView.update(gu);
       this.webglBuilder?.update(this.gameView);
       this.renderer.tick();
@@ -1562,6 +1598,18 @@ export class ClientGameRunner {
       .catch((error) => {
         console.warn("Failed to check target actions:", error);
       });
+  }
+
+  private lastAllyPingMs = 0;
+
+  // Marks the tile under the cursor for allies and teammates.
+  private pingUnderCursor(): void {
+    const tile = this.getTileUnderCursor();
+    if (tile === null) return;
+    const now = performance.now();
+    if (now - this.lastAllyPingMs < ALLY_PING_COOLDOWN_MS) return;
+    this.lastAllyPingMs = now;
+    this.eventBus.emit(new SendAllyPingIntentEvent(tile));
   }
 
   // The tile a player action event names (a panel button), or else the one

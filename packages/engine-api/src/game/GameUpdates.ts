@@ -115,6 +115,7 @@ export enum GameUpdateType {
   SpawnPhaseEnd,
   GamePaused,
   DonateEvent,
+  AllyPing,
 }
 
 export type GameUpdate =
@@ -140,7 +141,15 @@ export type GameUpdate =
   | EmbargoUpdate
   | SpawnPhaseEndUpdate
   | GamePausedUpdate
-  | DonateEventUpdate;
+  | DonateEventUpdate
+  | AllyPingUpdate;
+
+/** A player marked a tile for their allies (clients filter who sees it). */
+export interface AllyPingUpdate {
+  type: GameUpdateType.AllyPing;
+  playerSmallID: number;
+  tile: TileRef;
+}
 
 export interface BonusEventUpdate {
   type: GameUpdateType.BonusEvent;

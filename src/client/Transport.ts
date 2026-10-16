@@ -1,4 +1,5 @@
 import { TileRef } from "@openfront/engine-api/game/GameMap";
+import { SendAllyPingIntentEvent } from "./AllyPing";
 import {
   AllPlayers,
   GameType,
@@ -306,6 +307,9 @@ export class Transport {
       this.onSendTargetPlayerIntent(e),
     );
     this.subscribe(SendEmojiIntentEvent, (e) => this.onSendEmojiIntent(e));
+    this.subscribe(SendAllyPingIntentEvent, (e) =>
+      this.sendIntent({ type: "ally_ping", tile: e.tile }),
+    );
     this.subscribe(SendDonateGoldIntentEvent, (e) =>
       this.onSendDonateGoldIntent(e),
     );

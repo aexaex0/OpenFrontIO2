@@ -400,6 +400,15 @@ export const FlagName = z
 
 // Refs contain cosmetics names, will be replaced by the actual
 // content in the server
+/** Name a player's uploaded territory skin travels under. */
+export const CUSTOM_SKIN_NAME = "custom";
+/** Longest data URL accepted for an uploaded skin (a ~256px WebP/PNG). */
+export const CUSTOM_SKIN_MAX_LENGTH = 150_000;
+export const CustomSkinDataSchema = z
+  .string()
+  .max(CUSTOM_SKIN_MAX_LENGTH)
+  .regex(/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/);
+
 export const PlayerCosmeticRefsSchema = z.object({
   flag: FlagName.optional(),
   color: z.string().optional(),
@@ -415,6 +424,9 @@ export const PlayerCosmeticRefsSchema = z.object({
   // (resolveVerifiedJoin in src/server/Privilege.ts); the name is never
   // replaced and nothing sent here can mint a badge.
   verified: z.boolean().optional(),
+  // AlexFront: an uploaded territory skin, sent as a data URL. Wins over
+  // skinName.
+  customSkin: CustomSkinDataSchema.optional(),
 });
 
 export const FlagSchema = z.string();

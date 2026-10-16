@@ -21,6 +21,8 @@ import {
 } from "@openfront/shared/CosmeticSchemas";
 import { withFreeFlares } from "@openfront/shared/FreeCosmetics";
 import {
+  CUSTOM_SKIN_NAME,
+  CustomSkinDataSchema,
   PlayerCosmeticRefs,
   PlayerCosmetics,
   PlayerEffect,
@@ -1483,7 +1485,17 @@ export async function getPlayerCosmeticsRefs(
   }
 
   let skinName = userSettings.getSelectedSkinName() ?? undefined;
-  if (skinName) {
+  let customSkin: string | undefined;
+  if (skinName === CUSTOM_SKIN_NAME) {
+    // The uploaded skin: sent as data, never looked up in the catalog.
+    const data = userSettings.getCustomSkinData();
+    if (data !== null && CustomSkinDataSchema.safeParse(data).success) {
+      customSkin = data;
+    } else {
+      userSettings.setSelectedPatternName(undefined);
+    }
+    skinName = undefined;
+  } else if (skinName) {
     const skin = cosmetics?.skins?.[skinName];
     if (cosmetics && !skin) {
       // Cosmetics loaded but the saved skin no longer exists.
@@ -1558,6 +1570,7 @@ export async function getPlayerCosmeticsRefs(
     skinName,
     crownName,
     effects: Object.keys(effects).length > 0 ? effects : undefined,
+    customSkin,
     verified: opts.verified ? true : undefined,
   };
 }
@@ -1596,7 +1609,9 @@ export async function getPlayerCosmetics(
     }
   }
 
-  if (refs.skinName && cosmetics) {
+  if (refs.customSkin) {
+    result.skin = { name: CUSTOM_SKIN_NAME, url: refs.customSkin };
+  } else if (refs.skinName && cosmetics) {
     const skin = cosmetics.skins?.[refs.skinName];
     if (skin) {
       result.skin = { name: refs.skinName, url: skin.url };

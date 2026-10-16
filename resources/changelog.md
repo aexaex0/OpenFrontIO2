@@ -1,5 +1,14 @@
 📦 **AlexFront frissítések**
 
+🌟 **2026. október 16. (2. rész)**
+
+- Csillagok a fejlesztett hajók fölött: ahány csillag, annyi szintű
+- Saját skin: tölts fel bármilyen képet, ismétlődő mintaként fedi a területed (és mindenki látja)
+- Napi kihívás: mindenkinek ugyanaz a térkép és seed, a menü mutatja a legjobb idődet
+- Szövetséges ping: V gombbal megjelölöd az egér alatti pontot a szövetségeseidnek
+- Új térkép: Budapest kerületei
+- Eltűntek a javasolt nyilvános lobbik a főmenüből
+
 🚢 **2026. október 16.**
 
 - Fejlesztett kikötőből erősebb hadihajók jönnek ki

@@ -7,6 +7,7 @@ import {
 } from "@openfront/shared/CosmeticSchemas";
 import { decodePatternData } from "@openfront/shared/PatternDecoder";
 import {
+  CUSTOM_SKIN_NAME,
   PlayerColor,
   PlayerCosmeticRefs,
   PlayerCosmetics,
@@ -107,7 +108,11 @@ export class PrivilegeCheckerImpl implements PrivilegeChecker {
         return { type: "forbidden", reason: "invalid flag: " + message };
       }
     }
-    if (refs.skinName) {
+    if (refs.customSkin) {
+      // Uploaded skins are free in AlexFront; the schema already bounded and
+      // shape-checked the data URL.
+      cosmetics.skin = { name: CUSTOM_SKIN_NAME, url: refs.customSkin };
+    } else if (refs.skinName) {
       try {
         cosmetics.skin = this.isSkinAllowed(flares, refs.skinName);
       } catch (e) {

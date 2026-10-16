@@ -53,7 +53,8 @@ export function normalizeAssetPath(path: string): string {
 // "/app%3A/openfront/_assets/..." — a 404, and a country flag that silently
 // never rendered in game on desktop.
 function isAbsoluteUrl(path: string): boolean {
-  return /^[a-z][a-z0-9+.-]*:\/\//i.test(path);
+  // data:/blob: URLs (e.g. an uploaded custom skin) are used as they are.
+  return /^([a-z][a-z0-9+.-]*:\/\/|data:|blob:)/i.test(path);
 }
 
 export function buildAssetUrl(
