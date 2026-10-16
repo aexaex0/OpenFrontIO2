@@ -1,9 +1,5 @@
 📦 **AlexFront frissítések**
 
-🤫 **2026. október 16. (5. rész)**
-
-- Került a játékba valami titkos. Ha megtalálod, tudni fogod.
-
 🔧 **2026. október 16. (4. rész)**
 
 - Kivettük a hajó-fejlesztést: a kikötő szintje már nem ad erősebb hadihajókat
