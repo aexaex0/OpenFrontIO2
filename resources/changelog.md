@@ -1,12 +1,15 @@
 📦 **AlexFront frissítések**
 
+🔧 **2026. október 16. (4. rész)**
+
+- Kivettük a hajó-fejlesztést: a kikötő szintje már nem ad erősebb hadihajókat
+
 🤝 **2026. október 16. (3. rész)**
 
 - A szövetséges nemzetek kevésbé „unják” a kéréseid: egy kérés kevesebbet ront a viszonyon, és ha már nagyon sokat kértél, néha akkor is küldenek egy kisebb adag katonát vagy aranyat
 
 🌟 **2026. október 16. (2. rész)**
 
-- Csillagok a fejlesztett hajók fölött: ahány csillag, annyi szintű
 - Saját skin: tölts fel bármilyen képet, ismétlődő mintaként fedi a területed (és mindenki látja)
 - Napi kihívás: mindenkinek ugyanaz a térkép és seed, a menü mutatja a legjobb idődet
 - Szövetséges ping: V gombbal megjelölöd az egér alatti pontot a szövetségeseidnek
@@ -15,9 +18,6 @@
 
 🚢 **2026. október 16.**
 
-- Fejlesztett kikötőből erősebb hadihajók jönnek ki
-  → 2. szintű kikötő: +25% élet, +15% sebzés, kb. 33%-kal gyorsabb
-  → 3. szintű kikötő: +50% élet, +30% sebzés, kb. 50%-kal gyorsabb
 - A Help fül elmagyarázza, mit ad az épületek fejlesztése
 - Új: ez a frissítési napló (a régi News helyén)
 - Eltűnt a Store, a Leaderboard és a Clans fül

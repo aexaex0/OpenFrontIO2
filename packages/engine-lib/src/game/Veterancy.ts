@@ -12,16 +12,7 @@ export function maxHealthWithVeterancy(
   baseMaxHealth: number,
   veterancy: number,
   healthBonusPercent: number,
-  tier: number = 1,
-  tierHealthBonusPercent: number = 0,
 ): number {
-  // A warship built at an upgraded port (tier > 1) starts sturdier: each tier
-  // above 1 adds `tierHealthBonusPercent`% of base health, before veterancy.
-  if (tier > 1) {
-    baseMaxHealth += Math.floor(
-      (baseMaxHealth * (tier - 1) * tierHealthBonusPercent) / 100,
-    );
-  }
   if (veterancy <= 0) {
     return baseMaxHealth;
   }

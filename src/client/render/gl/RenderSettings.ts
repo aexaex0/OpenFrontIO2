@@ -257,10 +257,6 @@ export interface RenderSettings {
     veterancyR: number;
     veterancyG: number;
     veterancyB: number;
-    // Warship tier stars (one per tier, in a row above the health bar)
-    tierStarSize: number;
-    tierStarGap: number;
-    tierStarOffsetY: number;
   };
   unit: {
     unitSize: number;

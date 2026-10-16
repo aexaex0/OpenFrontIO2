@@ -72,37 +72,8 @@ export class WarshipExecution implements Execution {
         spawn,
         this.input,
       );
-      this.applyPortTier(spawn);
     }
     this.lastObservedPatrolTile = this.warship.warshipState().patrolTile;
-  }
-
-  /** A warship launched from an upgraded port gets that port's level as its
-   *  tier (capped): more health, harder shells, faster movement. */
-  private applyPortTier(spawn: TileRef): void {
-    const port = this.warship
-      .owner()
-      .units(UnitType.Port)
-      .find((p) => p.tile() === spawn);
-    const tier = Math.min(
-      port?.level() ?? 1,
-      this.mg.config().warshipMaxTier(),
-    );
-    for (let i = 1; i < tier; i++) this.warship.increaseLevel();
-    if (tier > 1) {
-      // Launch at the higher full health.
-      this.warship.modifyHealth(
-        this.warship.maxHealth() - Number(this.warship.health()),
-      );
-    }
-  }
-
-  /** Steps to take this tick: 1, plus an extra one now and then for tiers. */
-  private movesThisTick(): number {
-    const every = this.mg
-      .config()
-      .warshipTierExtraMoveInterval(this.warship.level());
-    return every > 0 && this.mg.ticks() % every === 0 ? 2 : 1;
   }
 
   tick(ticks: number): void {
@@ -481,30 +452,26 @@ export class WarshipExecution implements Execution {
     }
 
     this.warship.setTargetTile(retreatPortTile);
-    const moves = this.movesThisTick();
-    for (let i = 0; i < moves; i++) {
-      const result = this.pathfinder.next(this.warship.tile(), retreatPortTile);
-      switch (result.status) {
-        case PathStatus.COMPLETE:
-          this.warship.move(result.node);
-          if (result.node === retreatPortTile) {
-            this.warship.setTargetTile(undefined);
-            return true;
-          }
-          break;
-        case PathStatus.NEXT:
-          this.warship.move(result.node);
-          break;
-        case PathStatus.NOT_FOUND: {
-          const newPort = this.findNearestAvailablePortTile();
-          this.warship.updateWarshipState({
-            retreatPort: newPort,
-          });
-          if (newPort === undefined) {
-            this.cancelRepairRetreat();
-          }
-          return true;
+    const result = this.pathfinder.next(this.warship.tile(), retreatPortTile);
+    switch (result.status) {
+      case PathStatus.COMPLETE:
+        this.warship.move(result.node);
+        if (result.node === retreatPortTile) {
+          this.warship.setTargetTile(undefined);
         }
+        break;
+      case PathStatus.NEXT:
+        this.warship.move(result.node);
+        break;
+      case PathStatus.NOT_FOUND: {
+        const newPort = this.findNearestAvailablePortTile();
+        this.warship.updateWarshipState({
+          retreatPort: newPort,
+        });
+        if (newPort === undefined) {
+          this.cancelRepairRetreat();
+        }
+        break;
       }
     }
 
@@ -768,18 +735,10 @@ export class WarshipExecution implements Execution {
   }
 
   private patrol() {
-    const moves = this.movesThisTick();
-    for (let i = 0; i < moves; i++) {
-      if (!this.patrolStep()) return;
-    }
-  }
-
-  /** One patrol step; false when the ship should stop moving this tick. */
-  private patrolStep(): boolean {
     if (this.warship.targetTile() === undefined) {
       this.warship.setTargetTile(this.randomTile());
       if (this.warship.targetTile() === undefined) {
-        return false;
+        return;
       }
     }
 
@@ -791,17 +750,16 @@ export class WarshipExecution implements Execution {
       case PathStatus.COMPLETE:
         this.warship.setTargetTile(undefined);
         this.warship.move(result.node);
-        return false;
+        break;
       case PathStatus.NEXT:
         this.warship.move(result.node);
-        return true;
+        break;
       case PathStatus.NOT_FOUND: {
         console.log(`path not found to target`);
         this.warship.setTargetTile(undefined);
-        return false;
+        break;
       }
     }
-    return false;
   }
 
   isActive(): boolean {

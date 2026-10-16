@@ -52,7 +52,6 @@ export class BarPass {
   private uSolid: WebGLUniformLocation;
   private uSolidColor: WebGLUniformLocation;
   private uPipStride: WebGLUniformLocation;
-  private uStar: WebGLUniformLocation;
 
   private vao: WebGLVertexArrayObject;
   private instanceBuf: WebGLBuffer;
@@ -63,13 +62,10 @@ export class BarPass {
   private progressCount = 0;
   private veterancyData: Float32Array;
   private veterancyCount = 0;
-  private starData: Float32Array;
-  private starCount = 0;
 
   private mapW: number;
   private warshipMaxHealth: number;
   private veterancyHealthBonus: number;
-  private tierHealthBonus: number;
 
   constructor(
     gl: WebGL2RenderingContext,
@@ -82,7 +78,6 @@ export class BarPass {
     this.mapW = header.mapWidth;
     this.warshipMaxHealth = config.unitInfo(UnitType.Warship).maxHealth ?? 0;
     this.veterancyHealthBonus = config.warshipVeterancyHealthBonus();
-    this.tierHealthBonus = config.warshipTierHealthBonus();
 
     // --- Shader program ---
     this.program = createProgram(gl, barVertSrc, barFragSrc, "BarPass");
@@ -98,13 +93,11 @@ export class BarPass {
     this.uSolid = gl.getUniformLocation(this.program, "uSolid")!;
     this.uSolidColor = gl.getUniformLocation(this.program, "uSolidColor")!;
     this.uPipStride = gl.getUniformLocation(this.program, "uPipStride")!;
-    this.uStar = gl.getUniformLocation(this.program, "uStar")!;
 
     // --- Instance data buffers (CPU-side) ---
     this.healthData = new Float32Array(this.maxBars * FLOATS_PER_INSTANCE);
     this.progressData = new Float32Array(this.maxBars * FLOATS_PER_INSTANCE);
     this.veterancyData = new Float32Array(this.maxBars * FLOATS_PER_INSTANCE);
-    this.starData = new Float32Array(this.maxBars * FLOATS_PER_INSTANCE);
 
     // --- VAO: unit quad + instanced data ---
     this.vao = gl.createVertexArray()!;
@@ -145,7 +138,6 @@ export class BarPass {
     this.healthCount = 0;
     this.progressCount = 0;
     this.veterancyCount = 0;
-    this.starCount = 0;
 
     // --- Health bars + veterancy pips (warships) ---
     // Only warships carry health among mobile units, so this loop is effectively
@@ -158,18 +150,12 @@ export class BarPass {
         this.warshipMaxHealth,
         unit.veterancy,
         this.veterancyHealthBonus,
-        unit.level,
-        this.tierHealthBonus,
       );
       if (unit.health < maxHealth) {
         this.pushHealth(unit, unit.health / maxHealth);
       }
       if (unit.veterancy > 0) {
         this.pushVeterancy(unit);
-      }
-      // Warships from an upgraded port: one star per tier.
-      if (unit.level > 1) {
-        this.pushStars(unit);
       }
     }
 
@@ -186,8 +172,7 @@ export class BarPass {
     if (
       this.healthCount === 0 &&
       this.progressCount === 0 &&
-      this.veterancyCount === 0 &&
-      this.starCount === 0
+      this.veterancyCount === 0
     )
       return;
 
@@ -197,7 +182,6 @@ export class BarPass {
     gl.useProgram(this.program);
     gl.uniformMatrix3fv(this.uCamera, false, cameraMat);
     gl.uniform1f(this.uSolid, 0); // health/progress bars use the colored path
-    gl.uniform1f(this.uStar, 0);
     gl.uniform1f(this.uBorderWidth, b.borderWidth);
     gl.uniform3f(this.uThresholds, b.threshold1, b.threshold2, b.threshold3);
     gl.uniform3f(this.uColorRed, b.colorRedR, b.colorRedG, b.colorRedB);
@@ -265,24 +249,6 @@ export class BarPass {
       gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, this.veterancyCount);
     }
 
-    // Tier stars (row above the health bar). Instances carry their own
-    // x offset and slot 0, so the pip stacking adds nothing.
-    if (this.starCount > 0) {
-      gl.uniform1f(this.uSolid, 1);
-      gl.uniform1f(this.uStar, 1);
-      gl.uniform3f(this.uSolidColor, b.veterancyR, b.veterancyG, b.veterancyB);
-      gl.uniform2f(this.uBarSize, b.tierStarSize, b.tierStarSize);
-      gl.uniform2f(this.uBarOffset, 0, b.tierStarOffsetY);
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.instanceBuf);
-      gl.bufferSubData(
-        gl.ARRAY_BUFFER,
-        0,
-        this.starData.subarray(0, this.starCount * FLOATS_PER_INSTANCE),
-      );
-      gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, this.starCount);
-      gl.uniform1f(this.uStar, 0);
-    }
-
     gl.bindVertexArray(null);
   }
 
@@ -314,23 +280,6 @@ export class BarPass {
       this.veterancyData[off + 1] = y;
       this.veterancyData[off + 2] = slot; // vertical stack slot, read by the shader
       this.veterancyCount++;
-    }
-  }
-
-  /** One star per warship tier, centered in a row above the unit. */
-  private pushStars(unit: UnitState): void {
-    const b = this.settings.bar;
-    const x = unit.pos % this.mapW;
-    const y = (unit.pos - x) / this.mapW;
-    const stride = b.tierStarSize + b.tierStarGap;
-    const rowWidth = unit.level * stride - b.tierStarGap;
-    for (let i = 0; i < unit.level; i++) {
-      if (this.starCount >= this.maxBars) return;
-      const off = this.starCount * FLOATS_PER_INSTANCE;
-      this.starData[off] = x - rowWidth / 2 + i * stride;
-      this.starData[off + 1] = y;
-      this.starData[off + 2] = 0;
-      this.starCount++;
     }
   }
 
