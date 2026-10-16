@@ -619,6 +619,9 @@ export const ClientSendWinnerSchema = z.object({
   type: z.literal("winner"),
   winner: WinnerSchema,
   allPlayersStats: AllPlayersStatsSchema,
+  // AlexFront: the winning player's troops at the end, for the menu's
+  // last-winner card.
+  winnerTroops: zb.uint().optional(),
 });
 
 // A live snapshot of one human player at a given turn. Only deterministic sim

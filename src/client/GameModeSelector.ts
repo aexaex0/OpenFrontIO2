@@ -32,6 +32,7 @@ import {
 import type { HostLobbyModal } from "./HostLobbyModal";
 import { showInGameAlert } from "./InGameModal";
 import type { JoinLobbyModal } from "./JoinLobbyModal";
+import "./components/LastWinnerCard";
 import "./components/LiveGamesPanel";
 import { whenModalLoaded } from "./LazyModals";
 import { PublicLobbySocket } from "./LobbySocket";
@@ -678,7 +679,7 @@ export class GameModeSelector extends LitElement {
     // reading-flow keeps focus order following the rows (Chromium only).
     return html`
       <div
-        class="flex flex-col gap-4 w-full px-4 pb-4 mx-auto sm:px-0 sm:pb-0 sm:grid sm:grid-cols-[2fr_1fr] sm:grid-rows-[auto_auto_auto_auto] sm:[reading-flow:grid-rows]"
+        class="flex flex-col gap-4 w-full px-4 pb-4 mx-auto sm:px-0 sm:pb-0 sm:grid sm:grid-cols-[2fr_1fr] sm:grid-rows-[auto_min(24rem,40vh)_auto_auto] sm:[reading-flow:grid-rows]"
       >
         <div class="flex flex-col gap-4 sm:col-span-2 sm:row-start-1">
           <ios-add-to-home-screen-banner
@@ -745,6 +746,11 @@ export class GameModeSelector extends LitElement {
             this.hostedLobbyCount(),
             true,
           )}
+        </div>
+
+        <!-- AlexFront: the last winner, where the quick-play card was. -->
+        <div class="min-w-0 sm:col-span-2 sm:row-start-2">
+          <last-winner-card></last-winner-card>
         </div>
 
         ${heroSlot

@@ -78,6 +78,7 @@ import { ListingState } from "./ListingState";
 import { identityFor, MatchTelemetryRecorder } from "./MatchTelemetryRecorder";
 import { friendsLookup, NameVisibility } from "./NameVisibility";
 import { poolTargetFor } from "./PoolRouting";
+import { setLastWinner } from "./LastWinner";
 import { Roster } from "./Roster";
 import { ServerEnv } from "./ServerEnv";
 import { SocketIngress } from "./SocketIngress";
@@ -215,6 +216,8 @@ export class GameServer {
   private turns: Turn[] = [];
   // Nations a spectator has taken over (see the take_over_nation intent).
   private takenNations = new Set<string>();
+  // Winner vote key -> the winner's troops as that vote reported them.
+  private winnerTroopsByKey = new Map<string, number>();
   private intents: StampedIntent[] = [];
   // Who joined, who is connected, and the per-account reconnect, admission
   // and kick flags (see Roster.ts). The join policy stays here.
@@ -2059,6 +2062,30 @@ export class GameServer {
       });
   }
 
+  /** AlexFront: remember a player's win for the menu's last-winner card. */
+  private recordLastWinner(
+    winner: { winner?: Winner; allPlayersStats: AllPlayersStats } | null,
+  ) {
+    const w = winner?.winner;
+    if (w?.[0] !== "player") return;
+    const clientID = w[1];
+    const started = this.gameStartInfo.players.find(
+      (p) => p.clientID === clientID,
+    );
+    const client = this.clients.get(clientID);
+    const name = started?.username ?? client?.username;
+    if (name === undefined) return;
+    setLastWinner({
+      gameID: this.id,
+      gameMap: String(this.gameConfig.gameMap),
+      name,
+      troops: this.winnerTroopsByKey.get(voteKey(winner!)) ?? null,
+      skinUrl:
+        started?.cosmetics?.skin?.url ?? client?.cosmetics?.skin?.url ?? null,
+      finishedAt: Date.now(),
+    });
+  }
+
   private archiveGame(
     winner: { winner?: Winner; allPlayersStats: AllPlayersStats } | null,
     turns: Turn[] = this.turns,
@@ -2068,6 +2095,7 @@ export class GameServer {
       gameID: this.id,
       winner: winner?.winner,
     });
+    this.recordLastWinner(winner);
 
     // Players must stay in the same order as the game start info.
     const playerRecords: PlayerRecord[] = this.gameStartInfo.players.map(
@@ -2204,6 +2232,9 @@ export class GameServer {
       client.ip,
     );
     client.reportedVote = { winner: clientMsg.winner, key: winnerKey };
+    if (clientMsg.winnerTroops !== undefined) {
+      this.winnerTroopsByKey.set(winnerKey, clientMsg.winnerTroops);
+    }
 
     this.log.info(
       `received winner vote ${clientMsg.winner}, ${votes}/${activeUniqueIPs} votes for this winner`,

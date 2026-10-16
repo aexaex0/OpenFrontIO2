@@ -84,7 +84,7 @@ export class LiveGamesPanel extends LitElement {
 
   render() {
     return html`
-      <section
+      <div
         data-live-games
         class="rounded-xl border border-white/10 bg-black/40 p-3 backdrop-blur chrome:chrome-panel"
       >
@@ -140,7 +140,7 @@ export class LiveGamesPanel extends LitElement {
                 </li>`;
               })}
             </ul>`}
-      </section>
+      </div>
     `;
   }
 }

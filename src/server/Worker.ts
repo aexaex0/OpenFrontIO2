@@ -1,4 +1,5 @@
 import { ID, isValidGameID } from "@openfront/engine-api/Schemas";
+import { getLastWinner } from "./LastWinner";
 import { CloseCode, CloseReason } from "@openfront/shared/CloseCodes";
 import { GameEnv } from "@openfront/shared/configuration/Env";
 import { withFreeFlares } from "@openfront/shared/FreeCosmetics";
@@ -457,6 +458,11 @@ export async function startWorker() {
   });
 
   // AlexFront: the running games on this worker, for the menu's live list.
+  // AlexFront: the last multiplayer winner, for the menu card.
+  app.get("/api/last_winner", (_req, res) => {
+    res.json({ winner: getLastWinner() });
+  });
+
   app.get("/api/live_games", (_req, res) => {
     res.json({ games: gm.liveGames().map((g) => g.liveInfo()) });
   });

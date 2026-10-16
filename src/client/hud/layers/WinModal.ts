@@ -1,4 +1,4 @@
-import { RankedType } from "@openfront/engine-api/game/GameTypes";
+import { GameType, RankedType } from "@openfront/engine-api/game/GameTypes";
 import { GameUpdateType } from "@openfront/engine-api/game/GameUpdates";
 import type { GameXpEligible } from "@openfront/shared/ApiSchemas";
 import { Pattern } from "@openfront/shared/CosmeticSchemas";
@@ -26,6 +26,7 @@ import {
 } from "../../Cosmetics";
 import { crazyGamesSDK } from "../../CrazyGamesSDK";
 import { recordDailyWin } from "../../DailyChallenge";
+import { recordLocalWin } from "../../LastWinner";
 import { isDesktopShell } from "../../DesktopShell";
 import { Platform } from "../../Platform";
 import { MAX_PRESTIGE, reachedLegendThisGame } from "../../Progression";
@@ -608,7 +609,12 @@ export class WinModal extends LitElement implements Controller {
         const winnerClient = winner.clientID();
         if (winnerClient !== null) {
           this.eventBus.emit(
-            new SendWinnerEvent(["player", winnerClient], wu.allPlayersStats),
+            new SendWinnerEvent(
+              ["player", winnerClient],
+              wu.allPlayersStats,
+              // Optional call: view stubs in tests don't have it.
+              Math.max(0, Math.floor(winner.troops?.() ?? 0)),
+            ),
           );
         }
         if (
@@ -617,6 +623,19 @@ export class WinModal extends LitElement implements Controller {
         ) {
           this._title = translateText("win_modal.you_won");
           this.isWin = true;
+          // AlexFront: a solo win goes on the menu's last-winner card.
+          if (
+            this.game.config?.()?.gameConfig?.()?.gameType ===
+            GameType.Singleplayer
+          ) {
+            recordLocalWin({
+              gameMap: String(this.game.config().gameConfig().gameMap),
+              name: winner.displayName(),
+              troops: Math.max(0, Math.floor(winner.troops?.() ?? 0)),
+              skinUrl: winner.equippedCosmetics?.skin?.url ?? null,
+              finishedAt: Date.now(),
+            });
+          }
           // Optional calls: view stubs in tests don't have these.
           const gameID = this.game.gameID?.();
           if (gameID) {

@@ -4,6 +4,7 @@
 
 - Élő meccsek a főmenü szélén: bármelyikbe beülhetsz nézőként („Watch”)
 - Nézőként rákattintasz egy gépi nemzetre, és „Take over this nation”: onnantól te irányítod
+- A főmenü nagy kártyáján az utolsó nyertes: a térkép, ahol nyert, a skinjével, a nevével és a katonái számával
 
 🔧 **2026. október 16. (4. rész)**
 

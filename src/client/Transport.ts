@@ -184,6 +184,7 @@ export class SendWinnerEvent implements GameEvent {
   constructor(
     public readonly winner: Winner,
     public readonly allPlayersStats: AllPlayersStats,
+    public readonly winnerTroops?: number,
   ) {}
 }
 export class SendLiveStatsEvent implements GameEvent {
@@ -905,6 +906,7 @@ export class Transport {
         type: "winner",
         winner: event.winner,
         allPlayersStats: event.allPlayersStats,
+        winnerTroops: event.winnerTroops,
       } satisfies ClientSendWinnerMessage);
     } else {
       console.log(
