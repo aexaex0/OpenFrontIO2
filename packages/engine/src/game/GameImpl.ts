@@ -1633,7 +1633,43 @@ export class GameImpl implements Game {
       conqueredId: conquered.id(),
       gold: goldCaptured,
     });
+
+    // A fully conquered nation very rarely has some last words for the
+    // player who took it (chat.secret.last_words).
+    if (
+      conquered.type() === PlayerType.Nation &&
+      conqueror.type() === PlayerType.Human &&
+      lastWordsRoll(this.ticks(), conqueror.smallID(), conquered.smallID())
+    ) {
+      this.displayChat(
+        "last_words",
+        "secret",
+        conqueror.id(),
+        conqueror.id(),
+        true,
+        conquered.id(),
+      );
+    }
   }
+}
+
+/** Odds (1 in N) that a conquered nation says its last words. */
+export const LAST_WORDS_ODDS = 100;
+
+/** Deterministic 1-in-LAST_WORDS_ODDS roll for one conquest. */
+export function lastWordsRoll(
+  tick: number,
+  conquerorSmallID: number,
+  conqueredSmallID: number,
+): boolean {
+  let h =
+    (tick * 73856093) ^
+    (conquerorSmallID * 19349663) ^
+    (conqueredSmallID * 83492791);
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+  h ^= h >>> 16;
+  return (h >>> 0) % LAST_WORDS_ODDS === 0;
 }
 
 export const GameSnapshot = snapshotType({

@@ -260,6 +260,9 @@
       "team_up": "Let’s team up against [P1]!"
     },
     "search": "Search player...",
+    "secret": {
+      "last_words": "kurva anyad [P1]"
+    },
     "short": {
       "greet": {
         "ruining_games": "Ruining our games"
