@@ -1,5 +1,10 @@
 📦 **AlexFront frissítések**
 
+👀 **2026. október 16. (5. rész)**
+
+- Élő meccsek a főmenü szélén: bármelyikbe beülhetsz nézőként („Watch”)
+- Nézőként rákattintasz egy gépi nemzetre, és „Take over this nation”: onnantól te irányítod
+
 🔧 **2026. október 16. (4. rész)**
 
 - Kivettük a hajó-fejlesztést: a kikötő szintje már nem ad erősebb hadihajókat

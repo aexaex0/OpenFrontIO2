@@ -47,10 +47,12 @@ export type Intent =
   | TogglePauseIntent
   | UpdateGameConfigIntent
   | ToggleGameStartTimer
-  | AllyPingIntent;
+  | AllyPingIntent
+  | TakeOverNationIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type AllyPingIntent = z.infer<typeof AllyPingIntentSchema>;
+export type TakeOverNationIntent = z.infer<typeof TakeOverNationIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
 export type SpawnIntent = z.infer<typeof SpawnIntentSchema>;
 export type BoatAttackIntent = z.infer<typeof BoatAttackIntentSchema>;
@@ -556,6 +558,12 @@ export const AllyPingIntentSchema = z.object({
   tile: zb.uint(),
 });
 
+// A spectator takes over a living nation and plays on as it.
+export const TakeOverNationIntentSchema = z.object({
+  type: z.literal("take_over_nation"),
+  nation: MappedID,
+});
+
 export const IntentSchema = z.discriminatedUnion("type", [
   AttackIntentSchema,
   CancelAttackIntentSchema,
@@ -583,6 +591,7 @@ export const IntentSchema = z.discriminatedUnion("type", [
   UpdateGameConfigIntentSchema,
   ToggleGameStartTimerIntentSchema,
   AllyPingIntentSchema,
+  TakeOverNationIntentSchema,
 ]);
 
 // StampedIntent = Intent with server-stamped clientID (used in turns and execution)

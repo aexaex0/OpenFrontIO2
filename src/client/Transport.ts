@@ -213,6 +213,11 @@ export class NewLobbyEvent implements GameEvent {
   constructor(public readonly gameID: string) {}
 }
 
+/** A spectator asks to take over a living nation and play on as it. */
+export class SendTakeOverNationIntentEvent implements GameEvent {
+  constructor(public readonly nationID: PlayerID) {}
+}
+
 export class MoveWarshipIntentEvent implements GameEvent {
   constructor(
     public readonly unitIds: number[],
@@ -307,6 +312,9 @@ export class Transport {
       this.onSendTargetPlayerIntent(e),
     );
     this.subscribe(SendEmojiIntentEvent, (e) => this.onSendEmojiIntent(e));
+    this.subscribe(SendTakeOverNationIntentEvent, (e) =>
+      this.sendIntent({ type: "take_over_nation", nation: e.nationID }),
+    );
     this.subscribe(SendAllyPingIntentEvent, (e) =>
       this.sendIntent({ type: "ally_ping", tile: e.tile }),
     );

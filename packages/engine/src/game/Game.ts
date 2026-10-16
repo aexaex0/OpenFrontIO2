@@ -314,6 +314,8 @@ export interface Player extends PlayerLike {
   name(): string;
   displayName(): string;
   clanTag(): string | null;
+  /** A spectator takes this nation over: it becomes a human player. */
+  assumeControl(clientID: ClientID): void;
   clientID(): ClientID | null;
   id(): PlayerID;
   type(): PlayerType;

@@ -32,6 +32,7 @@ import {
 import type { HostLobbyModal } from "./HostLobbyModal";
 import { showInGameAlert } from "./InGameModal";
 import type { JoinLobbyModal } from "./JoinLobbyModal";
+import "./components/LiveGamesPanel";
 import { whenModalLoaded } from "./LazyModals";
 import { PublicLobbySocket } from "./LobbySocket";
 import { JoinLobbyEvent } from "./Main";
@@ -684,6 +685,10 @@ export class GameModeSelector extends LitElement {
             class="no-crazygames [&:empty]:hidden"
           ></ios-add-to-home-screen-banner>
           ${this.renderFriendsLobbies()}
+          <!-- Live games: beside the menu on wide screens, inline otherwise. -->
+          <live-games-panel
+            class="block xl:fixed xl:left-4 xl:top-28 xl:z-20 xl:w-64"
+          ></live-games-panel>
         </div>
 
         <div class="flex gap-4 h-14 sm:col-span-2 sm:row-start-3">

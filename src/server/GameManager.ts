@@ -62,6 +62,16 @@ export class GameManager {
     );
   }
 
+  /** Running games anyone may watch (whitelisted games stay private). */
+  public liveGames(): GameServer[] {
+    return Array.from(this.games.values()).filter(
+      (g) =>
+        g.hasStarted() &&
+        g.phase() === GamePhase.Active &&
+        !g.hasJoinWhitelist(),
+    );
+  }
+
   joinClient(client: Client, gameID: GameID): JoinResult | "not_found" {
     const game = this.games.get(gameID);
     if (!game) return "not_found";

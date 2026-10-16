@@ -213,6 +213,8 @@ export class GameServer {
   private emptySince: number | null = null;
 
   private turns: Turn[] = [];
+  // Nations a spectator has taken over (see the take_over_nation intent).
+  private takenNations = new Set<string>();
   private intents: StampedIntent[] = [];
   // Who joined, who is connected, and the per-account reconnect, admission
   // and kick flags (see Roster.ts). The join policy stays here.
@@ -455,6 +457,30 @@ export class GameServer {
 
       case "update_game_config": {
         this.updateGameConfig(stamped.config);
+        return finish({ status: 200 });
+      }
+
+      case "take_over_nation": {
+        // A spectator steps in as a nation. First come, first served per
+        // nation; the engine re-checks (alive, still a nation) for everyone.
+        const client = this.clients.get(stamped.clientID);
+        if (client === undefined || !client.spectator) {
+          return finish({ status: 403, error: "only spectators take over" });
+        }
+        if (!this.hasStarted()) {
+          return finish({ status: 409, error: "game not started" });
+        }
+        if (this.takenNations.has(stamped.nation)) {
+          return finish({ status: 409, error: "nation already taken" });
+        }
+        this.takenNations.add(stamped.nation);
+        // From now on this client plays: its intents pass the spectator block.
+        client.spectator = false;
+        this.log.info("spectator took over a nation", {
+          clientID: stamped.clientID,
+          nation: stamped.nation,
+        });
+        this.addIntent(stamped);
         return finish({ status: 200 });
       }
 
@@ -1827,6 +1853,24 @@ export class GameServer {
   // Whether joining is restricted to an allowlist of publicIds. A lobby with
   // a join whitelist must not be publicly listed (it would advertise a lobby
   // that rejects every joiner).
+  /** AlexFront: a running game as shown in the menu's live games list. */
+  public liveInfo(): {
+    gameID: string;
+    gameMap: string;
+    players: number;
+    spectators: number;
+    startedAt: number;
+  } {
+    const active = this.clients.active();
+    return {
+      gameID: this.id,
+      gameMap: String(this.gameConfig.gameMap),
+      players: active.filter((c) => !c.spectator).length,
+      spectators: active.filter((c) => c.spectator).length,
+      startedAt: this._startTime ?? Date.now(),
+    };
+  }
+
   public hasJoinWhitelist(): boolean {
     return (this.gameConfig.allowedPublicIds?.length ?? 0) > 0;
   }

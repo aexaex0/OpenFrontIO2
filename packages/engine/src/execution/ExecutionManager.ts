@@ -12,6 +12,7 @@ import { AllianceRejectExecution } from "./alliance/AllianceRejectExecution";
 import { AllianceRequestExecution } from "./alliance/AllianceRequestExecution";
 import { BreakAllianceExecution } from "./alliance/BreakAllianceExecution";
 import { AllyPingExecution } from "./AllyPingExecution";
+import { TakeOverNationExecution } from "./TakeOverNationExecution";
 import { AttackExecution } from "./AttackExecution";
 import { BoatRetreatExecution } from "./BoatRetreatExecution";
 import { ConstructionExecution } from "./ConstructionExecution";
@@ -59,6 +60,10 @@ export class Executor {
   }
 
   createExec(intent: StampedIntent): Execution {
+    // The one intent from a client that has no player yet.
+    if (intent.type === "take_over_nation") {
+      return new TakeOverNationExecution(intent.clientID, intent.nation);
+    }
     const player = this.mg.playerByClientID(intent.clientID);
     if (!player) {
       console.warn(`player with clientID ${intent.clientID} not found`);

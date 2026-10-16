@@ -40,6 +40,7 @@ import {
   SendEmojiIntentEvent,
   SendQuickChatEvent,
   SendTargetPlayerIntentEvent,
+  SendTakeOverNationIntentEvent,
 } from "../../Transport";
 import { UIState } from "../../UIState";
 import { UserSettings } from "../../UserSettings";
@@ -990,6 +991,42 @@ export class PlayerPanel extends LitElement implements Controller {
     `;
   }
 
+  /**
+   * A spectator watching a live game can take over a nation (not a player)
+   * and play on as it.
+   */
+  private renderTakeOver(other: PlayerView) {
+    if (
+      this.g.config().isReplay() ||
+      this.g.inSpawnPhase() ||
+      other.type() !== PlayerType.Nation ||
+      !other.isAlive()
+    ) {
+      return "";
+    }
+    return html`
+      <ui-divider></ui-divider>
+      <button
+        type="button"
+        class="w-full rounded-lg border border-emerald-400/40 bg-emerald-500/20 px-3 py-2.5 text-sm font-black uppercase tracking-wider text-emerald-200 transition-colors hover:bg-emerald-500/30 cursor-pointer"
+        title=${translateText("player_panel.take_over_desc")}
+        @click=${(e: MouseEvent) => {
+          e.stopPropagation();
+          this.eventBus.emit(new SendTakeOverNationIntentEvent(other.id()));
+          showToast(
+            translateText("player_panel.taking_over", {
+              name: other.displayName(),
+            }),
+            "green",
+          );
+          this.hide();
+        }}
+      >
+        ${translateText("player_panel.take_over")}
+      </button>
+    `;
+  }
+
   private renderActions(my: PlayerView, other: PlayerView) {
     const myPlayer = this.g.myPlayer();
     const canDonateGold = this.actions?.interaction?.canDonateGold;
@@ -1294,7 +1331,7 @@ export class PlayerPanel extends LitElement implements Controller {
                         ? // Dead (or not yet spawned) players still get to
                           // report and, as host/admin, moderate.
                           this.renderModeration(my, other, this.isAdminRole)
-                        : ""}
+                        : this.renderTakeOver(other)}
                   </div>
                 </div>
               </div>

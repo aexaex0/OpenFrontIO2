@@ -106,6 +106,11 @@ export class NationExecution implements Execution {
   }
 
   tick(ticks: number) {
+    // Taken over by a spectator: a human plays this nation now.
+    if (this.player !== null && this.player.type() !== PlayerType.Nation) {
+      this.active = false;
+      return;
+    }
     // Ship tracking
     if (
       this.behaviorsInitialized &&

@@ -435,6 +435,21 @@ export class PlayerImpl implements Player {
   nationFlag(): string | null {
     return this.playerInfo.nationFlag;
   }
+  assumeControl(clientID: ClientID): void {
+    const i = this.playerInfo;
+    this.playerInfo = new PlayerInfo(
+      i.name,
+      PlayerType.Human,
+      clientID,
+      i.id,
+      false,
+      i.clanTag,
+      [],
+      i.teamIndex,
+      i.nationFlag,
+    );
+  }
+
   clientID(): ClientID | null {
     return this.playerInfo.clientID;
   }
@@ -2040,7 +2055,14 @@ export class PlayerImpl implements Player {
   restoreSnapshot(s: PlayerState, r: SnapshotReader): void {
     this.mg = r.game;
     this._smallID = s.smallID;
-    this.playerInfo = r.game.findPlayerInfo(s.info.id) ?? newPlayerInfo(s.info);
+    // A taken-over nation's info differs from the game's nation list.
+    const known = r.game.findPlayerInfo(s.info.id);
+    this.playerInfo =
+      known !== undefined &&
+      known.clientID === s.info.clientID &&
+      known.playerType === s.info.playerType
+        ? known
+        : newPlayerInfo(s.info);
     this._team = s.team;
     this._lastTileChange = s.lastTileChange;
     this._tileChangeVersion = s.tileChangeVersion;

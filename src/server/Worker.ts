@@ -456,6 +456,11 @@ export async function startWorker() {
     res.status(204).end();
   });
 
+  // AlexFront: the running games on this worker, for the menu's live list.
+  app.get("/api/live_games", (_req, res) => {
+    res.json({ games: gm.liveGames().map((g) => g.liveInfo()) });
+  });
+
   app.get("/api/game/:id/exists", async (req, res) => {
     const lobbyId = req.params.id;
     res.json({

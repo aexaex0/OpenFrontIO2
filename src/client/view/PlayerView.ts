@@ -31,7 +31,11 @@ import { UserSettings } from "../UserSettings";
 import { PlayerState, PlayerStatic, PlayerTypeEnum } from "../render/types";
 import { themeProvider } from "../theme/ThemeProvider";
 import { type CosmeticOwner, visibleCosmetics } from "./CosmeticVisibility";
-import { playerStateFromUpdate, playerStaticFromUpdate } from "./EntityState";
+import {
+  gamePlayerTypeToEnum,
+  playerStateFromUpdate,
+  playerStaticFromUpdate,
+} from "./EntityState";
 import { GameView } from "./GameView";
 import { resolvePlayerColors } from "./PlayerColors";
 import { applyStateUpdate } from "./PlayerStateUpdate";
@@ -215,6 +219,11 @@ export class PlayerView implements PlayerLike {
    */
   applyUpdate(pu: PlayerUpdate): void {
     applyStateUpdate(this.state, pu);
+    // A spectator took this nation over: it now has a client and is human.
+    if (pu.clientID !== undefined) this.static.clientID = pu.clientID ?? null;
+    if (pu.playerType !== undefined) {
+      this.static.playerType = gamePlayerTypeToEnum(pu.playerType);
+    }
     // applyStateUpdate refreshes outgoingEmojis every tick; re-apply the
     // "Disable emojis" setting so live emojis stay hidden when it's off (#4430).
     if (!userSettings.emojis()) {
