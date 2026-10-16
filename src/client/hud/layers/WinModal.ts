@@ -617,7 +617,11 @@ export class WinModal extends LitElement implements Controller {
         ) {
           this._title = translateText("win_modal.you_won");
           this.isWin = true;
-          recordDailyWin(this.game.gameID(), this.game.elapsedGameSeconds());
+          // Optional calls: view stubs in tests don't have these.
+          const gameID = this.game.gameID?.();
+          if (gameID) {
+            recordDailyWin(gameID, this.game.elapsedGameSeconds?.() ?? 0);
+          }
           crazyGamesSDK.happytime();
         } else {
           this._title = translateText("win_modal.other_won", {

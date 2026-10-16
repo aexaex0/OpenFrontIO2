@@ -44,6 +44,10 @@ describe("Warships built at an upgraded port", () => {
     player1 = game.player("player_1_id");
     player2 = game.player("player_2_id");
     executeTicks(game, 50);
+    // Building needs a living owner with gold.
+    player1.conquer(game.ref(coastX, 10));
+    player1.conquer(game.ref(coastX - 1, 10));
+    player1.addGold(1_000_000_000n);
   });
 
   test("a level 1 port builds a normal warship", () => {

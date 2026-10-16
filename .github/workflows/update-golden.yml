@@ -1,0 +1,34 @@
+name: Update golden snapshots
+
+# Manually run after a deliberate gameplay change shifts a golden test:
+# regenerates the given test's snapshot and commits it to the branch.
+on:
+  workflow_dispatch:
+    inputs:
+      test:
+        description: Test file whose snapshot to update
+        required: true
+        default: tests/NationGoldPerMinute.test.ts
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm install --global --ignore-scripts npm@12.1.0
+      - run: npm ci
+      - run: npx vitest "${{ inputs.test }}" --run -u
+      - name: Commit updated snapshot
+        run: |
+          git config user.name aexaex0
+          git config user.email 201080108+aexaex0@users.noreply.github.com
+          git add tests/__snapshots__
+          git diff --cached --quiet || git commit -m "Update golden snapshot for ${{ inputs.test }}"
+          git push
