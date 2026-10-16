@@ -42,7 +42,11 @@ const ATTACK_TARGET_KEYS = [
 export const THREAT_EMOJIS = ["😈", "💀", "☢️", "🔥", "💥"];
 
 // Each granted request costs relation, so an ally can't drain a nation.
-const REQUEST_RELATION_COST = -20;
+export const REQUEST_RELATION_COST = -8;
+// An ally whose relation has worn thin still gets a smaller gift now and then
+// (1 in SOMETIMES_HELP_ODDS) instead of only a yawn.
+export const SOMETIMES_HELP_ODDS = 3;
+export const SOMETIMES_HELP_SHARE = 0.5;
 const THREAT_RELATION_MALUS = -30;
 // Share of the troops above the reserve, and of the gold, that is donated.
 const TROOP_DONATION_SHARE = 0.5;
@@ -130,13 +134,14 @@ export class NationChatBehavior {
   }
 
   private handleTroopsRequest(sender: Player) {
-    if (!this.willingToHelp(sender)) return;
+    const share = this.helpShare(sender);
+    if (share === 0) return;
     if (!this.player.canDonateTroops(sender)) return;
 
     const reserve =
       this.game.config().maxTroops(this.player) * this.reserveRatio;
     const troops = Math.floor(
-      (this.player.troops() - reserve) * TROOP_DONATION_SHARE,
+      (this.player.troops() - reserve) * TROOP_DONATION_SHARE * share,
     );
     if (troops < 1) {
       this.emojiBehavior.sendEmoji(sender, EMOJI_CANT_AFFORD);
@@ -145,15 +150,18 @@ export class NationChatBehavior {
     this.game.addExecution(
       new DonateTroopsExecution(this.player, sender.id(), troops),
     );
-    this.player.updateRelation(sender, REQUEST_RELATION_COST);
+    if (share === 1) this.player.updateRelation(sender, REQUEST_RELATION_COST);
     this.emojiBehavior.sendEmoji(sender, EMOJI_DONATION_OK);
   }
 
   private handleGoldRequest(sender: Player) {
-    if (!this.willingToHelp(sender)) return;
+    const share = this.helpShare(sender);
+    if (share === 0) return;
     if (!this.player.canDonateGold(sender)) return;
 
-    const gold = Math.floor(Number(this.player.gold()) * GOLD_DONATION_SHARE);
+    const gold = Math.floor(
+      Number(this.player.gold()) * GOLD_DONATION_SHARE * share,
+    );
     if (gold < 1) {
       this.emojiBehavior.sendEmoji(sender, EMOJI_CANT_AFFORD);
       return;
@@ -161,7 +169,7 @@ export class NationChatBehavior {
     this.game.addExecution(
       new DonateGoldExecution(this.player, sender.id(), gold),
     );
-    this.player.updateRelation(sender, REQUEST_RELATION_COST);
+    if (share === 1) this.player.updateRelation(sender, REQUEST_RELATION_COST);
     this.emojiBehavior.sendEmoji(sender, EMOJI_DONATION_OK);
   }
 
@@ -182,31 +190,38 @@ export class NationChatBehavior {
   }
 
   /**
-   * Troops and gold go only to friendly players with a good relation, and
-   * never in public games (to keep Humans vs Nations balanced).
+   * How much of the usual gift a request gets: 1 (full), SOMETIMES_HELP_SHARE
+   * (a smaller gift to a friend whose relation has worn thin, now and then)
+   * or 0. Troops and gold go only to friendly players, and never in public
+   * games (to keep Humans vs Nations balanced).
    */
-  private willingToHelp(sender: Player): boolean {
-    if (!this.player.isFriendly(sender)) return false;
+  private helpShare(sender: Player): number {
+    if (!this.player.isFriendly(sender)) return 0;
     if (this.game.config().gameConfig().gameType === GameType.Public) {
-      return false;
+      return 0;
     }
     // Easy (dumb) nations don't always get the message.
     if (
       this.game.config().gameConfig().difficulty === Difficulty.Easy &&
       this.random.chance(2)
     ) {
-      return false;
+      return 0;
     }
-    return !this.relationTooLow(sender);
+    if (!this.relationTooLow(sender, false)) return 1;
+    if (this.random.chance(SOMETIMES_HELP_ODDS)) return SOMETIMES_HELP_SHARE;
+    this.emojiBehavior.sendEmoji(sender, EMOJI_ASSIST_RELATION_TOO_LOW);
+    return 0;
   }
 
   /** Allies need a friendly relation, teammates a neutral one. */
-  private relationTooLow(sender: Player): boolean {
+  private relationTooLow(sender: Player, complain = true): boolean {
     const required = this.player.isOnSameTeam(sender)
       ? Relation.Neutral
       : Relation.Friendly;
     if (this.player.relation(sender) >= required) return false;
-    this.emojiBehavior.sendEmoji(sender, EMOJI_ASSIST_RELATION_TOO_LOW);
+    if (complain) {
+      this.emojiBehavior.sendEmoji(sender, EMOJI_ASSIST_RELATION_TOO_LOW);
+    }
     return true;
   }
 }

@@ -15,7 +15,10 @@ import { DonateGoldExecution } from "@openfront/engine/execution/DonateGoldExecu
 import { DonateTroopsExecution } from "@openfront/engine/execution/DonateTroopExecution";
 import { EmojiExecution } from "@openfront/engine/execution/EmojiExecution";
 import { NationAllianceBehavior } from "@openfront/engine/execution/nation/NationAllianceBehavior";
-import { NationChatBehavior } from "@openfront/engine/execution/nation/NationChatBehavior";
+import {
+  NationChatBehavior,
+  REQUEST_RELATION_COST,
+} from "@openfront/engine/execution/nation/NationChatBehavior";
 import { NationEmojiBehavior } from "@openfront/engine/execution/nation/NationEmojiBehavior";
 import { NationStructureBehavior } from "@openfront/engine/execution/nation/NationStructureBehavior";
 import { NationWarshipBehavior } from "@openfront/engine/execution/nation/NationWarshipBehavior";
@@ -178,7 +181,22 @@ describe("Nation chat: help from an ally", () => {
     ally(human, nation);
     const relationBefore = (nation as any).relations.get(human);
     chat.respondToQuickChat(human, "help.troops", null);
-    expect((nation as any).relations.get(human)).toBe(relationBefore - 20);
+    expect((nation as any).relations.get(human)).toBe(
+      relationBefore + REQUEST_RELATION_COST,
+    );
+  });
+
+  test("an ally with a worn-out relation still gets help sometimes", () => {
+    ally(human, nation);
+    // Allied, but no longer friendly.
+    nation.updateRelation(human, -200);
+    nation.updateRelation(human, 10);
+    for (let i = 0; i < 30; i++) {
+      chat.respondToQuickChat(human, "help.gold", null);
+    }
+    const gifts = addedOf(DonateGoldExecution).length;
+    expect(gifts).toBeGreaterThan(0);
+    expect(gifts).toBeLessThan(30);
   });
 
   test("an ally's call to attack an enemy is answered", () => {

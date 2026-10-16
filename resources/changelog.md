@@ -1,5 +1,9 @@
 📦 **AlexFront frissítések**
 
+🤝 **2026. október 16. (3. rész)**
+
+- A szövetséges nemzetek kevésbé „unják” a kéréseid: egy kérés kevesebbet ront a viszonyon, és ha már nagyon sokat kértél, néha akkor is küldenek egy kisebb adag katonát vagy aranyat
+
 🌟 **2026. október 16. (2. rész)**
 
 - Csillagok a fejlesztett hajók fölött: ahány csillag, annyi szintű
