@@ -537,7 +537,8 @@ export class PlayerImpl implements Player {
     let total = 0;
     for (const unit of this._units) {
       if (unit.type() === type) {
-        total += unit.level();
+        // A warship's level is its tier, not extra ships.
+        total += type === UnitType.Warship ? 1 : unit.level();
       }
     }
     this.myUnitCountMemo.set(type, {
@@ -556,7 +557,7 @@ export class PlayerImpl implements Player {
     let total = 0;
     for (const unit of this._units) {
       if (unit.type() === type) {
-        if (unit.isUnderConstruction()) {
+        if (unit.isUnderConstruction() || type === UnitType.Warship) {
           total++;
         } else {
           total += unit.level();

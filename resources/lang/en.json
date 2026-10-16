@@ -1187,6 +1187,13 @@
     "ui_section": "Game UI",
     "ui_wilderness": "Wilderness",
     "ui_your_team": "Your team:",
+    "upgrade_city": "Each level adds as much max population as another city.",
+    "upgrade_desc": "Build the same building on top of one you already own to raise its level (or use the auto-upgrade hotkey). Each level costs like a new building and makes it stronger:",
+    "upgrade_factory": "Each level sends out more trains, so more gold flows along your railroads.",
+    "upgrade_port": "Each level sends more trade ships, repairs more docked warships and repairs them faster. Warships launched from a level 2 port get +25% health, +15% damage and move about a third faster; from level 3: +50% health, +30% damage and about half again as fast.",
+    "upgrade_sam": "Each level increases its range and lets it intercept one more missile before its cooldown.",
+    "upgrade_silo": "Each level lets the silo fire one more missile before it has to reload.",
+    "upgrade_title": "Upgrading buildings",
     "video_tutorial": "Video Tutorial",
     "video_tutorial_title": "AlexFront Tutorial"
   },
@@ -1369,7 +1376,6 @@
   },
   "main": {
     "account": "Account",
-    "clans": "Clans",
     "copyright": "© OpenFront™ and Contributors",
     "create": "Create Lobby",
     "discord_avatar_alt": "Discord profile avatar",
@@ -1378,12 +1384,11 @@
     "help": "Help",
     "inventory": "Inventory",
     "join": "Join Lobby",
-    "leaderboard": "Leaderboard",
     "login_discord": "Login with Discord",
     "login_google": "Login with Google",
     "login_steam": "Login with Steam",
     "menu": "Menu",
-    "news": "News",
+    "news": "Update log",
     "play": "Play",
     "privacy_policy": "Privacy Policy",
     "quit": "Exit game",
@@ -1648,7 +1653,7 @@
     "message": "Host started a new lobby"
   },
   "news": {
-    "title": "Release Notes"
+    "title": "Update Log"
   },
   "news_box": {
     "dismiss": "Dismiss",

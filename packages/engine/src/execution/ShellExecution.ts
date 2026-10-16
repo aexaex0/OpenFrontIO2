@@ -111,6 +111,18 @@ export class ShellExecution implements Execution {
       );
     }
 
+    // Warships built at an upgraded port (tier = level) hit harder too.
+    if (
+      this.ownerUnit.type() === UnitType.Warship &&
+      this.ownerUnit.level() > 1
+    ) {
+      const tierBonus = this.mg.config().warshipTierShellDamageBonus();
+      damageMultiplier = Math.floor(
+        (damageMultiplier * (100 + (this.ownerUnit.level() - 1) * tierBonus)) /
+          100,
+      );
+    }
+
     return Math.round((baseDamage / 250) * damageMultiplier);
   }
 

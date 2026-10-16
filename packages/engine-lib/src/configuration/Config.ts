@@ -426,6 +426,18 @@ export class Config {
     return 20;
   }
 
+  /** Max-health boost per warship tier above 1, as an integer percent of base
+   *  max health. A warship's tier is the level of the port that built it
+   *  (capped at warshipMaxTier). */
+  warshipTierHealthBonus(): number {
+    return 25;
+  }
+
+  /** Highest warship tier an upgraded port can build. */
+  warshipMaxTier(): number {
+    return 3;
+  }
+
   allianceExtensionPromptOffset(): number {
     return 300; // 30 seconds before expiration
   }

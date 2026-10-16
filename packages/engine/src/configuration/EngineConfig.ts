@@ -757,6 +757,21 @@ export class EngineConfig extends Config {
     return 0.75;
   }
 
+  // --- Warship tiers (built at an upgraded port) ---
+
+  /** Shell-damage boost per warship tier above 1, as an integer percent. */
+  warshipTierShellDamageBonus(): number {
+    return 15;
+  }
+
+  /** A tier-N warship takes an extra step every this many ticks (0 = never):
+   *  tier 2 is ~33% faster, tier 3 ~50% faster. */
+  warshipTierExtraMoveInterval(tier: number): number {
+    if (tier >= 3) return 2;
+    if (tier === 2) return 3;
+    return 0;
+  }
+
   // --- Warship veterancy ---
 
   /** Maximum veterancy level a warship can reach. */

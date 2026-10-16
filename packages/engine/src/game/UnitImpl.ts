@@ -285,6 +285,8 @@ export class UnitImpl implements Unit {
       base,
       this.veterancy(),
       this.mg.config().warshipVeterancyHealthBonus(),
+      this._type === UnitType.Warship ? this._level : 1,
+      this.mg.config().warshipTierHealthBonus(),
     );
   }
 

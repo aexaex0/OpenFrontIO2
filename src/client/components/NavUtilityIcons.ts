@@ -134,8 +134,11 @@ export class NavUtilityIcons extends LitElement {
               class="w-6 h-6 pointer-events-none"
               aria-hidden="true"
             >
-              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              <rect x="5" y="4" width="14" height="17" rx="2" />
+              <path d="M9 4V3h6v1" />
+              <line x1="9" y1="10" x2="15" y2="10" />
+              <line x1="9" y1="14" x2="15" y2="14" />
+              <line x1="9" y1="18" x2="13" y2="18" />
             </svg>
           </button>
           ${this._notifications.showNewsDot()

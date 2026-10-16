@@ -123,7 +123,8 @@ export class UnitDisplay extends LitElement implements Controller {
     this._defensePost = player.totalUnitLevels(UnitType.DefensePost);
     this._samLauncher = player.totalUnitLevels(UnitType.SAMLauncher);
     this._factories = player.totalUnitLevels(UnitType.Factory);
-    this._warships = player.totalUnitLevels(UnitType.Warship);
+    // A warship's level is its tier, so count ships, not levels.
+    this._warships = player.units(UnitType.Warship).length;
     this.requestUpdate();
   }
 

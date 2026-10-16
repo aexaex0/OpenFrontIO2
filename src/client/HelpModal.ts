@@ -1172,6 +1172,86 @@ export class HelpModal extends BaseModal {
             </div>
           </section>
 
+          <!-- Upgrades Section -->
+          <section class="mb-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="text-emerald-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 19V5"></path>
+                  <path d="m5 12 7-7 7 7"></path>
+                </svg>
+              </div>
+              <h3
+                class="text-xl font-bold uppercase tracking-widest text-white/90"
+              >
+                ${translateText("help_modal.upgrade_title")}
+              </h3>
+              <div
+                class="flex-1 h-px bg-gradient-to-r from-emerald-500/50 to-transparent"
+              ></div>
+            </div>
+            <p class="mb-4 text-white/70 text-sm">
+              ${translateText("help_modal.upgrade_desc")}
+            </p>
+            <div class="grid gap-2 sm:grid-cols-2">
+              ${(
+                [
+                  [
+                    "CityIconWhite.svg",
+                    "unit_type.city",
+                    "help_modal.upgrade_city",
+                  ],
+                  ["PortIcon.svg", "unit_type.port", "help_modal.upgrade_port"],
+                  [
+                    "FactoryIconWhite.svg",
+                    "unit_type.factory",
+                    "help_modal.upgrade_factory",
+                  ],
+                  [
+                    "MissileSiloIconWhite.svg",
+                    "unit_type.missile_silo",
+                    "help_modal.upgrade_silo",
+                  ],
+                  [
+                    "SamLauncherIconWhite.svg",
+                    "unit_type.sam_launcher",
+                    "help_modal.upgrade_sam",
+                  ],
+                ] as const
+              ).map(
+                ([icon, name, desc]) => html`
+                  <div
+                    class="flex gap-3 rounded-xl border border-white/10 bg-white/5 p-3"
+                  >
+                    <img
+                      src=${assetUrl(`images/${icon}`)}
+                      class="mt-0.5 size-7 shrink-0"
+                      alt=""
+                    />
+                    <div>
+                      <div class="font-bold text-white">
+                        ${translateText(name)}
+                      </div>
+                      <div class="text-sm text-white/70">
+                        ${translateText(desc)}
+                      </div>
+                    </div>
+                  </div>
+                `,
+              )}
+            </div>
+          </section>
+
           <!-- Player Icons Section -->
           <section class="mb-4">
             <div class="flex items-center gap-3 mb-6">

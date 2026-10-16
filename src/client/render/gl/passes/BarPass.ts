@@ -66,6 +66,7 @@ export class BarPass {
   private mapW: number;
   private warshipMaxHealth: number;
   private veterancyHealthBonus: number;
+  private tierHealthBonus: number;
 
   constructor(
     gl: WebGL2RenderingContext,
@@ -78,6 +79,7 @@ export class BarPass {
     this.mapW = header.mapWidth;
     this.warshipMaxHealth = config.unitInfo(UnitType.Warship).maxHealth ?? 0;
     this.veterancyHealthBonus = config.warshipVeterancyHealthBonus();
+    this.tierHealthBonus = config.warshipTierHealthBonus();
 
     // --- Shader program ---
     this.program = createProgram(gl, barVertSrc, barFragSrc, "BarPass");
@@ -150,6 +152,8 @@ export class BarPass {
         this.warshipMaxHealth,
         unit.veterancy,
         this.veterancyHealthBonus,
+        unit.level,
+        this.tierHealthBonus,
       );
       if (unit.health < maxHealth) {
         this.pushHealth(unit, unit.health / maxHealth);

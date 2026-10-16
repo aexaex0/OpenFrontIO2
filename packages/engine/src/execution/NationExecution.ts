@@ -37,7 +37,6 @@ import { NationChatBehavior } from "./nation/NationChatBehavior";
 import { NationEmojiBehavior } from "./nation/NationEmojiBehavior";
 import { NationMIRVBehavior } from "./nation/NationMIRVBehavior";
 import { NationNukeBehavior } from "./nation/NationNukeBehavior";
-import { NationSpeechBehavior } from "./nation/NationSpeechBehavior";
 import { NationStructureBehavior } from "./nation/NationStructureBehavior";
 import { NationWarshipBehavior } from "./nation/NationWarshipBehavior";
 import { SpawnExecution } from "./SpawnExecution";
@@ -228,9 +227,6 @@ export class NationExecution implements Execution {
     this.attackBehavior.maybeAttack();
     this.warshipBehavior.counterWarshipInfestation();
     this.nukeBehavior.maybeSendNuke();
-    // Last, so it talks about this tick's real decisions (e.g. the attack it
-    // just launched). Stateless, so built on demand like chatBehavior().
-    new NationSpeechBehavior(this.random, this.mg, this.player).speak();
   }
 
   private initializeBehaviors(): void {
