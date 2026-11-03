@@ -1,12 +1,10 @@
 // AlexFront: the owner's in-game admin panel (see OwnerAccess.ts). A small
-// floating box with the latest player reports from the server and a few
-// facts about the running game. Only shown to the owner, while it is on.
+// floating box with the latest player reports from the server. Only shown
+// to the owner, while it is on.
 
 import { ClientEnv } from "../ClientEnv";
 import { ownerKey } from "../OwnerAccess";
-import { UserSettings } from "../UserSettings";
 import { translateText } from "../Utils";
-import type { GameView } from "../view/GameView";
 
 interface Report {
   at: number;
@@ -20,14 +18,10 @@ export class OwnerAdminPanel {
   private root = document.createElement("div");
   private body = document.createElement("div");
   private reportsEl = document.createElement("div");
-  private gameEl = document.createElement("div");
   private timer = 0;
   private open = true;
 
-  constructor(
-    private game: GameView,
-    private gameID: string,
-  ) {
+  constructor(private gameID: string) {
     const r = this.root;
     r.style.cssText =
       "position:fixed;left:12px;bottom:12px;z-index:9000;width:300px;max-height:45vh;overflow:auto;" +
@@ -37,7 +31,7 @@ export class OwnerAdminPanel {
     head.style.cssText =
       "display:flex;justify-content:space-between;align-items:center;padding:6px 10px;" +
       "background:rgba(250,204,21,.15);font-weight:800;letter-spacing:.08em;cursor:pointer";
-    head.textContent = `⚙ ${translateText("admin_panel.title")}`;
+    head.textContent = `⚑ ${translateText("admin_panel.reports")}`;
     const toggle = document.createElement("span");
     toggle.textContent = "–";
     head.appendChild(toggle);
@@ -50,21 +44,7 @@ export class OwnerAdminPanel {
     const h1 = document.createElement("div");
     h1.style.cssText = "font-weight:700;opacity:.7;margin-bottom:4px";
     h1.textContent = translateText("admin_panel.reports");
-    const h2 = h1.cloneNode() as HTMLDivElement;
-    h2.style.marginTop = "10px";
-    h2.textContent = translateText("admin_panel.this_game");
-    const dev = document.createElement("label");
-    dev.style.cssText =
-      "display:flex;gap:6px;align-items:center;margin-top:10px;cursor:pointer";
-    const box = document.createElement("input");
-    box.type = "checkbox";
-    const settings = new UserSettings();
-    box.checked = settings.devMode();
-    box.addEventListener("change", () => {
-      if (box.checked !== settings.devMode()) settings.toggleDevMode();
-    });
-    dev.append(box, translateText("admin_panel.dev_mode"));
-    this.body.append(h1, this.reportsEl, h2, this.gameEl, dev);
+    this.body.append(h1, this.reportsEl);
     r.append(head, this.body);
     document.body.appendChild(r);
     void this.refresh();
@@ -72,7 +52,6 @@ export class OwnerAdminPanel {
   }
 
   private async refresh(): Promise<void> {
-    this.renderGame();
     const key = ownerKey();
     if (key === null) return;
     let reports: Report[] = [];
@@ -100,16 +79,6 @@ export class OwnerAdminPanel {
       line.textContent = `${time}${here} · ${rep.reporter} → ${rep.reported} (${rep.reason})`;
       this.reportsEl.appendChild(line);
     }
-  }
-
-  private renderGame(): void {
-    const players = this.game.players();
-    const humans = players.filter((p) => p.clientID() !== null).length;
-    this.gameEl.textContent = translateText("admin_panel.game_info", {
-      id: this.gameID,
-      players: players.length,
-      humans,
-    });
   }
 
   dispose(): void {

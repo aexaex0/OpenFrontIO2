@@ -1,3 +1,4 @@
+import { OrbitalLaserExecution } from "./OrbitalLaserExecution";
 import {
   ClientID,
   GameID,
@@ -90,6 +91,8 @@ export class Executor {
         return new BoatRetreatExecution(player, intent.unitID);
       case "move_warship":
         return new MoveWarshipExecution(player, intent.unitIds, intent.tile);
+      case "orbital_laser":
+        return new OrbitalLaserExecution(player, intent.tile);
       case "ally_ping":
         return new AllyPingExecution(player, intent.tile);
       case "spawn":

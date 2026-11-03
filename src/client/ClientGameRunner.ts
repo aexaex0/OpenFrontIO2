@@ -1,3 +1,8 @@
+import {
+  OrbitalLaserKeyEvent,
+  OrbitalLaserOverlay,
+  SendOrbitalLaserIntentEvent,
+} from "./OrbitalLaser";
 import { OwnerAdminPanel } from "./hud/OwnerAdminPanel";
 import { adminPanelOn } from "./OwnerAccess";
 import { ClientID, GameID } from "@openfront/engine-api/Schemas";
@@ -10,6 +15,7 @@ import {
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   BuildableUnit,
+  Cell,
   PlayerType,
   Structures,
   UnitType,
@@ -999,7 +1005,7 @@ export class ClientGameRunner {
     this.soundManager.playBackgroundMusic();
     console.log("starting client game");
     if (adminPanelOn()) {
-      this.adminPanel = new OwnerAdminPanel(this.gameView, this.lobby.gameID);
+      this.adminPanel = new OwnerAdminPanel(this.lobby.gameID);
     }
 
     this.isActive = true;
@@ -1020,6 +1026,12 @@ export class ClientGameRunner {
       this.doBoatAttackUnderCursor.bind(this),
     );
     this.eventBus.on(AllyPingKeyEvent, this.pingUnderCursor.bind(this));
+    this.eventBus.on(OrbitalLaserKeyEvent, this.laserUnderCursor.bind(this));
+    this.laserOverlay = new OrbitalLaserOverlay(
+      (x, y) =>
+        this.renderer.transformHandler.worldToScreenCoordinates(new Cell(x, y)),
+      () => this.renderer.transformHandler.scale,
+    );
     this.eventBus.on(
       DoGroundAttackEvent,
       this.doGroundAttackUnderCursor.bind(this),
@@ -1062,6 +1074,9 @@ export class ClientGameRunner {
       gu.updates[GameUpdateType.Hash].forEach((hu: HashUpdate) => {
         this.eventBus.emit(new SendHashEvent(hu.tick, hu.hash));
       });
+      for (const laser of gu.updates[GameUpdateType.OrbitalLaser] ?? []) {
+        this.onOrbitalLaser(laser.tile, laser.playerSmallID, laser.strike);
+      }
       for (const ping of gu.updates[GameUpdateType.AllyPing] ?? []) {
         this.eventBus.emit(
           new AllyPingReceivedEvent(ping.tile, ping.playerSmallID),
@@ -1231,10 +1246,13 @@ export class ClientGameRunner {
   }
 
   private adminPanel: OwnerAdminPanel | null = null;
+  private laserOverlay: OrbitalLaserOverlay | null = null;
 
   public stop() {
     this.adminPanel?.dispose();
     this.adminPanel = null;
+    this.laserOverlay?.dispose();
+    this.laserOverlay = null;
     this.soundManager.dispose();
     this.graphicsListenerAbort?.abort();
     // Detach the input handler's window/canvas listeners and its EventBus
@@ -1612,6 +1630,37 @@ export class ClientGameRunner {
   private lastAllyPingMs = 0;
 
   // Marks the tile under the cursor for allies and teammates.
+  /** AlexFront superweapon: fire the orbital laser at the tile under the cursor. */
+  private laserUnderCursor(): void {
+    const tile = this.getTileUnderCursor();
+    const me = this.gameView.myPlayer();
+    if (tile === null || me === null || !me.isAlive()) return;
+    if (me.units(UnitType.MissileSilo).length === 0) {
+      showToast(translateText("orbital_laser.needs_silo"), "red");
+      return;
+    }
+    this.eventBus.emit(new SendOrbitalLaserIntentEvent(tile));
+  }
+
+  private onOrbitalLaser(
+    tile: TileRef,
+    playerSmallID: number,
+    strike: boolean,
+  ): void {
+    const x = this.gameView.x(tile);
+    const y = this.gameView.y(tile);
+    if (strike) this.laserOverlay?.strike(x, y, "");
+    else this.laserOverlay?.charge(x, y, "");
+    if (strike) return;
+    const me = this.gameView.myPlayer();
+    if (me === null) return;
+    if (me.smallID() === playerSmallID) {
+      showToast(translateText("orbital_laser.charging"), "green");
+    } else if (this.gameView.owner(tile) === me) {
+      showToast(translateText("orbital_laser.incoming"), "red");
+    }
+  }
+
   private pingUnderCursor(): void {
     const tile = this.getTileUnderCursor();
     if (tile === null) return;

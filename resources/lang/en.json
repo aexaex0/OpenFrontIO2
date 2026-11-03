@@ -149,12 +149,8 @@
     "title": "Account Settings"
   },
   "admin_panel": {
-    "dev_mode": "Dev mode (Lower Brightness)",
-    "game_info": "Game {id} · {players} players ({humans} human)",
     "no_reports": "No reports yet",
-    "reports": "Latest reports",
-    "this_game": "This game",
-    "title": "Admin"
+    "reports": "Latest reports"
   },
   "ban_notice": {
     "appeal": "If you believe this is a mistake, contact us on Discord.",
@@ -1695,6 +1691,11 @@
     "tutorial": "TUTORIAL",
     "warning": "WARNING"
   },
+  "orbital_laser": {
+    "charging": "Orbital laser charging…",
+    "incoming": "Orbital laser incoming!",
+    "needs_silo": "The orbital laser needs a missile silo and as much gold as a MIRV"
+  },
   "overtime": {
     "first_place": "1st: {name} ({pct}%)",
     "started": "Overtime! The territory needed to win is now dropping.",
@@ -2411,8 +2412,8 @@
     "message": "A new version of AlexFront is available. The page will now refresh to update."
   },
   "user_setting": {
-    "admin_panel_desc": "Show the admin panel in games",
-    "admin_panel_label": "Admin panel",
+    "admin_panel_desc": "Show the latest player reports in games",
+    "admin_panel_label": "Show reports",
     "alert_frame_desc": "Toggle the alert frame. When enabled, the frame will be displayed when you are betrayed or attacked over land.",
     "alert_frame_label": "Alert Frame",
     "ally_keybinds": "Ally Keybinds",
@@ -2551,6 +2552,8 @@
     "lobby_start_alerts_label": "Lobby Start Alerts",
     "lower_brightness_desc": "Dims the game for playing at night",
     "lower_brightness_label": "Lower Brightness",
+    "match_modifiers": "Modifiers",
+    "match_no_modifiers": "None",
     "menu_shortcuts": "Menu Shortcuts",
     "move_down": "Move Camera Down",
     "move_down_desc": "Move the camera downward",
@@ -2567,6 +2570,8 @@
     "on": "On",
     "open_settings_desc": "Gameplay, graphics, audio and keybind settings",
     "open_settings_label": "Settings",
+    "orbital_laser": "Orbital laser",
+    "orbital_laser_desc": "Fire the orbital laser at the tile under the cursor (costs as much as a MIRV, needs a missile silo)",
     "pause_game": "Pause",
     "pause_game_desc": "Pause or resume the game (single player and custom games for host).",
     "performance_overlay_desc": "Toggle the performance overlay. When enabled, the performance overlay will be displayed. Press shift-D during game to toggle.",

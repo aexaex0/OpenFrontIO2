@@ -1695,6 +1695,16 @@ export class UserSettingModal extends BaseModal {
       ></setting-keybind>
 
       <setting-keybind
+        action="orbitalLaser"
+        label=${translateText("user_setting.orbital_laser")}
+        description=${translateText("user_setting.orbital_laser_desc")}
+        defaultKey=${this.defaultKeybinds.orbitalLaser}
+        .value=${this.getKeyValue("orbitalLaser")}
+        .display=${this.getKeyChar("orbitalLaser")}
+        @change=${this.handleKeybindChange}
+      ></setting-keybind>
+
+      <setting-keybind
         action="allyPing"
         label=${translateText("user_setting.ally_ping")}
         description=${translateText("user_setting.ally_ping_desc")}

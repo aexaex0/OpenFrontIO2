@@ -1,3 +1,4 @@
+import { OrbitalLaserKeyEvent } from "./OrbitalLaser";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   PlayerBuildableUnitType,
@@ -457,6 +458,9 @@ export class InputHandler {
     });
     this.addKeybindAndEvent(this.keybinds.allyPing, () => {
       this.eventBus.emit(new AllyPingKeyEvent());
+    });
+    this.addKeybindAndEvent(this.keybinds.orbitalLaser, () => {
+      this.eventBus.emit(new OrbitalLaserKeyEvent());
     });
     // Shares R with reset graphics, which needs its modifier held, so quick
     // chat only takes the key on its own.

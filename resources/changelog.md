@@ -3,6 +3,9 @@
 🤖 **2026. november 3.**
 
 - Okosabb és gyorsabban reagáló gépi nemzetek
+- 🛰️ Új szuperfegyver: orbitális lézer (O gomb, annyiba kerül, mint egy MIRV, kell hozzá rakétasiló)
+- 🎨 8 új téma: Toxic Waste, Frostbite, Blood Moon, Lost Jungle, Vaporwave, Deep Abyss, Royal Velvet, Hacker Terminal
+- ⏸️ Esc menüben látod a meccs nehézségét és a módosítókat
 
 👀 **2026. október 16. (5. rész)**
 

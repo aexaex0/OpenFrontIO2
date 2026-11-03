@@ -10,7 +10,12 @@ import {
   ToggleRenderDebugGuiEvent,
 } from "../../InputHandler";
 import type { UserSettingModal } from "../../UserSettingModal";
-import { homeHref, translateText } from "../../Utils";
+import { getActiveModifiers, homeHref, translateText } from "../../Utils";
+import {
+  lobbySettingTagText,
+  notableLobbySettings,
+} from "../../utilities/LobbySettingsSummary";
+import type { GameView } from "../../view/GameView";
 const exitIcon = assetUrl("images/ExitIconWhite.svg");
 const settingsIcon = assetUrl("images/SettingIconWhite.svg");
 const treeIcon = assetUrl("images/TreeIconWhite.svg");
@@ -36,6 +41,7 @@ export class ShowSettingsModalEvent {
 @customElement("settings-modal")
 export class SettingsModal extends LitElement implements Controller {
   public eventBus: EventBus;
+  public game: GameView | null = null;
 
   @state()
   private isVisible: boolean = false;
@@ -160,6 +166,52 @@ export class SettingsModal extends LitElement implements Controller {
     this.closeModal();
   }
 
+  /** Difficulty and active modifiers of the running match. */
+  private renderMatchInfo() {
+    const c = this.game?.config().gameConfig();
+    if (!c) return null;
+    const difficulty = translateText(
+      `difficulty.${c.difficulty.toLowerCase()}`,
+    );
+    const tags: string[] = [];
+    for (const m of getActiveModifiers(
+      c.publicGameModifiers,
+      c.doomsdayClock?.speed,
+    )) {
+      tags.push(translateText(m.badgeKey, m.badgeParams));
+    }
+    const difficultyLabel = translateText("difficulty.difficulty");
+    for (const s of notableLobbySettings(c, null)) {
+      if (s.label === difficultyLabel) continue;
+      const t = lobbySettingTagText(s);
+      if (!tags.includes(t)) tags.push(t);
+    }
+    return html`
+      <div class="p-3 rounded-sm bg-slate-900/50 text-white" data-match-info>
+        <div class="flex justify-between text-sm">
+          <span class="text-slate-400">${difficultyLabel}</span>
+          <span class="font-semibold">${difficulty}</span>
+        </div>
+        <div class="mt-2 text-sm text-slate-400">
+          ${translateText("user_setting.match_modifiers")}
+        </div>
+        <div class="mt-1 flex flex-wrap gap-1">
+          ${tags.length === 0
+            ? html`<span class="text-sm text-slate-500"
+                >${translateText("user_setting.match_no_modifiers")}</span
+              >`
+            : tags.map(
+                (t) =>
+                  html`<span
+                    class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-200"
+                    >${t}</span
+                  >`,
+              )}
+        </div>
+      </div>
+    `;
+  }
+
   private onExitButtonClick() {
     // redirect to the home page
     window.location.href = homeHref();
@@ -202,6 +254,7 @@ export class SettingsModal extends LitElement implements Controller {
           </div>
 
           <div class="p-4 flex flex-col gap-3">
+            ${this.renderMatchInfo()}
             <button
               class="flex gap-3 items-center w-full text-left p-3 hover:bg-slate-700 rounded-sm text-white transition-colors"
               data-open-settings

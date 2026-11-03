@@ -116,6 +116,7 @@ export enum GameUpdateType {
   GamePaused,
   DonateEvent,
   AllyPing,
+  OrbitalLaser,
 }
 
 export type GameUpdate =
@@ -142,7 +143,16 @@ export type GameUpdate =
   | SpawnPhaseEndUpdate
   | GamePausedUpdate
   | DonateEventUpdate
-  | AllyPingUpdate;
+  | AllyPingUpdate
+  | OrbitalLaserUpdate;
+
+/** An orbital laser charging (strike false) or hitting (strike true). */
+export interface OrbitalLaserUpdate {
+  type: GameUpdateType.OrbitalLaser;
+  playerSmallID: number;
+  tile: TileRef;
+  strike: boolean;
+}
 
 /** A player marked a tile for their allies (clients filter who sees it). */
 export interface AllyPingUpdate {
