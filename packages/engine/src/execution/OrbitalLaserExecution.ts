@@ -206,7 +206,9 @@ type OrbitalLaserState = z.infer<typeof OrbitalLaserStateSchema>;
 
 export const OrbitalLaserExecutionSnapshot = execSnapshotType({
   name: "OrbitalLaser",
-  version: 2,
+  // Still 1: the one-point laser never shipped in a release, so no stored
+  // snapshot holds the old shape.
+  version: 1,
   schema: OrbitalLaserStateSchema,
   cls: () => OrbitalLaserExecution,
 });
