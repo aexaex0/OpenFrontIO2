@@ -159,7 +159,7 @@ export class UnitDisplay extends LitElement implements Controller {
 
     return html`
       <div class="border-t border-white/10 px-1 pt-1 pb-0.5 w-full">
-        <div class="flex items-end gap-1 w-fit mx-auto">
+        <div class="flex items-end gap-0.5 w-fit max-w-full mx-auto">
           ${this.renderUnitItem(
             cityIcon,
             this._cities,
@@ -253,7 +253,7 @@ export class UnitDisplay extends LitElement implements Controller {
     return html`
       <div class="flex flex-col items-center relative group/laser">
         <div
-          class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover/laser:block text-gray-200 text-center w-max max-w-[220px] text-xs bg-gray-800/90 chrome:bg-chrome-900/95 backdrop-blur-xs rounded-sm p-1 z-[100] shadow-lg pointer-events-none"
+          class="absolute bottom-full right-0 mb-1 hidden group-hover/laser:block text-gray-200 text-center w-max max-w-[220px] text-xs bg-gray-800/90 chrome:bg-chrome-900/95 backdrop-blur-xs rounded-sm p-1 z-[100] shadow-lg pointer-events-none"
         >
           <div class="font-bold text-sm mb-1">
             ${translateText("user_setting.orbital_laser")} [${displayHotkey}]

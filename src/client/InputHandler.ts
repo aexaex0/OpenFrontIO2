@@ -1,4 +1,4 @@
-import { OrbitalLaserKeyEvent } from "./OrbitalLaser";
+import { OrbitalLaserCancelEvent, OrbitalLaserKeyEvent } from "./OrbitalLaser";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   PlayerBuildableUnitType,
@@ -1178,7 +1178,8 @@ export class InputHandler {
         !this.userSettings.leftClickOpensMenu() ||
         event.shiftKey ||
         this.gameView.inSpawnPhase() || // No Radial Menu during spawn phase, only spawn point selection
-        this.uiState.ghostStructure !== null // Block radial menu on left click if building
+        this.uiState.ghostStructure !== null || // Block radial menu on left click if building
+        this.uiState.laserAiming === true
       ) {
         this.eventBus.emit(new MouseUpEvent(event.x, event.y));
       } else {
@@ -1337,6 +1338,10 @@ export class InputHandler {
     }
     if (this.uiState.ghostStructure !== null) {
       this.setGhostStructure(null);
+      return;
+    }
+    if (this.uiState.laserAiming === true) {
+      this.eventBus.emit(new OrbitalLaserCancelEvent());
       return;
     }
     // If a warship/boat is selected, right-click cancels the selection rather

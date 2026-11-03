@@ -1260,6 +1260,14 @@
     "visibility_public": "Public",
     "waiting": "Waiting for players..."
   },
+  "hud_skin": {
+    "auto": "Match theme",
+    "carbon": "Carbon Fiber",
+    "glass": "Frosted Glass",
+    "gold": "Royal Gold",
+    "matrix": "Matrix",
+    "ocean": "Deep Ocean"
+  },
   "inventory": {
     "custom_skin_desc": "Upload any picture: it repeats across your territory, and everyone in the game sees it.",
     "custom_skin_equip": "Use it",
@@ -1692,9 +1700,11 @@
     "warning": "WARNING"
   },
   "orbital_laser": {
+    "aim_hint": "Orbital laser: click 3 points inside the red circle. Right-click cancels.",
     "charging": "Orbital laser charging…",
     "incoming": "Orbital laser incoming!",
-    "needs_silo": "The orbital laser needs a missile silo and as much gold as a MIRV"
+    "needs_silo": "The orbital laser needs a missile silo and as much gold as a MIRV",
+    "too_far": "That point is outside the circle around the first point"
   },
   "overtime": {
     "first_place": "1st: {name} ({pct}%)",
@@ -2543,6 +2553,7 @@
     "help_train_name": "Train",
     "highlight_glow_strength_label": "Highlight strength",
     "highlight_small_players_desc": "Add a glow to small players so they're easy to find.",
+    "hud_skin": "Bottom panel theme",
     "keybind_conflict_error": "The key {key} is already bound to another action.",
     "keybinds_hint": "Click a key to rebind it. You can assign a single key or Shift + key combination.",
     "left_click_desc": "When ON, left-click opens menu and sword button attacks. When OFF, left-click attacks directly.",
@@ -2572,7 +2583,7 @@
     "open_settings_desc": "Gameplay, graphics, audio and keybind settings",
     "open_settings_label": "Settings",
     "orbital_laser": "Orbital laser",
-    "orbital_laser_desc": "Fire the orbital laser at the tile under the cursor (costs as much as a MIRV, needs a missile silo)",
+    "orbital_laser_desc": "Aim the orbital laser: click 3 points inside the circle and the beam sweeps along them, leaving fallout (costs as much as a MIRV, needs a missile silo)",
     "pause_game": "Pause",
     "pause_game_desc": "Pause or resume the game (single player and custom games for host).",
     "performance_overlay_desc": "Toggle the performance overlay. When enabled, the performance overlay will be displayed. Press shift-D during game to toggle.",

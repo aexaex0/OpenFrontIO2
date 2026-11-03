@@ -634,3 +634,142 @@
 .theme-chrome #hex-grid {
   display: none;
 }
+
+/* AlexFront: own looks for the in-game bottom panel (HudSkin.ts). The panel
+   carries `theme-chrome hud-skin hud-skin-<name>`; the colour utilities are
+   re-pointed here so they read this element's variables, not :root's. */
+.hud-skin {
+  --color-chrome-50: var(--ui-50);
+  --color-chrome-100: var(--ui-100);
+  --color-chrome-200: var(--ui-200);
+  --color-chrome-300: var(--ui-300);
+  --color-chrome-400: var(--ui-400);
+  --color-chrome-500: var(--ui-500);
+  --color-chrome-600: var(--ui-600);
+  --color-chrome-700: var(--ui-700);
+  --color-chrome-800: var(--ui-800);
+  --color-chrome-900: var(--ui-900);
+  --color-chrome-950: var(--ui-950);
+}
+
+/* Frosted Glass. */
+.hud-skin-glass {
+  --ui-50: #ffffff;
+  --ui-100: #f1f5f9;
+  --ui-200: #e2e8f0;
+  --ui-300: #cbd5e1;
+  --ui-400: #a5b4c8;
+  --ui-500: #7dd3fc;
+  --ui-600: #38bdf8;
+  --ui-700: #334155;
+  --ui-800: #1e293b;
+  --ui-900: #0f172a;
+  --ui-950: #020617;
+  --ui-panel: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.22),
+    rgb(148 163 184 / 0.14)
+  );
+  --ui-frame: linear-gradient(160deg, #ffffff, #94a3b8 50%, #ffffff);
+  --ui-frame-soft: rgb(255 255 255 / 0.45);
+  --ui-glow: rgb(255 255 255 / 0.18);
+  backdrop-filter: blur(14px) saturate(1.3);
+}
+
+/* Carbon Fiber. */
+.hud-skin-carbon {
+  --ui-50: #fafafa;
+  --ui-100: #e4e4e7;
+  --ui-200: #d4d4d8;
+  --ui-300: #a1a1aa;
+  --ui-400: #f97316;
+  --ui-500: #ea580c;
+  --ui-600: #52525b;
+  --ui-700: #3f3f46;
+  --ui-800: #27272a;
+  --ui-900: #18181b;
+  --ui-950: #09090b;
+  --ui-panel:
+    repeating-linear-gradient(
+      45deg,
+      rgb(255 255 255 / 0.04) 0 3px,
+      transparent 3px 6px
+    ),
+    linear-gradient(180deg, rgb(39 39 42 / 0.96), rgb(9 9 11 / 0.98));
+  --ui-frame: linear-gradient(160deg, #71717a, #18181b 50%, #f97316);
+  --ui-frame-soft: rgb(161 161 170 / 0.4);
+  --ui-glow: rgb(0 0 0 / 0.6);
+}
+
+/* Royal Gold. */
+.hud-skin-gold {
+  --ui-50: #fffbeb;
+  --ui-100: #fef3c7;
+  --ui-200: #fde68a;
+  --ui-300: #fcd34d;
+  --ui-400: #fbbf24;
+  --ui-500: #d4a017;
+  --ui-600: #a16207;
+  --ui-700: #57400a;
+  --ui-800: #2e2206;
+  --ui-900: #1a1304;
+  --ui-950: #0d0902;
+  --ui-panel: linear-gradient(180deg, rgb(46 34 6 / 0.95), rgb(13 9 2 / 0.98));
+  --ui-frame: linear-gradient(
+    160deg,
+    #fff7c2 0%,
+    #d4a017 35%,
+    #7a5a10 65%,
+    #fde68a 100%
+  );
+  --ui-frame-soft: rgb(212 160 23 / 0.5);
+  --ui-glow: rgb(251 191 36 / 0.3);
+}
+
+/* Deep Ocean. */
+.hud-skin-ocean {
+  --ui-50: #ecfeff;
+  --ui-100: #cffafe;
+  --ui-200: #a5f3fc;
+  --ui-300: #5eead4;
+  --ui-400: #2dd4bf;
+  --ui-500: #0d9488;
+  --ui-600: #0f766e;
+  --ui-700: #134e4a;
+  --ui-800: #0c2f3a;
+  --ui-900: #061b26;
+  --ui-950: #020d14;
+  --ui-panel: linear-gradient(
+    180deg,
+    rgb(12 47 58 / 0.94),
+    rgb(2 13 20 / 0.97)
+  );
+  --ui-frame: linear-gradient(160deg, #a5f3fc, #0d9488 45%, #1e3a8a 100%);
+  --ui-frame-soft: rgb(45 212 191 / 0.45);
+  --ui-glow: rgb(45 212 191 / 0.3);
+}
+
+/* Matrix. */
+.hud-skin-matrix {
+  --ui-50: #f0fff4;
+  --ui-100: #ccffd8;
+  --ui-200: #8cffa8;
+  --ui-300: #4dff7a;
+  --ui-400: #22ff5a;
+  --ui-500: #00d83a;
+  --ui-600: #00a02b;
+  --ui-700: #00581a;
+  --ui-800: #002e0d;
+  --ui-900: #001806;
+  --ui-950: #000a02;
+  --ui-panel:
+    repeating-linear-gradient(
+      0deg,
+      rgb(34 255 90 / 0.05) 0 1px,
+      transparent 1px 4px
+    ),
+    linear-gradient(180deg, rgb(0 24 6 / 0.95), rgb(0 6 1 / 0.98));
+  --ui-frame: linear-gradient(160deg, #4dff7a, #00581a 50%, #22ff5a);
+  --ui-frame-soft: rgb(34 255 90 / 0.4);
+  --ui-glow: rgb(34 255 90 / 0.3);
+}

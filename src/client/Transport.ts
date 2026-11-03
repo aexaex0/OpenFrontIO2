@@ -327,7 +327,7 @@ export class Transport {
       this.sendIntent({ type: "parasite_player", player: e.playerID }),
     );
     this.subscribe(SendOrbitalLaserIntentEvent, (e) =>
-      this.sendIntent({ type: "orbital_laser", tile: e.tile }),
+      this.sendIntent({ type: "orbital_laser", points: e.points }),
     );
     this.subscribe(SendAllyPingIntentEvent, (e) =>
       this.sendIntent({ type: "ally_ping", tile: e.tile }),

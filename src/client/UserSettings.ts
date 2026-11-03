@@ -209,6 +209,17 @@ export const PLAYER_STATS_COLUMNS_KEY = "settings.leaderboardColumns";
 export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
 export const UI_THEME_KEY = "settings.uiTheme";
+export const HUD_SKIN_KEY = "settings.hudSkin";
+/** AlexFront: looks for the in-game bottom panel ("auto" follows the UI theme). */
+export const HUD_SKINS = [
+  "auto",
+  "glass",
+  "carbon",
+  "gold",
+  "ocean",
+  "matrix",
+] as const;
+export type HudSkin = (typeof HUD_SKINS)[number];
 export const UI_THEMES = [
   "default",
   "chrome",
@@ -440,6 +451,17 @@ export class UserSettings {
 
   setUiTheme(theme: UiTheme) {
     this.setString(UI_THEME_KEY, theme);
+  }
+
+  hudSkin(): HudSkin {
+    const stored = this.getString(HUD_SKIN_KEY, "auto");
+    return (HUD_SKINS as readonly string[]).includes(stored)
+      ? (stored as HudSkin)
+      : "auto";
+  }
+
+  setHudSkin(skin: HudSkin) {
+    this.setString(HUD_SKIN_KEY, skin);
   }
 
   performanceOverlay() {

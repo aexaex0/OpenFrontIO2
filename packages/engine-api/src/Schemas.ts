@@ -578,7 +578,8 @@ export const ParasitePlayerIntentSchema = z.object({
 // AlexFront superweapon: an orbital laser strike on a tile.
 export const OrbitalLaserIntentSchema = z.object({
   type: z.literal("orbital_laser"),
-  tile: zb.uint(),
+  // The three aim points, in order: the beam sweeps 1 → 2 → 3.
+  points: zb.uint().array().length(3),
 });
 
 export const IntentSchema = z.discriminatedUnion("type", [

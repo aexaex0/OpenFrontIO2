@@ -15,7 +15,19 @@ import {
   lobbySettingTagText,
   notableLobbySettings,
 } from "../../utilities/LobbySettingsSummary";
+import { applyHudSkin } from "../../HudSkin";
+import { HUD_SKINS, HudSkin, UserSettings } from "../../UserSettings";
 import type { GameView } from "../../view/GameView";
+
+/** Swatch colours (fill, edge) for the bottom-panel skins. */
+const HUD_SKIN_SWATCHES: Record<HudSkin, [string, string]> = {
+  auto: ["#475569", "#94a3b8"],
+  glass: ["#e2e8f0", "#ffffff"],
+  carbon: ["#27272a", "#f97316"],
+  gold: ["#2e2206", "#d4a017"],
+  ocean: ["#0c2f3a", "#2dd4bf"],
+  matrix: ["#001806", "#22ff5a"],
+};
 const exitIcon = assetUrl("images/ExitIconWhite.svg");
 const settingsIcon = assetUrl("images/SettingIconWhite.svg");
 const treeIcon = assetUrl("images/TreeIconWhite.svg");
@@ -48,6 +60,9 @@ export class SettingsModal extends LitElement implements Controller {
 
   @state()
   private alternateView: boolean = false;
+
+  @state()
+  private hudSkin: HudSkin = new UserSettings().hudSkin();
 
   @query(".modal-overlay")
   private modalOverlay!: HTMLElement;
@@ -166,6 +181,43 @@ export class SettingsModal extends LitElement implements Controller {
     this.closeModal();
   }
 
+  private pickHudSkin(skin: HudSkin) {
+    new UserSettings().setHudSkin(skin);
+    this.hudSkin = skin;
+    applyHudSkin();
+  }
+
+  /** AlexFront: the look of the bottom panel (control panel + build bar). */
+  private renderHudSkins() {
+    return html`
+      <div class="p-3 rounded-sm bg-slate-900/50 text-white" data-hud-skins>
+        <div class="text-sm text-slate-400 mb-2">
+          ${translateText("user_setting.hud_skin")}
+        </div>
+        <div class="flex flex-wrap gap-2">
+          ${HUD_SKINS.map((skin) => {
+            const [fill, edge] = HUD_SKIN_SWATCHES[skin];
+            const on = this.hudSkin === skin;
+            return html`<button
+              type="button"
+              class="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs border transition-colors ${on
+                ? "border-white bg-white/15"
+                : "border-white/15 hover:bg-white/10"}"
+              aria-pressed=${on ? "true" : "false"}
+              @click=${() => this.pickHudSkin(skin)}
+            >
+              <span
+                class="inline-block size-4 rounded-full"
+                style="background:${fill};box-shadow:inset 0 0 0 2px ${edge}"
+              ></span>
+              ${translateText(`hud_skin.${skin}`)}
+            </button>`;
+          })}
+        </div>
+      </div>
+    `;
+  }
+
   /** Difficulty and active modifiers of the running match. */
   private renderMatchInfo() {
     const c = this.game?.config().gameConfig();
@@ -254,7 +306,7 @@ export class SettingsModal extends LitElement implements Controller {
           </div>
 
           <div class="p-4 flex flex-col gap-3">
-            ${this.renderMatchInfo()}
+            ${this.renderMatchInfo()} ${this.renderHudSkins()}
             <button
               class="flex gap-3 items-center w-full text-left p-3 hover:bg-slate-700 rounded-sm text-white transition-colors"
               data-open-settings

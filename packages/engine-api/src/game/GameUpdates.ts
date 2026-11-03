@@ -146,12 +146,16 @@ export type GameUpdate =
   | AllyPingUpdate
   | OrbitalLaserUpdate;
 
-/** An orbital laser charging (strike false) or hitting (strike true). */
+/**
+ * An orbital laser: "charge" once when fired (pos is the first point),
+ * "sweep" every tick the beam moves (pos is its centre), "done" at the end.
+ */
 export interface OrbitalLaserUpdate {
   type: GameUpdateType.OrbitalLaser;
   playerSmallID: number;
-  tile: TileRef;
-  strike: boolean;
+  points: TileRef[];
+  pos: TileRef;
+  phase: "charge" | "sweep" | "done";
 }
 
 /** A player marked a tile for their allies (clients filter who sees it). */

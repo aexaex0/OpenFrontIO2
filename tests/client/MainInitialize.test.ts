@@ -135,6 +135,8 @@ describe("Client.initialize() booted from Main.ts module scope", () => {
   let logSpy: ReturnType<typeof vi.spyOn>;
 
   beforeAll(async () => {
+    // AlexFront: joins need a real name (RealName.ts).
+    localStorage.setItem("settings.realName", "Tester");
     warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     vi.spyOn(console, "info").mockImplementation(() => {});
