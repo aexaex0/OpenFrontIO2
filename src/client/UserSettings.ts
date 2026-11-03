@@ -210,14 +210,17 @@ export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
 export const UI_THEME_KEY = "settings.uiTheme";
 export const HUD_SKIN_KEY = "settings.hudSkin";
-/** AlexFront: looks for the in-game bottom panel ("auto" follows the UI theme). */
+/**
+ * AlexFront: layouts for the in-game bottom panel — the same buttons in the
+ * same order, with other shapes and fonts. Colours always follow the UI theme.
+ */
 export const HUD_SKINS = [
-  "auto",
-  "glass",
-  "carbon",
-  "gold",
-  "ocean",
-  "matrix",
+  "classic",
+  "round",
+  "hex",
+  "sharp",
+  "pill",
+  "tile",
 ] as const;
 export type HudSkin = (typeof HUD_SKINS)[number];
 export const UI_THEMES = [
@@ -454,10 +457,10 @@ export class UserSettings {
   }
 
   hudSkin(): HudSkin {
-    const stored = this.getString(HUD_SKIN_KEY, "auto");
+    const stored = this.getString(HUD_SKIN_KEY, "classic");
     return (HUD_SKINS as readonly string[]).includes(stored)
       ? (stored as HudSkin)
-      : "auto";
+      : "classic";
   }
 
   setHudSkin(skin: HudSkin) {

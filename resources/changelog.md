@@ -7,7 +7,7 @@
 - 🎨 8 új téma: Toxic Waste, Frostbite, Blood Moon, Lost Jungle, Vaporwave, Deep Abyss, Royal Velvet, Hacker Terminal
 - ⏸️ Esc menüben látod a meccs nehézségét és a módosítókat
 - 🛰️ Orbitális lézer célzás: O (vagy a gyorssáv gombja a MIRV után), 3 bal klikk a körön belül, a sugár végigsöpör rajtuk és zöld nukleáris földet hagy; jobb klikk = mégse
-- 🧩 Az alsó panelnek 5 saját témája van, az Esc menüben választható
+- 🧩 Az alsó panelnek 5 új elrendezése van (kerek, hatszög, szögletes, kapszula, csempe gombok, más betűtípussal), az Esc menüben választható; a színe a témádat követi
 - 🎨 A témák már az alsó panelt, a támadásokat és a ranglistát is színezik
 
 👀 **2026. október 16. (5. rész)**

@@ -1,8 +1,7 @@
-// AlexFront: an own look for the in-game bottom panel (control panel and
-// build bar), picked in the in-game menu. "auto" follows the UI theme; any
-// other skin puts `theme-chrome` on the panel itself, so its `chrome:`
-// classes apply even under the classic theme, plus `hud-skin-<name>`, which
-// swaps the style variables for that panel only (chrome-theme.css).
+// AlexFront: layouts for the in-game bottom panel (control panel and build
+// bar), picked in the in-game menu: other button shapes and fonts, same
+// buttons in the same order. Colours stay with the UI theme. The panel gets
+// `hud-skin-<name>`; the rules live in chrome-theme.css.
 
 import {
   HUD_SKIN_KEY,
@@ -18,16 +17,14 @@ export function applyHudSkin(): void {
   const el = document.getElementById(PANEL_ID);
   if (el === null) return;
   const skin = new UserSettings().hudSkin();
-  el.classList.toggle("theme-chrome", skin !== "auto");
-  el.classList.toggle("hud-skin", skin !== "auto");
   for (const s of HUD_SKINS) {
-    if (s !== "auto") el.classList.toggle(`hud-skin-${s}`, s === skin);
+    if (s !== "classic") el.classList.toggle(`hud-skin-${s}`, s === skin);
   }
 }
 
 let listening = false;
 
-/** Applies the saved skin and follows later changes. */
+/** Applies the saved layout and follows later changes. */
 export function initHudSkin(): void {
   applyHudSkin();
   if (listening) return;

@@ -270,7 +270,7 @@ export class UnitDisplay extends LitElement implements Controller {
         </div>
         <div
           data-orbital-laser
-          class="relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
+          class="hud-btn relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
              ${armed
             ? "border-cyan-300 bg-cyan-500/25 shadow-[0_0_12px_rgba(103,232,249,0.7)]"
             : "border-red-400/30 bg-red-950/30 hover:border-red-300/60 hover:bg-red-900/40"}
@@ -290,7 +290,7 @@ export class UnitDisplay extends LitElement implements Controller {
             this.eventBus?.emit(new ToggleStructureEvent(null))}
         >
           <span
-            class="absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
+            class="hud-key absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
             >${displayHotkey}</span
           >
           <svg viewBox="0 0 24 24" class="size-5 sm:size-6" aria-hidden="true">
@@ -366,7 +366,7 @@ export class UnitDisplay extends LitElement implements Controller {
             `
           : null}
         <div
-          class="relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
+          class="hud-btn relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
              ${selected
             ? "border-sky-400 bg-sky-500/25 shadow-[0_0_10px_rgba(56,189,248,0.55)]"
             : nuke
@@ -404,7 +404,7 @@ export class UnitDisplay extends LitElement implements Controller {
             this.eventBus?.emit(new ToggleStructureEvent(null))}
         >
           <span
-            class="absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
+            class="hud-key absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
             >${displayHotkey}</span
           >
           <img src=${icon} alt=${structureKey} class="size-5 sm:size-6" />

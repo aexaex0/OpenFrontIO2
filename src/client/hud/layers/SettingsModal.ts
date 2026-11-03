@@ -19,14 +19,14 @@ import { applyHudSkin } from "../../HudSkin";
 import { HUD_SKINS, HudSkin, UserSettings } from "../../UserSettings";
 import type { GameView } from "../../view/GameView";
 
-/** Swatch colours (fill, edge) for the bottom-panel skins. */
-const HUD_SKIN_SWATCHES: Record<HudSkin, [string, string]> = {
-  auto: ["#475569", "#94a3b8"],
-  glass: ["#e2e8f0", "#ffffff"],
-  carbon: ["#27272a", "#f97316"],
-  gold: ["#2e2206", "#d4a017"],
-  ocean: ["#0c2f3a", "#2dd4bf"],
-  matrix: ["#001806", "#22ff5a"],
+/** A tiny preview of each layout's button shape. */
+const HUD_SKIN_PREVIEW: Record<HudSkin, string> = {
+  classic: "border-radius:4px",
+  round: "border-radius:9999px",
+  hex: "clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);border-radius:0",
+  sharp: "border-radius:0",
+  pill: "border-radius:9999px;width:10px;height:18px",
+  tile: "border-radius:2px;border-bottom:4px solid currentColor",
 };
 const exitIcon = assetUrl("images/ExitIconWhite.svg");
 const settingsIcon = assetUrl("images/SettingIconWhite.svg");
@@ -196,7 +196,6 @@ export class SettingsModal extends LitElement implements Controller {
         </div>
         <div class="flex flex-wrap gap-2">
           ${HUD_SKINS.map((skin) => {
-            const [fill, edge] = HUD_SKIN_SWATCHES[skin];
             const on = this.hudSkin === skin;
             return html`<button
               type="button"
@@ -207,8 +206,8 @@ export class SettingsModal extends LitElement implements Controller {
               @click=${() => this.pickHudSkin(skin)}
             >
               <span
-                class="inline-block size-4 rounded-full"
-                style="background:${fill};box-shadow:inset 0 0 0 2px ${edge}"
+                class="inline-block size-4 bg-white/70 text-white"
+                style=${HUD_SKIN_PREVIEW[skin]}
               ></span>
               ${translateText(`hud_skin.${skin}`)}
             </button>`;

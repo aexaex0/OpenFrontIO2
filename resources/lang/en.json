@@ -1261,12 +1261,12 @@
     "waiting": "Waiting for players..."
   },
   "hud_skin": {
-    "auto": "Match theme",
-    "carbon": "Carbon Fiber",
-    "glass": "Frosted Glass",
-    "gold": "Royal Gold",
-    "matrix": "Matrix",
-    "ocean": "Deep Ocean"
+    "classic": "Classic",
+    "hex": "Hexagon",
+    "pill": "Pill",
+    "round": "Round",
+    "sharp": "Sharp",
+    "tile": "Tile"
   },
   "inventory": {
     "custom_skin_desc": "Upload any picture: it repeats across your territory, and everyone in the game sees it.",
@@ -2553,7 +2553,7 @@
     "help_train_name": "Train",
     "highlight_glow_strength_label": "Highlight strength",
     "highlight_small_players_desc": "Add a glow to small players so they're easy to find.",
-    "hud_skin": "Bottom panel theme",
+    "hud_skin": "Bottom panel layout",
     "keybind_conflict_error": "The key {key} is already bound to another action.",
     "keybinds_hint": "Click a key to rebind it. You can assign a single key or Shift + key combination.",
     "left_click_desc": "When ON, left-click opens menu and sword button attacks. When OFF, left-click attacks directly.",
