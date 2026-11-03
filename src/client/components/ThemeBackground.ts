@@ -400,10 +400,123 @@ class EmberScene implements Scene {
   }
 }
 
+// ─── Colour-only styles: drifting glow motes over a two-tone gradient ───────
+class DriftScene implements Scene {
+  private w = 0;
+  private h = 0;
+  private motes: {
+    x: number;
+    y: number;
+    r: number;
+    vx: number;
+    vy: number;
+    hue: 0 | 1;
+  }[] = [];
+  private bursts: { x: number; y: number; age: number }[] = [];
+
+  constructor(
+    private bgTop: string,
+    private bgBottom: string,
+    private colorA: string,
+    private colorB: string,
+  ) {}
+
+  resize(w: number, h: number) {
+    this.w = w;
+    this.h = h;
+    const n = Math.max(40, Math.round((w * h) / 16000));
+    this.motes = Array.from({ length: n }, () => ({
+      x: rand(0, w),
+      y: rand(0, h),
+      r: rand(1, 3.5),
+      vx: rand(-10, 10),
+      vy: rand(-18, -4),
+      hue: Math.random() < 0.5 ? 0 : 1,
+    }));
+  }
+
+  click(x: number, y: number) {
+    this.bursts.push({ x, y, age: 0 });
+    for (const m of this.motes) {
+      const dx = m.x - x;
+      const dy = m.y - y;
+      const d = Math.hypot(dx, dy) || 1;
+      if (d < 260) {
+        m.vx += (dx / d) * (260 - d) * 0.5;
+        m.vy += (dy / d) * (260 - d) * 0.5;
+      }
+    }
+  }
+
+  draw(ctx: CanvasRenderingContext2D, t: number, dt: number, p: Pointer) {
+    const { w, h } = this;
+    const bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, this.bgTop);
+    bg.addColorStop(1, this.bgBottom);
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, w, h);
+    if (p.active) {
+      const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 260);
+      glow.addColorStop(0, this.colorA + "33");
+      glow.addColorStop(1, this.colorA + "00");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, w, h);
+    }
+    for (const m of this.motes) {
+      if (p.active) {
+        const dx = p.x - m.x;
+        const dy = p.y - m.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < 180) {
+          m.vx += (dx / d) * 20 * dt;
+          m.vy += (dy / d) * 20 * dt;
+        }
+      }
+      m.vx *= 1 - 0.6 * dt;
+      m.vy += (-10 - m.vy) * 0.4 * dt;
+      m.x += m.vx * dt;
+      m.y += m.vy * dt;
+      if (m.y < -10) {
+        m.y = h + 10;
+        m.x = rand(0, w);
+      }
+      if (m.x < -10) m.x = w + 10;
+      if (m.x > w + 10) m.x = -10;
+      const twinkle = 0.55 + 0.45 * Math.sin(t * 3 + m.x * 0.05);
+      ctx.globalAlpha = twinkle;
+      ctx.fillStyle = m.hue === 0 ? this.colorA : this.colorB;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    for (const b of this.bursts) {
+      b.age += dt;
+      const r = b.age * 420;
+      ctx.strokeStyle = this.colorB;
+      ctx.globalAlpha = Math.max(0, 1 - b.age * 1.4);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    this.bursts = this.bursts.filter((b) => b.age < 0.8);
+  }
+}
+
 const SCENES: Partial<Record<UiTheme, () => Scene>> = {
   chrome: () => new ChromeScene(),
   neon: () => new NeonScene(),
   ember: () => new EmberScene(),
+  toxic: () => new DriftScene("#020a02", "#0f2a0a", "#a3e635", "#facc15"),
+  frost: () => new DriftScene("#06142b", "#0b2747", "#e0f2fe", "#a5f3fc"),
+  blood: () => new DriftScene("#0a0103", "#3b0612", "#fb7185", "#fbbf24"),
+  jungle: () => new DriftScene("#02140c", "#0b3b25", "#6ee7b7", "#fde047"),
+  vapor: () => new DriftScene("#1a0533", "#3b0a4f", "#f0abfc", "#5eead4"),
+  abyss: () => new DriftScene("#01060d", "#042f3a", "#2dd4bf", "#60a5fa"),
+  royal: () => new DriftScene("#12031f", "#2e0b4a", "#fde047", "#c084fc"),
+  terminal: () => new DriftScene("#000000", "#021a08", "#22c55e", "#4ade80"),
 };
 
 @customElement("theme-background")

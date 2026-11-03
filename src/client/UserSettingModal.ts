@@ -1,3 +1,9 @@
+import {
+  adminPanelOn,
+  isOwner,
+  setAdminPanel,
+  setReferralCode,
+} from "./OwnerAccess";
 import type { MapLayer } from "@openfront/engine-api/game/MapFiles";
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import { html, nothing } from "lit";
@@ -389,6 +395,19 @@ export class UserSettingModal extends BaseModal {
 
   private toggleDevMode() {
     this.userSettings.toggleDevMode();
+  }
+
+  private onReferralCode = async (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    const ok = await setReferralCode(input.value);
+    // Keep the code out of sight once it has been recognised.
+    if (ok) input.value = "";
+    this.requestUpdate();
+  };
+
+  private toggleAdminPanel() {
+    setAdminPanel(!adminPanelOn());
+    this.requestUpdate();
   }
 
   private toggleEmojis() {
@@ -1851,6 +1870,39 @@ export class UserSettingModal extends BaseModal {
         .checked=${this.userSettings.devMode()}
         @change=${this.toggleDevMode}
       ></setting-toggle>
+
+      <div
+        class="flex flex-col gap-2 rounded-lg border border-white/10 bg-white/5 p-3"
+      >
+        <label for="referral-code-input" class="text-sm font-bold text-white"
+          >${translateText("user_setting.referral_label")}</label
+        >
+        <input
+          id="referral-code-input"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="32"
+          class="w-full rounded-md border border-white/20 bg-black/40 px-3 py-2 text-white"
+          placeholder=${translateText("user_setting.referral_placeholder")}
+          @change=${this.onReferralCode}
+        />
+        ${isOwner()
+          ? html`<span class="text-xs font-bold text-emerald-300"
+              >✓ ${translateText("user_setting.referral_ok")}</span
+            >`
+          : nothing}
+      </div>
+
+      ${isOwner()
+        ? html`<setting-toggle
+            label="${translateText("user_setting.admin_panel_label")}"
+            description="${translateText("user_setting.admin_panel_desc")}"
+            id="admin-panel-toggle"
+            .checked=${adminPanelOn()}
+            @change=${this.toggleAdminPanel}
+          ></setting-toggle>`
+        : nothing}
 
       <!-- 🪞 UI style (also on the main menu, top right) -->
       <setting-select

@@ -139,10 +139,16 @@ export class PlayerView implements PlayerLike {
     const theme = themeProvider.current();
 
     const pattern = this.cosmetics.pattern;
+    // AlexFront clans: outside team games a clan shares one colour, picked
+    // from its tag, over any colour or pattern its members wear.
+    const clan =
+      this.team() === null && this.type() === PlayerType.Human
+        ? clanColor(this.clanTag())
+        : null;
     const colors = resolvePlayerColors(
       theme,
-      theme.territoryColor(this),
-      this.cosmetics,
+      clan ?? theme.territoryColor(this),
+      clan ? {} : this.cosmetics,
       this.team(),
       this.game.myClientID() === this.static.clientID,
     );
@@ -639,4 +645,16 @@ export class PlayerView implements PlayerLike {
       ) / 10
     );
   }
+}
+
+/** One colour per clan tag (same tag, same colour, on every client). */
+export function clanColor(tag: string | null): Colord | null {
+  const t = tag?.trim().toUpperCase();
+  if (!t) return null;
+  let h = 2166136261;
+  for (let i = 0; i < t.length; i++) {
+    h ^= t.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return colord({ h: (h >>> 0) % 360, s: 72, l: 48 });
 }

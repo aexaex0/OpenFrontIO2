@@ -1,3 +1,4 @@
+import { sameClan } from "./Clans";
 import { GameMap, TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   Cell,
@@ -917,6 +918,8 @@ export class GameImpl implements Game {
         `${breaker} not allied with ${other}, cannot break alliance`,
       );
     }
+    // AlexFront clans: clanmates stay allied for the whole match.
+    if (sameClan(breaker, other)) return;
     const duration = this._ticks - alliance.createdAt();
     if (!other.isTraitor() && !other.isDisconnected()) {
       breaker.markTraitor();

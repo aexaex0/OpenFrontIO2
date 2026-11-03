@@ -46,6 +46,7 @@ import { TribeExecutionSnapshot } from "../execution/TribeExecution";
 import { UpgradeStructureExecutionSnapshot } from "../execution/UpgradeStructureExecution";
 import { WarshipExecutionSnapshot } from "../execution/WarshipExecution";
 import { WinCheckExecutionSnapshot } from "../execution/WinCheckExecution";
+import { ClanAllianceExecutionSnapshot } from "../execution/ClanAllianceExecution";
 import type { ExecutionSnapshotType } from "./ExecutionSnapshot";
 
 /**
@@ -103,4 +104,5 @@ export const EXECUTION_SNAPSHOT_TYPES = [
   UpgradeStructureExecutionSnapshot,
   WarshipExecutionSnapshot,
   WinCheckExecutionSnapshot,
+  ClanAllianceExecutionSnapshot,
 ] as unknown as readonly ExecutionSnapshotType<unknown>[];

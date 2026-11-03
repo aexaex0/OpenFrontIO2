@@ -1,3 +1,4 @@
+import { ClanAllianceExecution } from "./execution/ClanAllianceExecution";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   AllPlayers,
@@ -187,6 +188,7 @@ export class GameRunner {
       );
     }
     this.game.addExecution(new WinCheckExecution());
+    this.game.addExecution(new ClanAllianceExecution());
     if (this.game.config().doomsdayClockConfig().enabled) {
       this.game.addExecution(new DoomsdayClockExecution());
     }

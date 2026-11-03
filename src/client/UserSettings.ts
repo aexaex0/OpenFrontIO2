@@ -208,7 +208,20 @@ export const PLAYER_STATS_COLUMNS_KEY = "settings.leaderboardColumns";
 export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
 export const UI_THEME_KEY = "settings.uiTheme";
-export const UI_THEMES = ["default", "chrome", "neon", "ember"] as const;
+export const UI_THEMES = [
+  "default",
+  "chrome",
+  "neon",
+  "ember",
+  "toxic",
+  "frost",
+  "blood",
+  "jungle",
+  "vapor",
+  "abyss",
+  "royal",
+  "terminal",
+] as const;
 export type UiTheme = (typeof UI_THEMES)[number];
 const STATS_COLUMNS_KEYS: Record<StatsTableKind, string> = {
   player: PLAYER_STATS_COLUMNS_KEY,

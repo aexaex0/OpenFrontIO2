@@ -1,3 +1,4 @@
+import { noteReport } from "./OwnerReports";
 import {
   GameMode,
   GameType,
@@ -2184,6 +2185,15 @@ export class GameServer {
     const key = `${client.clientID}:${reported}`;
     if (this.reports.has(key)) return;
     this.reports.set(key, { reportedBy: client.clientID, reported, reason });
+    const nameOf = (id: string) =>
+      this.gameStartInfo.players.find((p) => p.clientID === id)?.username ?? id;
+    noteReport({
+      at: Date.now(),
+      gameID: this.id,
+      reporter: nameOf(client.clientID),
+      reported: nameOf(reported),
+      reason: String(reason),
+    });
     this.log.info("player reported", {
       clientID: client.clientID,
       reported,

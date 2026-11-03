@@ -1,3 +1,5 @@
+import { OwnerAdminPanel } from "./hud/OwnerAdminPanel";
+import { adminPanelOn } from "./OwnerAccess";
 import { ClientID, GameID } from "@openfront/engine-api/Schemas";
 import {
   ALLY_PING_COOLDOWN_MS,
@@ -996,6 +998,9 @@ export class ClientGameRunner {
   public start() {
     this.soundManager.playBackgroundMusic();
     console.log("starting client game");
+    if (adminPanelOn()) {
+      this.adminPanel = new OwnerAdminPanel(this.gameView, this.lobby.gameID);
+    }
 
     this.isActive = true;
     this.lastMessageTime = Date.now();
@@ -1225,7 +1230,11 @@ export class ClientGameRunner {
     this.transport.rejoinGame(0);
   }
 
+  private adminPanel: OwnerAdminPanel | null = null;
+
   public stop() {
+    this.adminPanel?.dispose();
+    this.adminPanel = null;
     this.soundManager.dispose();
     this.graphicsListenerAbort?.abort();
     // Detach the input handler's window/canvas listeners and its EventBus

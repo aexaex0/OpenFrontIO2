@@ -148,6 +148,14 @@
   "account_settings_modal": {
     "title": "Account Settings"
   },
+  "admin_panel": {
+    "dev_mode": "Dev mode (Lower Brightness)",
+    "game_info": "Game {id} · {players} players ({humans} human)",
+    "no_reports": "No reports yet",
+    "reports": "Latest reports",
+    "this_game": "This game",
+    "title": "Admin"
+  },
   "ban_notice": {
     "appeal": "If you believe this is a mistake, contact us on Discord.",
     "category": {
@@ -2371,11 +2379,19 @@
     "title": "Tutorial"
   },
   "ui_theme": {
+    "abyss": "Deep Abyss",
+    "blood": "Blood Moon",
     "chrome": "Chrome & Silver",
     "default": "Classic",
     "ember": "War Ember",
+    "frost": "Frostbite",
+    "jungle": "Lost Jungle",
     "neon": "Neon Grid",
-    "picker": "UI style"
+    "picker": "UI style",
+    "royal": "Royal Velvet",
+    "terminal": "Hacker Terminal",
+    "toxic": "Toxic Waste",
+    "vapor": "Vaporwave"
   },
   "unit_type": {
     "atom_bomb": "Atom Bomb",
@@ -2395,6 +2411,8 @@
     "message": "A new version of AlexFront is available. The page will now refresh to update."
   },
   "user_setting": {
+    "admin_panel_desc": "Show the admin panel in games",
+    "admin_panel_label": "Admin panel",
     "alert_frame_desc": "Toggle the alert frame. When enabled, the frame will be displayed when you are betrayed or attacked over land.",
     "alert_frame_label": "Alert Frame",
     "ally_keybinds": "Ally Keybinds",
@@ -2556,6 +2574,9 @@
     "press_a_key": "Press a key",
     "quick_chat": "Quick Chat",
     "quick_chat_desc": "Open quick chat for the player whose tile is under your cursor.",
+    "referral_label": "Referral code:",
+    "referral_ok": "Code accepted",
+    "referral_placeholder": "Enter a code",
     "render_debug_gui": "Render Debug GUI",
     "render_debug_gui_desc": "Toggle the renderer tuning panel",
     "replay_viewer_desc": "Open replays with rewind controls. Off opens the classic replay",

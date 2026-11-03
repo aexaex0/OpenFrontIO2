@@ -10,6 +10,14 @@ const SWATCHES: Record<UiTheme, [string, string]> = {
   chrome: ["#f8f9fb", "#5b6470"],
   neon: ["#22d3ee", "#a855f7"],
   ember: ["#fcd34d", "#7c2d12"],
+  toxic: ["#bef264", "#0f2a0a"],
+  frost: ["#e0f2fe", "#0b2747"],
+  blood: ["#fda4af", "#3b0612"],
+  jungle: ["#fde68a", "#0b3b25"],
+  vapor: ["#f9a8d4", "#3b0a4f"],
+  abyss: ["#5eead4", "#042f3a"],
+  royal: ["#fde047", "#2e0b4a"],
+  terminal: ["#4ade80", "#021a08"],
 };
 
 /** The main menu's UI style switcher (top right). */
@@ -75,7 +83,7 @@ export class ThemePicker extends LitElement {
         ${this.open
           ? html`<ul
               role="listbox"
-              class="absolute right-0 top-full z-[100] mt-2 w-52 overflow-hidden rounded-xl border border-white/15 bg-neutral-900/95 p-1 shadow-xl backdrop-blur chrome:chrome-panel"
+              class="absolute right-0 top-full z-[100] mt-2 w-52 max-h-[70vh] overflow-y-auto rounded-xl border border-white/15 bg-neutral-900/95 p-1 shadow-xl backdrop-blur chrome:chrome-panel"
             >
               ${UI_THEMES.map(
                 (t) =>

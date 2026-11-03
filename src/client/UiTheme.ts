@@ -17,6 +17,14 @@ const STYLE_CLASSES: Record<UiTheme, string | null> = {
   chrome: null,
   neon: "theme-neon",
   ember: "theme-ember",
+  toxic: "theme-toxic",
+  frost: "theme-frost",
+  blood: "theme-blood",
+  jungle: "theme-jungle",
+  vapor: "theme-vapor",
+  abyss: "theme-abyss",
+  royal: "theme-royal",
+  terminal: "theme-terminal",
 };
 
 /** Fired on globalThis when the setting changes; detail is the new theme. */
