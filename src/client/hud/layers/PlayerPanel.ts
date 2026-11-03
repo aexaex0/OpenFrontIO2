@@ -31,6 +31,7 @@ import {
   SwapRocketDirectionEvent,
 } from "../../InputHandler";
 import { lobbyLevelBadge } from "../../LobbyRosterLevels";
+import { ownerRealName } from "../../OwnerRealNames";
 import {
   PlayerReportedEvent,
   SendAllianceRequestIntentEvent,
@@ -705,9 +706,22 @@ export class PlayerPanel extends LitElement implements Controller {
             </span>`
           : html``}
       </div>
-      ${this.renderTraitorBadge(other)}
+      ${this.renderRealName(other)} ${this.renderTraitorBadge(other)}
       ${this.renderRelationPillIfNation(other, my)}
     `;
+  }
+
+  /** AlexFront: the player's real name, shown to the owner only. */
+  private renderRealName(other: PlayerView) {
+    if (other.type() !== PlayerType.Human) return html``;
+    const name = ownerRealName(this.g.gameID(), other.clientID(), () =>
+      this.requestUpdate(),
+    );
+    if (name === null) return html``;
+    return html`<div class="mt-1 text-sm text-amber-200" data-real-name>
+      ${translateText("player_panel.real_name")}:
+      <span class="font-semibold">${name}</span>
+    </div>`;
   }
 
   private renderResources(other: PlayerView) {

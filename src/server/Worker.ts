@@ -1,3 +1,4 @@
+import { noteRealName, realNamesFor } from "./RealNames";
 import { isOwnerKey, recentReports } from "./OwnerReports";
 import { ID, isValidGameID } from "@openfront/engine-api/Schemas";
 import { getLastWinner } from "./LastWinner";
@@ -473,6 +474,15 @@ export async function startWorker() {
     res.json({ reports: recentReports() });
   });
 
+  // AlexFront: real names of a game's players, for the owner only.
+  app.get("/api/owner/realnames/:gameID", (req, res) => {
+    res.set("Cache-Control", "no-store");
+    if (!isOwnerKey(req.get("x-owner-key"))) {
+      return res.status(404).json({ error: "Not found" });
+    }
+    res.json({ names: realNamesFor(req.params.gameID) });
+  });
+
   app.get("/api/live_games", (_req, res) => {
     res.json({ games: gm.liveGames().map((g) => g.liveInfo()) });
   });
@@ -864,6 +874,7 @@ export async function startWorker() {
           levelBadge,
         );
 
+        noteRealName(clientMsg.gameID, client.clientID, clientMsg.realName);
         const joinResult = gm.joinClient(client, clientMsg.gameID);
 
         if (joinResult === "not_found") {

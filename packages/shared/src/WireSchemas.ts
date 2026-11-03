@@ -734,6 +734,10 @@ export const ClientJoinMessageSchema = z.object({
   // header byte: then a stale bundle's frame (which lacks it) still decodes,
   // reaches the gitCommit check above, and the player is told to refresh.
   platform: ClientPlatformSchema.optional(),
+  // AlexFront: the player's real name, only ever shown to the owner. After
+  // platform for the same reason platform is last: a stale frame lacks it and
+  // its presence bit still fits in the same header byte (bit 7 of 8).
+  realName: z.string().min(1).max(40).optional(),
 });
 
 export const ClientRejoinMessageSchema = z.object({

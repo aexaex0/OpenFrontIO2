@@ -4,6 +4,14 @@ import { GameEvent } from "@openfront/shared/EventBus";
 /** The orbital-laser hotkey was pressed (fires at the tile under the cursor). */
 export class OrbitalLaserKeyEvent implements GameEvent {}
 
+/**
+ * The hotbar's laser button was toggled (armed: the next map click fires
+ * there), or a shot went off and the button should reset.
+ */
+export class OrbitalLaserArmEvent implements GameEvent {
+  constructor(public readonly armed: boolean) {}
+}
+
 /** Send an orbital laser strike on this tile to the server. */
 export class SendOrbitalLaserIntentEvent implements GameEvent {
   constructor(public readonly tile: TileRef) {}

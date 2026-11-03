@@ -1,4 +1,5 @@
 import {
+  OrbitalLaserArmEvent,
   OrbitalLaserKeyEvent,
   OrbitalLaserOverlay,
   SendOrbitalLaserIntentEvent,
@@ -1027,6 +1028,9 @@ export class ClientGameRunner {
     );
     this.eventBus.on(AllyPingKeyEvent, this.pingUnderCursor.bind(this));
     this.eventBus.on(OrbitalLaserKeyEvent, this.laserUnderCursor.bind(this));
+    this.eventBus.on(OrbitalLaserArmEvent, (e) => {
+      this.laserArmed = e.armed;
+    });
     this.laserOverlay = new OrbitalLaserOverlay(
       (x, y) =>
         this.renderer.transformHandler.worldToScreenCoordinates(new Cell(x, y)),
@@ -1247,6 +1251,8 @@ export class ClientGameRunner {
 
   private adminPanel: OwnerAdminPanel | null = null;
   private laserOverlay: OrbitalLaserOverlay | null = null;
+  /** The hotbar's laser button is on: the next map click fires the laser. */
+  private laserArmed = false;
 
   public stop() {
     this.adminPanel?.dispose();
@@ -1302,6 +1308,12 @@ export class ClientGameRunner {
       return;
     }
     if (this.gameView.inSpawnPhase()) {
+      return;
+    }
+    if (this.laserArmed) {
+      this.laserArmed = false;
+      this.eventBus.emit(new OrbitalLaserArmEvent(false));
+      this.fireLaser(tile);
       return;
     }
     if (this.myPlayer === null) {
@@ -1629,12 +1641,15 @@ export class ClientGameRunner {
 
   private lastAllyPingMs = 0;
 
-  // Marks the tile under the cursor for allies and teammates.
   /** AlexFront superweapon: fire the orbital laser at the tile under the cursor. */
   private laserUnderCursor(): void {
     const tile = this.getTileUnderCursor();
+    if (tile !== null) this.fireLaser(tile);
+  }
+
+  private fireLaser(tile: TileRef): void {
     const me = this.gameView.myPlayer();
-    if (tile === null || me === null || !me.isAlive()) return;
+    if (me === null || !me.isAlive()) return;
     if (me.units(UnitType.MissileSilo).length === 0) {
       showToast(translateText("orbital_laser.needs_silo"), "red");
       return;
@@ -1661,6 +1676,7 @@ export class ClientGameRunner {
     }
   }
 
+  // Marks the tile under the cursor for allies and teammates.
   private pingUnderCursor(): void {
     const tile = this.getTileUnderCursor();
     if (tile === null) return;

@@ -6,6 +6,8 @@
 - 🛰️ Új szuperfegyver: orbitális lézer (O gomb, annyiba kerül, mint egy MIRV, kell hozzá rakétasiló)
 - 🎨 8 új téma: Toxic Waste, Frostbite, Blood Moon, Lost Jungle, Vaporwave, Deep Abyss, Royal Velvet, Hacker Terminal
 - ⏸️ Esc menüben látod a meccs nehézségét és a módosítókat
+- 🛰️ Az orbitális lézer gombja a MIRV után a gyorssávon: rákattintasz, aztán a térképre
+- 🎨 A témák már az alsó panelt, a támadásokat és a ranglistát is színezik
 
 👀 **2026. október 16. (5. rész)**
 

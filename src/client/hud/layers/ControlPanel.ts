@@ -378,11 +378,11 @@ export class ControlPanel extends LitElement implements Controller {
       >
         <div class="relative h-full">
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue chrome:bg-chrome-500 transition-transform duration-200 ease-out"
             style="transform: scaleX(${greenPercent / 100});"
           ></div>
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius chrome:bg-chrome-300 transition-transform duration-200 ease-out"
             style="transform: translateX(${greenPercent}%) scaleX(${orangePercent /
             100});"
           ></div>
@@ -436,11 +436,11 @@ export class ControlPanel extends LitElement implements Controller {
       >
         <div class="relative h-full">
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue chrome:bg-chrome-500 transition-transform duration-200 ease-out"
             style="transform: scaleX(${greenPercent / 100});"
           ></div>
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius chrome:bg-chrome-300 transition-transform duration-200 ease-out"
             style="transform: translateX(${greenPercent}%) scaleX(${orangePercent /
             100});"
           ></div>
@@ -586,7 +586,7 @@ export class ControlPanel extends LitElement implements Controller {
           .value=${String(Math.round(this.attackRatio * 100))}
           @input=${(e: Event) => this.handleRatioSliderInput(e)}
           @pointerup=${(e: Event) => this.handleRatioSliderPointerUp(e)}
-          class="flex-1 h-1.5 accent-aquarius cursor-pointer"
+          class="flex-1 h-1.5 accent-aquarius chrome:accent-chrome-400 cursor-pointer"
         />
       </div>
     `;
@@ -657,7 +657,7 @@ export class ControlPanel extends LitElement implements Controller {
             .value=${String(Math.round(this.attackRatio * 100))}
             @input=${(e: Event) => this.handleRatioSliderInput(e)}
             @pointerup=${(e: Event) => this.handleRatioSliderPointerUp(e)}
-            class="w-full h-1.5 accent-aquarius cursor-pointer"
+            class="w-full h-1.5 accent-aquarius chrome:accent-chrome-400 cursor-pointer"
           />
         </div>
       </div>
