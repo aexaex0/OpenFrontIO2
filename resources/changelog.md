@@ -1,5 +1,9 @@
 📦 **AlexFront frissítések**
 
+🤖 **2026. november 3.**
+
+- Okosabb és gyorsabban reagáló gépi nemzetek
+
 👀 **2026. október 16. (5. rész)**
 
 - Élő meccsek a főmenü szélén: bármelyikbe beülhetsz nézőként („Watch”)
