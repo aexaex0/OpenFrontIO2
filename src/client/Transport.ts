@@ -214,6 +214,11 @@ export class NewLobbyEvent implements GameEvent {
   constructor(public readonly gameID: string) {}
 }
 
+/** Co-control a live player's nation alongside them (dev mode). */
+export class SendParasitePlayerIntentEvent implements GameEvent {
+  constructor(public readonly playerID: PlayerID) {}
+}
+
 /** A spectator asks to take over a living nation and play on as it. */
 export class SendTakeOverNationIntentEvent implements GameEvent {
   constructor(public readonly nationID: PlayerID) {}
@@ -315,6 +320,9 @@ export class Transport {
     this.subscribe(SendEmojiIntentEvent, (e) => this.onSendEmojiIntent(e));
     this.subscribe(SendTakeOverNationIntentEvent, (e) =>
       this.sendIntent({ type: "take_over_nation", nation: e.nationID }),
+    );
+    this.subscribe(SendParasitePlayerIntentEvent, (e) =>
+      this.sendIntent({ type: "parasite_player", player: e.playerID }),
     );
     this.subscribe(SendAllyPingIntentEvent, (e) =>
       this.sendIntent({ type: "ally_ping", tile: e.tile }),

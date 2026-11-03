@@ -12,6 +12,7 @@ import { AllianceRejectExecution } from "./alliance/AllianceRejectExecution";
 import { AllianceRequestExecution } from "./alliance/AllianceRequestExecution";
 import { BreakAllianceExecution } from "./alliance/BreakAllianceExecution";
 import { AllyPingExecution } from "./AllyPingExecution";
+import { ParasitePlayerExecution } from "./ParasitePlayerExecution";
 import { TakeOverNationExecution } from "./TakeOverNationExecution";
 import { AttackExecution } from "./AttackExecution";
 import { BoatRetreatExecution } from "./BoatRetreatExecution";
@@ -63,6 +64,9 @@ export class Executor {
     // The one intent from a client that has no player yet.
     if (intent.type === "take_over_nation") {
       return new TakeOverNationExecution(intent.clientID, intent.nation);
+    }
+    if (intent.type === "parasite_player") {
+      return new ParasitePlayerExecution(intent.clientID, intent.player);
     }
     const player = this.mg.playerByClientID(intent.clientID);
     if (!player) {

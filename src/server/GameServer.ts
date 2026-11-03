@@ -464,11 +464,12 @@ export class GameServer {
       }
 
       case "take_over_nation": {
-        // A spectator steps in as a nation. First come, first served per
-        // nation; the engine re-checks (alive, still a nation) for everyone.
+        // A spectator (or a player whose nation died) steps in as a nation.
+        // First come, first served per nation; the engine re-checks (alive,
+        // still a nation, the client has no living player) for everyone.
         const client = this.clients.get(stamped.clientID);
-        if (client === undefined || !client.spectator) {
-          return finish({ status: 403, error: "only spectators take over" });
+        if (client === undefined) {
+          return finish({ status: 403, error: "unknown client" });
         }
         if (!this.hasStarted()) {
           return finish({ status: 409, error: "game not started" });
@@ -483,6 +484,22 @@ export class GameServer {
           clientID: stamped.clientID,
           nation: stamped.nation,
         });
+        this.addIntent(stamped);
+        return finish({ status: 200 });
+      }
+
+      case "parasite_player": {
+        // A client with no living player co-controls a live player; the
+        // engine checks the rest.
+        const client = this.clients.get(stamped.clientID);
+        if (client === undefined) {
+          return finish({ status: 403, error: "unknown client" });
+        }
+        if (!this.hasStarted()) {
+          return finish({ status: 409, error: "game not started" });
+        }
+        // From now on this client plays: its intents pass the spectator block.
+        client.spectator = false;
         this.addIntent(stamped);
         return finish({ status: 200 });
       }

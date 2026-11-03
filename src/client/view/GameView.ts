@@ -107,6 +107,8 @@ export class GameView implements GameLike {
   private _firstPopulate = true;
 
   private _myPlayer: PlayerView | null = null;
+  /** The live player we co-control (dev mode), if any. */
+  private _coControlled: PlayerID | null = null;
 
   // ── populateFrame dirty flags ──────────────────────────────────────────
   // The derived structures below only depend on rarely-changing player
@@ -386,7 +388,12 @@ export class GameView implements GameLike {
     applyPackedAttackTroops(gu.packedAttackUpdates, stateOf);
 
     if (this._myClientID) {
-      this._myPlayer ??= this.playerByClientID(this._myClientID);
+      // Re-resolved while we have no living player: after a nation takeover
+      // or while co-controlling someone, we act as that living player.
+      if (this._myPlayer === null || !this._myPlayer.isAlive()) {
+        this._myPlayer =
+          this.playerByClientID(this._myClientID) ?? this._myPlayer;
+      }
     }
 
     for (const unit of this._units.values()) {
@@ -797,15 +804,24 @@ export class GameView implements GameLike {
     return this.player(playerId);
   }
 
+  /** Mirrors the engine: own living player, else co-controlled, else own. */
   playerByClientID(id: ClientID): PlayerView | null {
-    const player =
-      Array.from(this._players.values()).filter(
-        (p) => p.clientID() === id,
-      )[0] ?? null;
-    if (player === null) {
-      return null;
+    let own: PlayerView | null = null;
+    for (const p of this._players.values()) {
+      if (p.clientID() !== id) continue;
+      if (p.isAlive()) return p;
+      own ??= p;
     }
-    return player;
+    if (id === this._myClientID && this._coControlled !== null) {
+      const host = this._players.get(this._coControlled);
+      if (host !== undefined && host.isAlive()) return host;
+    }
+    return own;
+  }
+
+  /** We asked to co-control this player (the engine applies it). */
+  setCoControlled(id: PlayerID | null): void {
+    this._coControlled = id;
   }
   hasPlayer(id: PlayerID): boolean {
     return false;

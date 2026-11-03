@@ -6,8 +6,8 @@ import { execSnapshotType } from "../snapshot/ExecutionSnapshot";
 import type { ExecRecord } from "../snapshot/SnapshotContext";
 
 /**
- * A spectator (a client with no player of its own) takes control of a living
- * nation and plays on as it. The nation's AI stops (NationExecution sees the
+ * A spectator (a client with no player of its own) or a player whose own
+ * nation died takes control of a living nation and plays on as it. The nation's AI stops (NationExecution sees the
  * player is no longer a Nation) and the client's intents drive it from now
  * on. Finishes inside init, so it is never alive at a tick boundary.
  */
@@ -22,11 +22,12 @@ export class TakeOverNationExecution implements Execution {
   init(mg: Game, ticks: number): void {
     this.active = false;
     if (mg.inSpawnPhase()) return;
-    // Already playing (or already took a nation over).
-    if (mg.playerByClientID(this.clientID) !== null) return;
+    // Still alive (own player, a nation taken over, or one co-controlled).
+    if (mg.playerByClientID(this.clientID)?.isAlive()) return;
     if (!mg.hasPlayer(this.nationID)) return;
     const nation = mg.player(this.nationID);
     if (nation.type() !== PlayerType.Nation || !nation.isAlive()) return;
+    mg.clearCoController(this.clientID);
     nation.assumeControl(this.clientID);
   }
 

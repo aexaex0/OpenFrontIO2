@@ -406,6 +406,16 @@ export class UserSettings {
     return this.getBool("settings.emojis", true);
   }
 
+  /**
+   * AlexFront's hidden dev mode. Listed in the settings as "Lower
+   * Brightness" so nobody looks twice; it changes no brightness at all.
+   * It unlocks taking over nations after you die and riding along on a
+   * live player's nation (see PlayerPanel).
+   */
+  devMode() {
+    return this.getBool("settings.lowerBrightness", false);
+  }
+
   uiTheme(): UiTheme {
     // New players start on Chrome & Silver, this fork's signature look.
     const stored = this.getString(UI_THEME_KEY, "chrome");
@@ -501,6 +511,10 @@ export class UserSettings {
 
   toggleEmojis() {
     this.setBool("settings.emojis", !this.emojis());
+  }
+
+  toggleDevMode() {
+    this.setBool("settings.lowerBrightness", !this.devMode());
   }
 
   // Performance overlay specifically needs a direct setter for Shift-D

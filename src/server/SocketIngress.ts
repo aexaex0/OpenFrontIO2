@@ -186,10 +186,12 @@ export class SocketIngress {
     if (
       client.spectator &&
       SPECTATOR_BLOCKED_MESSAGES.has(clientMsg.type) &&
-      // AlexFront: a spectator may take over a nation (GameServer decides).
+      // AlexFront: a spectator may take over a nation or co-control a
+      // player (GameServer decides).
       !(
         clientMsg.type === "intent" &&
-        clientMsg.intent.type === "take_over_nation"
+        (clientMsg.intent.type === "take_over_nation" ||
+          clientMsg.intent.type === "parasite_player")
       )
     ) {
       // Debug-only: a spectator probing blocked types produces one line per

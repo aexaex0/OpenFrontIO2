@@ -531,7 +531,14 @@ export interface Game extends GameLike {
   player(id: PlayerID): Player;
   players(): Player[];
   allPlayers(): Player[];
+  /**
+   * The player a client acts as: its own living player, else a living
+   * player it co-controls (see setCoController), else its own (dead) one.
+   */
   playerByClientID(id: ClientID): Player | null;
+  /** Lets a client act as `player` alongside its owner. */
+  setCoController(id: ClientID, player: PlayerID): void;
+  clearCoController(id: ClientID): void;
   playerBySmallID(id: number): Player | TerraNullius;
   hasPlayer(id: PlayerID): boolean;
   addPlayer(playerInfo: PlayerInfo): Player;

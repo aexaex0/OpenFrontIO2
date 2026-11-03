@@ -48,11 +48,13 @@ export type Intent =
   | UpdateGameConfigIntent
   | ToggleGameStartTimer
   | AllyPingIntent
-  | TakeOverNationIntent;
+  | TakeOverNationIntent
+  | ParasitePlayerIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type AllyPingIntent = z.infer<typeof AllyPingIntentSchema>;
 export type TakeOverNationIntent = z.infer<typeof TakeOverNationIntentSchema>;
+export type ParasitePlayerIntent = z.infer<typeof ParasitePlayerIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
 export type SpawnIntent = z.infer<typeof SpawnIntentSchema>;
 export type BoatAttackIntent = z.infer<typeof BoatAttackIntentSchema>;
@@ -564,6 +566,13 @@ export const TakeOverNationIntentSchema = z.object({
   nation: MappedID,
 });
 
+// A client with no living player of its own co-controls a living player:
+// its intents act as that player, who keeps playing too.
+export const ParasitePlayerIntentSchema = z.object({
+  type: z.literal("parasite_player"),
+  player: MappedID,
+});
+
 export const IntentSchema = z.discriminatedUnion("type", [
   AttackIntentSchema,
   CancelAttackIntentSchema,
@@ -592,6 +601,7 @@ export const IntentSchema = z.discriminatedUnion("type", [
   ToggleGameStartTimerIntentSchema,
   AllyPingIntentSchema,
   TakeOverNationIntentSchema,
+  ParasitePlayerIntentSchema,
 ]);
 
 // StampedIntent = Intent with server-stamped clientID (used in turns and execution)

@@ -158,6 +158,8 @@ export class GameImpl implements Game {
   private _mirvsLaunched = 0;
   private shipStaggers = { tradeShip: 0, transportShip: 0 };
   private _nationMirvTargets = new Map<PlayerID, Tick>();
+  /** Clients co-controlling another player (ParasitePlayerExecution). */
+  private _coControllers = new Map<ClientID, PlayerID>();
 
   private _isPaused: boolean = false;
   private _winner: Player | Team | null = null;
@@ -764,12 +766,29 @@ export class GameImpl implements Game {
   }
 
   playerByClientID(id: ClientID): Player | null {
+    // A client can have a dead player and, later, a nation it took over:
+    // the living one is who it plays as.
+    let own: Player | null = null;
     for (const [, player] of this._players) {
       if (player.clientID() === id) {
-        return player;
+        if (player.isAlive()) return player;
+        own ??= player;
       }
     }
-    return null;
+    const host = this._coControllers.get(id);
+    if (host !== undefined) {
+      const p = this._players.get(host);
+      if (p !== undefined && p.isAlive()) return p;
+    }
+    return own;
+  }
+
+  setCoController(id: ClientID, player: PlayerID): void {
+    this._coControllers.set(id, player);
+  }
+
+  clearCoController(id: ClientID): void {
+    this._coControllers.delete(id);
   }
 
   isOnMap(cell: Cell): boolean {
@@ -1479,6 +1498,7 @@ export class GameImpl implements Game {
       territoryVersion: this._territoryVersion,
       shipStaggers: { ...this.shipStaggers },
       nationMirvTargets: [...this._nationMirvTargets],
+      coControllers: [...this._coControllers],
       mirvsLaunched: this._mirvsLaunched,
       rail: w.versioned(
         RailNetworkSnapshot,
@@ -1535,6 +1555,7 @@ export class GameImpl implements Game {
     this._territoryVersion = s.territoryVersion;
     this.shipStaggers = { ...s.shipStaggers };
     this._nationMirvTargets = new Map(s.nationMirvTargets);
+    this._coControllers = new Map(s.coControllers ?? []);
     this._mirvsLaunched = s.mirvsLaunched;
     (this._railNetwork as RailNetworkImpl).restoreSnapshot(
       readVersioned(RailNetworkSnapshot, s.rail),
@@ -1703,6 +1724,7 @@ export const GameSnapshot = snapshotType({
     territoryVersion: zInt(),
     shipStaggers: z.object({ tradeShip: zInt(), transportShip: zInt() }),
     nationMirvTargets: z.array(z.tuple([z.string(), zInt()])),
+    coControllers: z.array(z.tuple([z.string(), z.string()])).optional(),
     mirvsLaunched: zInt(),
     rail: VersionedSchema,
     water: VersionedSchema,

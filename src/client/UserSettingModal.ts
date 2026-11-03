@@ -387,6 +387,10 @@ export class UserSettingModal extends BaseModal {
     }, 5000);
   }
 
+  private toggleDevMode() {
+    this.userSettings.toggleDevMode();
+  }
+
   private toggleEmojis() {
     this.userSettings.toggleEmojis();
 
@@ -1838,6 +1842,14 @@ export class UserSettingModal extends BaseModal {
         id="emoji-toggle"
         .checked=${this.userSettings.emojis()}
         @change=${this.toggleEmojis}
+      ></setting-toggle>
+
+      <setting-toggle
+        label="${translateText("user_setting.lower_brightness_label")}"
+        description="${translateText("user_setting.lower_brightness_desc")}"
+        id="lower-brightness-toggle"
+        .checked=${this.userSettings.devMode()}
+        @change=${this.toggleDevMode}
       ></setting-toggle>
 
       <!-- 🪞 UI style (also on the main menu, top right) -->

@@ -40,6 +40,7 @@ import {
   SendEmojiIntentEvent,
   SendQuickChatEvent,
   SendTargetPlayerIntentEvent,
+  SendParasitePlayerIntentEvent,
   SendTakeOverNationIntentEvent,
 } from "../../Transport";
 import { UIState } from "../../UIState";
@@ -1027,6 +1028,45 @@ export class PlayerPanel extends LitElement implements Controller {
     `;
   }
 
+  /**
+   * Dev mode only (the "Lower Brightness" setting): co-control a live human
+   * player. They keep playing; our intents act as their nation too.
+   */
+  private renderParasite(other: PlayerView) {
+    if (
+      !this.userSettings.devMode() ||
+      this.g.config().isReplay() ||
+      this.g.inSpawnPhase() ||
+      other.type() !== PlayerType.Human ||
+      !other.isAlive() ||
+      other.clientID() === this.g.myClientID()
+    ) {
+      return "";
+    }
+    return html`
+      <ui-divider></ui-divider>
+      <button
+        type="button"
+        class="w-full rounded-lg border border-fuchsia-400/40 bg-fuchsia-500/20 px-3 py-2.5 text-sm font-black uppercase tracking-wider text-fuchsia-200 transition-colors hover:bg-fuchsia-500/30 cursor-pointer"
+        title=${translateText("player_panel.parasite_desc")}
+        @click=${(e: MouseEvent) => {
+          e.stopPropagation();
+          this.g.setCoControlled(other.id());
+          this.eventBus.emit(new SendParasitePlayerIntentEvent(other.id()));
+          showToast(
+            translateText("player_panel.parasiting", {
+              name: other.displayName(),
+            }),
+            "green",
+          );
+          this.hide();
+        }}
+      >
+        ${translateText("player_panel.parasite")}
+      </button>
+    `;
+  }
+
   private renderActions(my: PlayerView, other: PlayerView) {
     const myPlayer = this.g.myPlayer();
     const canDonateGold = this.actions?.interaction?.canDonateGold;
@@ -1329,9 +1369,20 @@ export class PlayerPanel extends LitElement implements Controller {
                         `
                       : my
                         ? // Dead (or not yet spawned) players still get to
-                          // report and, as host/admin, moderate.
-                          this.renderModeration(my, other, this.isAdminRole)
-                        : this.renderTakeOver(other)}
+                          // report and, as host/admin, moderate. With the
+                          // hidden dev mode on, a dead player can also take
+                          // a nation over or co-control a live player.
+                          html`${this.renderModeration(
+                            my,
+                            other,
+                            this.isAdminRole,
+                          )}
+                          ${this.userSettings.devMode()
+                            ? this.renderTakeOver(other)
+                            : ""}
+                          ${this.renderParasite(other)}`
+                        : html`${this.renderTakeOver(other)}
+                          ${this.renderParasite(other)}`}
                   </div>
                 </div>
               </div>
