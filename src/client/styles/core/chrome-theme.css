@@ -636,13 +636,10 @@
 }
 
 /* AlexFront: layouts for the in-game bottom panel (HudSkin.ts): the same
-   buttons in the same order with other shapes and fonts. Only shape, size
-   and type change here; colours stay with the UI theme. */
+   buttons in the same order with other shapes. Only shape and size change
+   here; the font and colours stay with the UI theme. */
 
-/* Round: circular buttons, soft humanist font. */
-.hud-skin-round {
-  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
-}
+/* Round: circular buttons. */
 .hud-skin-round .hud-btn {
   border-radius: 9999px;
 }
@@ -652,11 +649,7 @@
   transform: translateX(-50%);
 }
 
-/* Hex: hexagon buttons, condensed heavy type. */
-.hud-skin-hex {
-  font-family: Impact, "Arial Narrow", "Haettenschweiler", sans-serif;
-  letter-spacing: 0.04em;
-}
+/* Hex: hexagon buttons. */
 .hud-skin-hex .hud-btn {
   width: 2.5rem;
   border-radius: 0;
@@ -668,12 +661,7 @@
   transform: translateX(-50%);
 }
 
-/* Sharp: square corners, monospace terminal type, uppercase. */
-.hud-skin-sharp {
-  font-family:
-    ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
-  text-transform: uppercase;
-}
+/* Sharp: square corners, thick edge. */
 .hud-skin-sharp .hud-btn {
   border-radius: 0;
   border-width: 2px;
@@ -683,12 +671,7 @@
   border-radius: 0;
 }
 
-/* Pill: tall capsules with the key under the icon, rounded bold type. */
-.hud-skin-pill {
-  font-family:
-    "Arial Rounded MT Bold", "Nunito", "Segoe UI", system-ui, sans-serif;
-  font-weight: 700;
-}
+/* Pill: tall capsules with the key under the icon. */
 .hud-skin-pill .hud-btn {
   width: 2.1rem;
   height: 3rem;
@@ -703,10 +686,7 @@
   font-size: 10px;
 }
 
-/* Tile: wide flat tiles with a thick bottom edge, serif type. */
-.hud-skin-tile {
-  font-family: Georgia, "Times New Roman", serif;
-}
+/* Tile: flat tiles with a thick bottom edge. */
 .hud-skin-tile .hud-btn {
   border-radius: 3px;
   border-bottom-width: 4px;
@@ -714,5 +694,4 @@
 .hud-skin-tile .hud-key {
   left: auto;
   right: 0.2rem;
-  font-style: italic;
 }
