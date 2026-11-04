@@ -7,6 +7,7 @@ import {
   ORBITAL_LASER_CHARGE,
   ORBITAL_LASER_POINTS,
   ORBITAL_LASER_SPEED,
+  orbitalLaserCost,
 } from "@openfront/engine-lib/OrbitalLaser";
 import { zPlayerRef, zTile } from "@openfront/engine-lib/snapshot/SnapshotType";
 import { z } from "zod";
@@ -23,7 +24,8 @@ export { ORBITAL_LASER_CHARGE } from "@openfront/engine-lib/OrbitalLaser";
 const ALL_UNIT_TYPES = Object.values(UnitType) as UnitType[];
 
 /**
- * AlexFront's orbital laser: a superweapon for the price of a MIRV that
+ * AlexFront's orbital laser: a superweapon priced between a hydrogen bomb
+ * and a MIRV that
  * needs a missile silo like one. The player clicks three points (the 2nd
  * and 3rd within ORBITAL_LASER_AREA_RADIUS of the 1st); after a charge-up
  * the beam touches down on the 1st and sweeps to the 2nd and on to the 3rd.
@@ -48,7 +50,10 @@ export class OrbitalLaserExecution implements Execution {
       this.active = false;
       return;
     }
-    const cost = mg.unitInfo(UnitType.MIRV).cost(mg, this.player);
+    const cost = orbitalLaserCost(
+      mg.unitInfo(UnitType.MIRV).cost(mg, this.player),
+      mg.unitInfo(UnitType.HydrogenBomb).cost(mg, this.player),
+    );
     if (this.player.gold() < cost) {
       this.active = false;
       return;

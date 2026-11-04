@@ -8,7 +8,19 @@
  */
 export const ORBITAL_LASER_AREA_RADIUS = 195;
 /** Radius of the beam itself, in tiles. */
-export const ORBITAL_LASER_BEAM_RADIUS = 18;
+export const ORBITAL_LASER_BEAM_RADIUS = 27;
+
+/**
+ * Price: halfway between a hydrogen bomb's and a MIRV's (the engine and
+ * the hotbar both pass their current costs in).
+ */
+export function orbitalLaserCost(
+  mirvCost: bigint,
+  hydrogenCost: bigint,
+): bigint {
+  if (hydrogenCost <= 0n) return mirvCost;
+  return (mirvCost + hydrogenCost) / 2n;
+}
 /** Ticks between firing and the beam touching down (the charge-up). */
 export const ORBITAL_LASER_CHARGE = 30;
 /** Tiles the beam travels along its path per tick. */

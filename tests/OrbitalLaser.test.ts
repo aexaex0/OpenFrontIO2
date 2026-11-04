@@ -7,6 +7,7 @@ import {
   ORBITAL_LASER_AREA_RADIUS,
   ORBITAL_LASER_BEAM_RADIUS,
   ORBITAL_LASER_CHARGE,
+  orbitalLaserCost,
 } from "@openfront/engine-lib/OrbitalLaser";
 import { OrbitalLaserExecution } from "@openfront/engine/execution/OrbitalLaserExecution";
 import { Game, Player } from "@openfront/engine/game/Game";
@@ -105,5 +106,13 @@ describe("orbital laser", () => {
       [170, 100],
     ]);
     expect(victim.numTilesOwned()).toBe(tilesBefore);
+  });
+});
+
+describe("orbital laser price", () => {
+  test("is halfway between a hydrogen bomb and a MIRV", () => {
+    expect(orbitalLaserCost(35_000_000n, 5_000_000n)).toBe(20_000_000n);
+    // No hydrogen bomb price known: fall back to the MIRV's.
+    expect(orbitalLaserCost(35_000_000n, 0n)).toBe(35_000_000n);
   });
 });

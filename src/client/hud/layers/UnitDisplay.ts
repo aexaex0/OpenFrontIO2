@@ -11,6 +11,7 @@ import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import { Controller } from "../../Controller";
 import { ToggleStructureEvent } from "../../InputHandler";
+import { orbitalLaserCost } from "@openfront/engine-lib/OrbitalLaser";
 import { OrbitalLaserArmEvent } from "../../OrbitalLaser";
 import { UIState } from "../../UIState";
 import { UserSettings } from "../../UserSettings";
@@ -241,14 +242,25 @@ export class UnitDisplay extends LitElement implements Controller {
     `;
   }
 
-  /** AlexFront: the orbital laser, after the MIRV. Costs as much as one. */
+  private laserCost(): Gold {
+    return orbitalLaserCost(
+      this.cost(UnitType.MIRV),
+      this.cost(UnitType.HydrogenBomb),
+    );
+  }
+
+  /** AlexFront: the orbital laser, after the MIRV. */
   private renderLaserItem(hotkey: string) {
     if (this.game.config().isUnitDisabled(UnitType.MIRV)) return html``;
     const displayHotkey = hotkey
       .replace("Digit", "")
       .replace("Key", "")
       .toUpperCase();
-    const ready = this.canBuild(UnitType.MIRV);
+    const me = this.game?.myPlayer();
+    const ready =
+      (me?.units(UnitType.MissileSilo).length ?? 0) > 0 &&
+      this.laserCost() > 0n &&
+      this.laserCost() <= (me?.gold() ?? 0n);
     const armed = this.laserArmed;
     return html`
       <div class="flex flex-col items-center relative group/laser">
@@ -264,7 +276,7 @@ export class UnitDisplay extends LitElement implements Controller {
           <div class="flex items-center justify-center gap-1">
             <img src=${goldCoinIcon} width="13" height="13" />
             <span class="text-yellow-300"
-              >${renderNumber(this.cost(UnitType.MIRV))}</span
+              >${renderNumber(this.laserCost())}</span
             >
           </div>
         </div>
