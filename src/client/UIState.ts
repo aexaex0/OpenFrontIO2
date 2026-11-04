@@ -5,6 +5,4 @@ export interface UIState {
   ghostStructure: PlayerBuildableUnitType | null;
   rocketDirectionUp: boolean;
   upgradeMultiplier: number;
-  /** AlexFront: placing orbital laser points (right click cancels). */
-  laserAiming?: boolean;
 }

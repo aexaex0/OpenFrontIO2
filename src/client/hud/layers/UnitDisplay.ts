@@ -11,8 +11,6 @@ import { html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import { Controller } from "../../Controller";
 import { ToggleStructureEvent } from "../../InputHandler";
-import { orbitalLaserCost } from "@openfront/engine-lib/OrbitalLaser";
-import { OrbitalLaserArmEvent } from "../../OrbitalLaser";
 import { UIState } from "../../UIState";
 import { UserSettings } from "../../UserSettings";
 import { translateText } from "../../Utils";
@@ -54,15 +52,7 @@ export class UnitDisplay extends LitElement implements Controller {
     return this;
   }
 
-  /** The laser button is on: the next map click fires the orbital laser. */
-  private laserArmed = false;
-
   init() {
-    this.eventBus?.on(OrbitalLaserArmEvent, (e) => {
-      if (this.laserArmed === e.armed) return;
-      this.laserArmed = e.armed;
-      this.requestUpdate();
-    });
     const config = this.game.config();
     const userSettings = new UserSettings();
 
@@ -160,7 +150,7 @@ export class UnitDisplay extends LitElement implements Controller {
 
     return html`
       <div class="border-t border-white/10 px-1 pt-1 pb-0.5 w-full">
-        <div class="flex items-end gap-0.5 w-fit max-w-full mx-auto">
+        <div class="flex items-end gap-1 w-fit mx-auto">
           ${this.renderUnitItem(
             cityIcon,
             this._cities,
@@ -236,83 +226,6 @@ export class UnitDisplay extends LitElement implements Controller {
             k("buildMIRV", "0"),
             true,
           )}
-          ${this.renderLaserItem(k("orbitalLaser", "KeyO"))}
-        </div>
-      </div>
-    `;
-  }
-
-  private laserCost(): Gold {
-    return orbitalLaserCost(
-      this.cost(UnitType.MIRV),
-      this.cost(UnitType.HydrogenBomb),
-    );
-  }
-
-  /** AlexFront: the orbital laser, after the MIRV. */
-  private renderLaserItem(hotkey: string) {
-    if (this.game.config().isUnitDisabled(UnitType.MIRV)) return html``;
-    const displayHotkey = hotkey
-      .replace("Digit", "")
-      .replace("Key", "")
-      .toUpperCase();
-    const me = this.game?.myPlayer();
-    const ready =
-      (me?.units(UnitType.MissileSilo).length ?? 0) > 0 &&
-      this.laserCost() > 0n &&
-      this.laserCost() <= (me?.gold() ?? 0n);
-    const armed = this.laserArmed;
-    return html`
-      <div class="flex flex-col items-center relative group/laser">
-        <div
-          class="absolute bottom-full right-0 mb-1 hidden group-hover/laser:block text-gray-200 text-center w-max max-w-[220px] text-xs bg-gray-800/90 chrome:bg-chrome-900/95 backdrop-blur-xs rounded-sm p-1 z-[100] shadow-lg pointer-events-none"
-        >
-          <div class="font-bold text-sm mb-1">
-            ${translateText("user_setting.orbital_laser")} [${displayHotkey}]
-          </div>
-          <div class="p-2">
-            ${translateText("user_setting.orbital_laser_desc")}
-          </div>
-          <div class="flex items-center justify-center gap-1">
-            <img src=${goldCoinIcon} width="13" height="13" />
-            <span class="text-yellow-300"
-              >${renderNumber(this.laserCost())}</span
-            >
-          </div>
-        </div>
-        <div
-          data-orbital-laser
-          class="hud-btn relative flex size-9 sm:size-10 items-center justify-center rounded-lg border cursor-pointer transition-all duration-100 active:scale-95 text-white
-             ${armed
-            ? "border-cyan-300 bg-cyan-500/25 shadow-[0_0_12px_rgba(103,232,249,0.7)]"
-            : "border-red-400/30 bg-red-950/30 hover:border-red-300/60 hover:bg-red-900/40"}
-             ${ready ? "" : "opacity-40 grayscale"}"
-          @click=${() => {
-            const next = !armed && ready;
-            this.laserArmed = next;
-            this.uiState.ghostStructure = null;
-            this.eventBus?.emit(new OrbitalLaserArmEvent(next));
-            this.requestUpdate();
-          }}
-          @mouseenter=${() =>
-            this.eventBus?.emit(
-              new ToggleStructureEvent([UnitType.MissileSilo]),
-            )}
-          @mouseleave=${() =>
-            this.eventBus?.emit(new ToggleStructureEvent(null))}
-        >
-          <span
-            class="hud-key absolute left-0.5 top-0 text-[9px] font-bold leading-tight text-white/50"
-            >${displayHotkey}</span
-          >
-          <svg viewBox="0 0 24 24" class="size-5 sm:size-6" aria-hidden="true">
-            <circle cx="12" cy="5" r="3" fill="#e2e8f0" />
-            <rect x="7" y="4" width="3" height="2" fill="#94a3b8" />
-            <rect x="14" y="4" width="3" height="2" fill="#94a3b8" />
-            <path d="M11 8h2l1.5 12h-5z" fill="#67e8f9" />
-            <path d="M11.6 8h0.8l0.6 12h-2z" fill="#fff" />
-            <ellipse cx="12" cy="21" rx="5" ry="1.6" fill="#f87171" />
-          </svg>
         </div>
       </div>
     `;

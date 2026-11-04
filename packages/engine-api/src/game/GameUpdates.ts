@@ -116,7 +116,6 @@ export enum GameUpdateType {
   GamePaused,
   DonateEvent,
   AllyPing,
-  OrbitalLaser,
 }
 
 export type GameUpdate =
@@ -143,20 +142,7 @@ export type GameUpdate =
   | SpawnPhaseEndUpdate
   | GamePausedUpdate
   | DonateEventUpdate
-  | AllyPingUpdate
-  | OrbitalLaserUpdate;
-
-/**
- * An orbital laser: "charge" once when fired (pos is the first point),
- * "sweep" every tick the beam moves (pos is its centre), "done" at the end.
- */
-export interface OrbitalLaserUpdate {
-  type: GameUpdateType.OrbitalLaser;
-  playerSmallID: number;
-  points: TileRef[];
-  pos: TileRef;
-  phase: "charge" | "sweep" | "done";
-}
+  | AllyPingUpdate;
 
 /** A player marked a tile for their allies (clients filter who sees it). */
 export interface AllyPingUpdate {

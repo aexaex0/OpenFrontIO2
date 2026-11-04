@@ -1,16 +1,4 @@
 import { initHudSkin } from "./HudSkin";
-import {
-  OrbitalLaserArmEvent,
-  OrbitalLaserCancelEvent,
-  OrbitalLaserKeyEvent,
-  OrbitalLaserOverlay,
-  SendOrbitalLaserIntentEvent,
-  type AimState,
-} from "./OrbitalLaser";
-import {
-  ORBITAL_LASER_AREA_RADIUS,
-  ORBITAL_LASER_POINTS,
-} from "@openfront/engine-lib/OrbitalLaser";
 import { OwnerAdminPanel } from "./hud/OwnerAdminPanel";
 import { adminPanelOn } from "./OwnerAccess";
 import { ClientID, GameID } from "@openfront/engine-api/Schemas";
@@ -23,7 +11,6 @@ import {
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import {
   BuildableUnit,
-  Cell,
   PlayerType,
   Structures,
   UnitType,
@@ -33,7 +20,6 @@ import {
   GameUpdateType,
   GameUpdateViewData,
   HashUpdate,
-  OrbitalLaserUpdate,
 } from "@openfront/engine-api/game/GameUpdates";
 import { findClosestBy } from "@openfront/engine-lib/Util";
 import { Config } from "@openfront/engine-lib/configuration/Config";
@@ -1035,22 +1021,7 @@ export class ClientGameRunner {
       this.doBoatAttackUnderCursor.bind(this),
     );
     this.eventBus.on(AllyPingKeyEvent, this.pingUnderCursor.bind(this));
-    this.eventBus.on(OrbitalLaserKeyEvent, () => {
-      if (this.laserAim === null) this.startLaserAim();
-      else this.endLaserAim();
-    });
-    this.eventBus.on(OrbitalLaserArmEvent, (e) => {
-      if (e.armed && this.laserAim === null) this.startLaserAim();
-      else if (!e.armed && this.laserAim !== null) this.endLaserAim();
-    });
-    this.eventBus.on(OrbitalLaserCancelEvent, () => this.endLaserAim());
     initHudSkin();
-    this.laserOverlay = new OrbitalLaserOverlay(
-      (x, y) =>
-        this.renderer.transformHandler.worldToScreenCoordinates(new Cell(x, y)),
-      () => this.renderer.transformHandler.scale,
-      () => this.laserAimState(),
-    );
     this.eventBus.on(
       DoGroundAttackEvent,
       this.doGroundAttackUnderCursor.bind(this),
@@ -1093,9 +1064,6 @@ export class ClientGameRunner {
       gu.updates[GameUpdateType.Hash].forEach((hu: HashUpdate) => {
         this.eventBus.emit(new SendHashEvent(hu.tick, hu.hash));
       });
-      for (const laser of gu.updates[GameUpdateType.OrbitalLaser] ?? []) {
-        this.onOrbitalLaser(laser);
-      }
       for (const ping of gu.updates[GameUpdateType.AllyPing] ?? []) {
         this.eventBus.emit(
           new AllyPingReceivedEvent(ping.tile, ping.playerSmallID),
@@ -1265,15 +1233,10 @@ export class ClientGameRunner {
   }
 
   private adminPanel: OwnerAdminPanel | null = null;
-  private laserOverlay: OrbitalLaserOverlay | null = null;
-  /** Orbital laser points placed so far, or null when not aiming. */
-  private laserAim: TileRef[] | null = null;
 
   public stop() {
     this.adminPanel?.dispose();
     this.adminPanel = null;
-    this.laserOverlay?.dispose();
-    this.laserOverlay = null;
     this.soundManager.dispose();
     this.graphicsListenerAbort?.abort();
     // Detach the input handler's window/canvas listeners and its EventBus
@@ -1323,10 +1286,6 @@ export class ClientGameRunner {
       return;
     }
     if (this.gameView.inSpawnPhase()) {
-      return;
-    }
-    if (this.laserAim !== null) {
-      this.placeLaserPoint(tile);
       return;
     }
     if (this.myPlayer === null) {
@@ -1653,87 +1612,6 @@ export class ClientGameRunner {
   }
 
   private lastAllyPingMs = 0;
-
-  /** AlexFront superweapon: fire the orbital laser at the tile under the cursor. */
-  // Aiming: O (or the hotbar button) shows the circle; three left clicks
-  // place the points and fire; right click (or O again) cancels.
-  private startLaserAim(): void {
-    const me = this.gameView.myPlayer();
-    if (
-      !this.isActive ||
-      this.gameView.inSpawnPhase() ||
-      me === null ||
-      !me.isAlive()
-    ) {
-      this.eventBus.emit(new OrbitalLaserArmEvent(false));
-      return;
-    }
-    if (me.units(UnitType.MissileSilo).length === 0) {
-      showToast(translateText("orbital_laser.needs_silo"), "red");
-      this.eventBus.emit(new OrbitalLaserArmEvent(false));
-      return;
-    }
-    this.renderer.uiState.ghostStructure = null;
-    this.renderer.uiState.laserAiming = true;
-    this.laserAim = [];
-    this.eventBus.emit(new OrbitalLaserArmEvent(true));
-    showToast(translateText("orbital_laser.aim_hint"), "green");
-    this.laserOverlay?.wake();
-  }
-
-  private endLaserAim(): void {
-    if (this.laserAim === null) return;
-    this.laserAim = null;
-    this.renderer.uiState.laserAiming = false;
-    this.eventBus.emit(new OrbitalLaserArmEvent(false));
-  }
-
-  private placeLaserPoint(tile: TileRef): void {
-    const aim = this.laserAim;
-    if (aim === null) return;
-    if (
-      aim.length > 0 &&
-      this.gameView.euclideanDistSquared(aim[0], tile) >
-        ORBITAL_LASER_AREA_RADIUS * ORBITAL_LASER_AREA_RADIUS
-    ) {
-      showToast(translateText("orbital_laser.too_far"), "red");
-      return;
-    }
-    aim.push(tile);
-    if (aim.length < ORBITAL_LASER_POINTS) return;
-    const points = [...aim];
-    this.endLaserAim();
-    this.eventBus.emit(new SendOrbitalLaserIntentEvent(points));
-  }
-
-  private laserAimState(): AimState | null {
-    if (this.laserAim === null) return null;
-    const g = this.gameView;
-    const cursor = this.getTileUnderCursor();
-    return {
-      points: this.laserAim.map((t) => ({ x: g.x(t), y: g.y(t) })),
-      cursor: cursor === null ? null : { x: g.x(cursor), y: g.y(cursor) },
-    };
-  }
-
-  private onOrbitalLaser(u: OrbitalLaserUpdate): void {
-    const g = this.gameView;
-    const pt = (t: TileRef) => ({ x: g.x(t), y: g.y(t) });
-    this.laserOverlay?.update(
-      u.playerSmallID,
-      u.points.map(pt),
-      pt(u.pos),
-      u.phase,
-    );
-    if (u.phase !== "charge") return;
-    const me = g.myPlayer();
-    if (me === null) return;
-    if (me.smallID() === u.playerSmallID) {
-      showToast(translateText("orbital_laser.charging"), "green");
-    } else if (u.points.some((t) => g.owner(t) === me)) {
-      showToast(translateText("orbital_laser.incoming"), "red");
-    }
-  }
 
   // Marks the tile under the cursor for allies and teammates.
   private pingUnderCursor(): void {

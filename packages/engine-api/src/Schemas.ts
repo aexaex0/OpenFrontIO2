@@ -49,14 +49,12 @@ export type Intent =
   | ToggleGameStartTimer
   | AllyPingIntent
   | TakeOverNationIntent
-  | ParasitePlayerIntent
-  | OrbitalLaserIntent;
+  | ParasitePlayerIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type AllyPingIntent = z.infer<typeof AllyPingIntentSchema>;
 export type TakeOverNationIntent = z.infer<typeof TakeOverNationIntentSchema>;
 export type ParasitePlayerIntent = z.infer<typeof ParasitePlayerIntentSchema>;
-export type OrbitalLaserIntent = z.infer<typeof OrbitalLaserIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
 export type SpawnIntent = z.infer<typeof SpawnIntentSchema>;
 export type BoatAttackIntent = z.infer<typeof BoatAttackIntentSchema>;
@@ -575,13 +573,6 @@ export const ParasitePlayerIntentSchema = z.object({
   player: MappedID,
 });
 
-// AlexFront superweapon: an orbital laser strike on a tile.
-export const OrbitalLaserIntentSchema = z.object({
-  type: z.literal("orbital_laser"),
-  // The three aim points, in order: the beam sweeps 1 → 2 → 3.
-  points: zb.uint().array().length(3),
-});
-
 export const IntentSchema = z.discriminatedUnion("type", [
   AttackIntentSchema,
   CancelAttackIntentSchema,
@@ -611,7 +602,6 @@ export const IntentSchema = z.discriminatedUnion("type", [
   AllyPingIntentSchema,
   TakeOverNationIntentSchema,
   ParasitePlayerIntentSchema,
-  OrbitalLaserIntentSchema,
 ]);
 
 // StampedIntent = Intent with server-stamped clientID (used in turns and execution)

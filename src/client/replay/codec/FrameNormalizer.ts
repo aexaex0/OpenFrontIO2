@@ -82,7 +82,6 @@ export const UPDATE_TYPE_ROUTING: Record<
   GamePaused: "misc",
   DonateEvent: "misc",
   AllyPing: "dropped",
-  OrbitalLaser: "dropped",
 };
 
 /**

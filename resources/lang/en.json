@@ -1699,13 +1699,6 @@
     "tutorial": "TUTORIAL",
     "warning": "WARNING"
   },
-  "orbital_laser": {
-    "aim_hint": "Orbital laser: click 3 points inside the red circle. Right-click cancels.",
-    "charging": "Orbital laser charging…",
-    "incoming": "Orbital laser incoming!",
-    "needs_silo": "The orbital laser needs a missile silo",
-    "too_far": "That point is outside the circle around the first point"
-  },
   "overtime": {
     "first_place": "1st: {name} ({pct}%)",
     "started": "Overtime! The territory needed to win is now dropping.",
@@ -2584,8 +2577,6 @@
     "on": "On",
     "open_settings_desc": "Gameplay, graphics, audio and keybind settings",
     "open_settings_label": "Settings",
-    "orbital_laser": "Orbital laser",
-    "orbital_laser_desc": "Aim the orbital laser: click 3 points inside the circle and the beam sweeps along them, leaving fallout (priced between a hydrogen bomb and a MIRV, needs a missile silo)",
     "pause_game": "Pause",
     "pause_game_desc": "Pause or resume the game (single player and custom games for host).",
     "performance_overlay_desc": "Toggle the performance overlay. When enabled, the performance overlay will be displayed. Press shift-D during game to toggle.",

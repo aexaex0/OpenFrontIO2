@@ -1,4 +1,3 @@
-import { SendOrbitalLaserIntentEvent } from "./OrbitalLaser";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import { SendAllyPingIntentEvent } from "./AllyPing";
 import {
@@ -324,9 +323,6 @@ export class Transport {
     );
     this.subscribe(SendParasitePlayerIntentEvent, (e) =>
       this.sendIntent({ type: "parasite_player", player: e.playerID }),
-    );
-    this.subscribe(SendOrbitalLaserIntentEvent, (e) =>
-      this.sendIntent({ type: "orbital_laser", points: e.points }),
     );
     this.subscribe(SendAllyPingIntentEvent, (e) =>
       this.sendIntent({ type: "ally_ping", tile: e.tile }),
