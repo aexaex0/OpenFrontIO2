@@ -13,6 +13,7 @@ import { isDesktopShell } from "../../DesktopShell";
 import { showInGameAlert, showInGameConfirm } from "../../InGameModal";
 import { TogglePauseIntentEvent } from "../../InputHandler";
 import { PauseGameIntentEvent, SendWinnerEvent } from "../../Transport";
+import { canRestartSolo, requestSoloRestart } from "../../SoloRestart";
 import { homeHref, showToast, translateText } from "../../Utils";
 import { GameView } from "../../view";
 import { ImmunityBarVisibleEvent } from "./ImmunityTimer";
@@ -444,6 +445,33 @@ export class GameRightSidebar extends LitElement implements Controller {
                 width="20"
                 height="20"
               />
+            </div>
+          `
+        : ""}
+      ${this._isSinglePlayer &&
+      !this.game?.config()?.isReplay() &&
+      canRestartSolo(this.game.gameID())
+        ? html`
+            <div
+              class="cursor-pointer"
+              data-solo-restart
+              @click=${() => requestSoloRestart(homeHref())}
+              title=${translateText("solo_restart.title")}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="white"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-label=${translateText("solo_restart.title")}
+              >
+                <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+                <path d="M20 4v5h-5" />
+              </svg>
             </div>
           `
         : ""}

@@ -2098,6 +2098,9 @@
     "sign_in_for_achievements": "Sign in for achievements",
     "toggle_achievements": "Toggle achievements"
   },
+  "solo_restart": {
+    "title": "Restart (same map and settings)"
+  },
   "spawn_timer": {
     "team_percent_tooltip": "{team}: {percent}"
   },

@@ -6,6 +6,7 @@
 - 🛰️ Új szuperfegyver: orbitális lézer (O gomb, annyiba kerül, mint egy MIRV, kell hozzá rakétasiló)
 - 🎨 8 új téma: Toxic Waste, Frostbite, Blood Moon, Lost Jungle, Vaporwave, Deep Abyss, Royal Velvet, Hacker Terminal
 - ⏸️ Esc menüben látod a meccs nehézségét és a módosítókat
+- 🔁 Szóló meccsben újrakezdés gomb a szünet mellett: ugyanaz a térkép és beállítások (véletlen térképnél új véletlen térkép)
 - 🛰️ Orbitális lézer célzás: O (vagy a gyorssáv gombja a MIRV után), 3 bal klikk a körön belül, a sugár végigsöpör rajtuk és zöld nukleáris földet hagy; jobb klikk = mégse
 - 🧩 Az alsó panelnek 5 új elrendezése van (kerek, hatszög, szögletes, kapszula, csempe gombok), az Esc menüben választható; a színe a témádat követi
 - 🎨 A témák már az alsó panelt, a támadásokat és a ranglistát is színezik

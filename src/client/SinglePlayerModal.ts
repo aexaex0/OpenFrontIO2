@@ -29,6 +29,7 @@ import { getPlayerCosmetics, prewarmCosmetics } from "./Cosmetics";
 import { crazyGamesSDK } from "./CrazyGamesSDK";
 import { GameStartingModal } from "./GameStartingModal";
 import { showInGameAlert } from "./InGameModal";
+import { rememberSoloStart } from "./SoloRestart";
 import { JoinLobbyEvent } from "./Main";
 import { fallbackPlayerName, ResolvedPlayerName } from "./PlayerName";
 import { lastUserMeResponse } from "./UserMeBroadcast";
@@ -1146,80 +1147,80 @@ export class SinglePlayerModal extends BaseModal {
       // The ad is long enough that the modal can be closed while it runs.
       if (attempt !== this.startAttempt) return;
 
+      const detail = {
+        gameID: gameID,
+        gameStartInfo: {
+          gameID: gameID,
+          players: [
+            {
+              clientID,
+              username: resolvedName.name,
+              clanTag: usernameInput?.getClanTag() ?? null,
+              cosmetics,
+            },
+          ],
+          config: {
+            gameMap: this.selectedMap,
+            gameMapSize: this.compactMap
+              ? GameMapSize.Compact
+              : GameMapSize.Normal,
+            gameType: GameType.Singleplayer,
+            gameMode: this.gameMode,
+            playerTeams: this.teamCount,
+            difficulty: this.selectedDifficulty,
+            maxTimerValue: finalMaxTimerValue,
+            bots: this.bots,
+            infiniteGold: this.infiniteGold,
+            donateGold: this.gameMode === GameMode.Team,
+            donateTroops: this.gameMode === GameMode.Team,
+            infiniteTroops: this.infiniteTroops,
+            instantBuild: this.instantBuild,
+            randomSpawn: this.randomSpawn,
+            disabledUnits: this.disabledUnits.filter((unit): unit is UnitType =>
+              Object.values(UnitType).includes(unit),
+            ),
+            nations: sliderToNationsConfig(
+              this.nations,
+              this.defaultNationCount,
+            ),
+            ...(this.goldMultiplier && this.goldMultiplierValue
+              ? { goldMultiplier: this.goldMultiplierValue }
+              : {}),
+            ...(this.startingGold && this.startingGoldValue !== undefined
+              ? {
+                  startingGold: Math.round(this.startingGoldValue * 1_000_000),
+                }
+              : {}),
+            ...(this.customAlliances
+              ? { customAllianceDuration: this.customAllianceMinutes ?? 0 }
+              : {}),
+            ...(this.waterNukes ? { waterNukes: true } : {}),
+            ...(this.doomsdayClock
+              ? {
+                  doomsdayClock: {
+                    enabled: true,
+                    speed: this.doomsdayClockSpeed,
+                  },
+                }
+              : {}),
+            ...(this.overtime
+              ? {
+                  overtime: {
+                    enabled: true,
+                    startMinutes: this.overtimeStartMinutes ?? 30,
+                  },
+                }
+              : {}),
+          },
+          lobbyCreatedAt: Date.now(), // ms; server should be authoritative in MP
+        },
+        source: "singleplayer",
+      } satisfies JoinLobbyEvent;
+      // AlexFront: remembered for the in-game restart button.
+      rememberSoloStart(detail.gameStartInfo, this.useRandomMap);
       this.dispatchEvent(
         new CustomEvent("join-lobby", {
-          detail: {
-            gameID: gameID,
-            gameStartInfo: {
-              gameID: gameID,
-              players: [
-                {
-                  clientID,
-                  username: resolvedName.name,
-                  clanTag: usernameInput?.getClanTag() ?? null,
-                  cosmetics,
-                },
-              ],
-              config: {
-                gameMap: this.selectedMap,
-                gameMapSize: this.compactMap
-                  ? GameMapSize.Compact
-                  : GameMapSize.Normal,
-                gameType: GameType.Singleplayer,
-                gameMode: this.gameMode,
-                playerTeams: this.teamCount,
-                difficulty: this.selectedDifficulty,
-                maxTimerValue: finalMaxTimerValue,
-                bots: this.bots,
-                infiniteGold: this.infiniteGold,
-                donateGold: this.gameMode === GameMode.Team,
-                donateTroops: this.gameMode === GameMode.Team,
-                infiniteTroops: this.infiniteTroops,
-                instantBuild: this.instantBuild,
-                randomSpawn: this.randomSpawn,
-                disabledUnits: this.disabledUnits.filter(
-                  (unit): unit is UnitType =>
-                    Object.values(UnitType).includes(unit),
-                ),
-                nations: sliderToNationsConfig(
-                  this.nations,
-                  this.defaultNationCount,
-                ),
-                ...(this.goldMultiplier && this.goldMultiplierValue
-                  ? { goldMultiplier: this.goldMultiplierValue }
-                  : {}),
-                ...(this.startingGold && this.startingGoldValue !== undefined
-                  ? {
-                      startingGold: Math.round(
-                        this.startingGoldValue * 1_000_000,
-                      ),
-                    }
-                  : {}),
-                ...(this.customAlliances
-                  ? { customAllianceDuration: this.customAllianceMinutes ?? 0 }
-                  : {}),
-                ...(this.waterNukes ? { waterNukes: true } : {}),
-                ...(this.doomsdayClock
-                  ? {
-                      doomsdayClock: {
-                        enabled: true,
-                        speed: this.doomsdayClockSpeed,
-                      },
-                    }
-                  : {}),
-                ...(this.overtime
-                  ? {
-                      overtime: {
-                        enabled: true,
-                        startMinutes: this.overtimeStartMinutes ?? 30,
-                      },
-                    }
-                  : {}),
-              },
-              lobbyCreatedAt: Date.now(), // ms; server should be authoritative in MP
-            },
-            source: "singleplayer",
-          } satisfies JoinLobbyEvent,
+          detail,
           bubbles: true,
           composed: true,
         }),

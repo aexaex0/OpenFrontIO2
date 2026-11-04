@@ -1,4 +1,5 @@
 import { GAME_ID_REGEX } from "@openfront/engine-api/Schemas";
+import { takeSoloRestart } from "./SoloRestart";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import { EventBus } from "@openfront/shared/EventBus";
@@ -1185,6 +1186,17 @@ class Client {
   }
 
   private async handleUrl() {
+    // AlexFront: the in-game restart button reloaded the menu to start the
+    // same solo game again (SoloRestart.ts).
+    const restart = takeSoloRestart();
+    if (restart !== null) {
+      // Let the menu's components (username, cosmetics) finish booting.
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      document.dispatchEvent(
+        new CustomEvent("join-lobby", { detail: restart, bubbles: true }),
+      );
+      return;
+    }
     // Check if CrazyGames SDK is enabled first (no hash needed in CrazyGames)
     if (crazyGamesSDK.isOnCrazyGames()) {
       const lobbyId = await crazyGamesSDK.getInviteGameId();
