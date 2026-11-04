@@ -4,6 +4,7 @@ import { GameUpdateType } from "@openfront/engine-api/game/GameUpdates";
 import { ClientID } from "@openfront/engine-api/Schemas";
 import { Config } from "@openfront/engine-lib/configuration/Config";
 import { renderNumber, renderTroops } from "@openfront/engine-lib/Format";
+import "../../components/AnimatedNumber";
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import { EventBus } from "@openfront/shared/EventBus";
 import { LitElement, html } from "lit";
@@ -19,6 +20,9 @@ import { PlayerView } from "../../view/PlayerView";
 import { goldCoinIcon, soldierIcon } from "../HotbarIcons";
 import { TutorialHighlight, TutorialHighlightEvent } from "../Tutorial";
 const swordIcon = assetUrl("images/SwordIcon.svg");
+
+/** Live graph length: one sample a second for two minutes. */
+const GRAPH_SAMPLES = 120;
 
 @customElement("control-panel")
 export class ControlPanel extends LitElement implements Controller {
@@ -113,6 +117,78 @@ export class ControlPanel extends LitElement implements Controller {
     });
   }
 
+  /** AlexFront: once-a-second samples for the live graph (last 2 min). */
+  private graphTroops: number[] = [];
+  private graphGold: number[] = [];
+  private lastGraphSample = 0;
+
+  private sampleGraph() {
+    const now = performance.now();
+    if (now - this.lastGraphSample < 1000) return;
+    this.lastGraphSample = now;
+    this.graphTroops.push(this._troops);
+    this.graphGold.push(Number(this._gold));
+    if (this.graphTroops.length > GRAPH_SAMPLES) this.graphTroops.shift();
+    if (this.graphGold.length > GRAPH_SAMPLES) this.graphGold.shift();
+  }
+
+  /** AlexFront: a small graph of troops and gold, if on in the settings. */
+  private renderLiveGraph() {
+    if (!new UserSettings().liveGraph() || this.graphTroops.length < 2) {
+      return "";
+    }
+    const W = 200;
+    const H = 24;
+    const line = (values: number[]) => {
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const span = Math.max(1, max - min);
+      const step = W / (GRAPH_SAMPLES - 1);
+      const x0 = W - (values.length - 1) * step;
+      return values
+        .map(
+          (v, i) =>
+            `${(x0 + i * step).toFixed(1)},${(H - 2 - ((v - min) / span) * (H - 4)).toFixed(1)}`,
+        )
+        .join(" ");
+    };
+    return html`
+      <div class="flex items-center gap-1.5 mt-1" data-live-graph>
+        <div
+          class="flex flex-col shrink-0 text-[10px] leading-tight font-bold w-[8rem]"
+        >
+          <span class="text-sky-300"
+            >— ${translateText("live_graph.troops")}</span
+          >
+          <span class="text-yellow-300"
+            >— ${translateText("live_graph.gold")}</span
+          >
+        </div>
+        <svg
+          viewBox="0 0 ${W} ${H}"
+          preserveAspectRatio="none"
+          class="flex-1 h-6 rounded-sm bg-black/20"
+          aria-hidden="true"
+        >
+          <polyline
+            points=${line(this.graphGold)}
+            fill="none"
+            stroke="#fde047"
+            stroke-width="1.5"
+            vector-effect="non-scaling-stroke"
+          />
+          <polyline
+            points=${line(this.graphTroops)}
+            fill="none"
+            stroke="#7dd3fc"
+            stroke-width="1.5"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
+      </div>
+    `;
+  }
+
   tick() {
     if (!this._isVisible && !this.game.inSpawnPhase()) {
       this.setVisibile(true);
@@ -130,6 +206,7 @@ export class ControlPanel extends LitElement implements Controller {
     this._maxTroops = config.maxTroops(player);
     this._gold = player.gold();
     this._troops = player.troops();
+    this.sampleGraph();
     this._attackingTroops = player
       .outgoingAttacks()
       .map((a) => a.troops)
@@ -392,11 +469,11 @@ export class ControlPanel extends LitElement implements Controller {
           translate="no"
         >
           <span class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-            >${renderTroops(this._troops)}</span
-          >
+            ><anim-num kind="troops" .value=${this._troops}></anim-num
+          ></span>
           <span class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-            >${renderTroops(this._maxTroops)}</span
-          >
+            ><anim-num kind="troops" .value=${this._maxTroops}></anim-num
+          ></span>
         </div>
         <div
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -451,8 +528,8 @@ export class ControlPanel extends LitElement implements Controller {
         >
           <span class="flex-1 flex justify-end h-full items-center pr-0.5">
             <span class="text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-              >${renderTroops(this._troops)}</span
-            >
+              ><anim-num kind="troops" .value=${this._troops}></anim-num
+            ></span>
           </span>
           <span
             class="h-full flex items-center px-0.5 text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
@@ -463,8 +540,8 @@ export class ControlPanel extends LitElement implements Controller {
           >
             <span
               class="text-white tabular-nums w-[3.5rem] drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]"
-              >${renderTroops(this._maxTroops)}</span
-            >
+              ><anim-num kind="troops" .value=${this._maxTroops}></anim-num
+            ></span>
             <img
               src=${soldierIcon}
               alt=""
@@ -551,7 +628,9 @@ export class ControlPanel extends LitElement implements Controller {
               )
             : ""}
           <img src=${goldCoinIcon} width="13" height="13" class="shrink-0" />
-          <span class="tabular-nums">${renderNumber(this._gold)}</span>
+          <span class="tabular-nums"
+            ><anim-num kind="gold" .value=${Number(this._gold)}></anim-num
+          ></span>
         </div>
       </div>
       <!-- Row 2: attack ratio | slider -->
@@ -589,6 +668,7 @@ export class ControlPanel extends LitElement implements Controller {
           class="flex-1 h-1.5 accent-aquarius chrome:accent-chrome-400 cursor-pointer"
         />
       </div>
+      ${this.renderLiveGraph()}
     `;
   }
 
@@ -613,7 +693,9 @@ export class ControlPanel extends LitElement implements Controller {
               )
             : ""}
           <img src=${goldCoinIcon} width="13" height="13" />
-          <span class="px-0.5">${renderNumber(this._gold)}</span>
+          <span class="px-0.5"
+            ><anim-num kind="gold" .value=${Number(this._gold)}></anim-num
+          ></span>
         </div>
         <!-- Troop bar -->
         <div

@@ -1397,6 +1397,10 @@
     "lifetime_xp": "{xp} lifetime XP",
     "top_of_track": "The top of the track"
   },
+  "live_graph": {
+    "gold": "Gold",
+    "troops": "Troops"
+  },
   "main": {
     "account": "Account",
     "copyright": "© OpenFront™ and Contributors",
@@ -1410,9 +1414,6 @@
     "help": "Help",
     "inventory": "Inventory",
     "join": "Join Lobby",
-    "last_winner": "Last winner",
-    "last_winner_none": "No winner yet: be the first!",
-    "last_winner_troops": "{troops} troops",
     "live_games": "Live games",
     "live_games_empty": "No games running right now.",
     "live_minutes": "{minutes} min",
@@ -2426,6 +2427,8 @@
     "ally_ping": "Ally Ping",
     "ally_ping_desc": "Mark the tile under your cursor for your allies and teammates.",
     "ally_ping_received": "{name} pinged a spot on the map",
+    "animated_numbers_desc": "Gold and troop counters roll to their new value",
+    "animated_numbers_label": "Animated numbers",
     "anonymous_names_desc": "Hide real player names with random ones on your screen.",
     "anonymous_names_label": "Hidden Names",
     "attack_keybinds": "Attack Keybinds",
@@ -2553,6 +2556,8 @@
     "keybinds_hint": "Click a key to rebind it. You can assign a single key or Shift + key combination.",
     "left_click_desc": "When ON, left-click opens menu and sword button attacks. When OFF, left-click attacks directly.",
     "left_click_label": "Left Click to Open Menu",
+    "live_graph_desc": "A small graph of your troops and gold over the last two minutes",
+    "live_graph_label": "Live graph",
     "lobby_id_visibility_desc": "Hide Lobby ID in private lobby creation",
     "lobby_id_visibility_label": "Hidden Lobby IDs",
     "lobby_start_alerts_desc": "Play the start chime for each lobby and ranked match by default and show a desktop notification when permitted. You can override it with the lobby bell.",
@@ -2561,6 +2566,8 @@
     "lower_brightness_label": "Lower Brightness",
     "match_modifiers": "Modifiers",
     "match_no_modifiers": "None",
+    "menu_live_background_desc": "A slowly spreading battle on a different map behind the main menu",
+    "menu_live_background_label": "Live menu background",
     "menu_shortcuts": "Menu Shortcuts",
     "move_down": "Move Camera Down",
     "move_down_desc": "Move the camera downward",

@@ -4,6 +4,11 @@
 
 - 🔁 Szóló meccsben újrakezdés gomb a szünet mellett: ugyanaz a térkép és ugyanazok a beállítások (véletlen térképnél új véletlen térkép)
 - 🧩 Az alsó panelnek 5 új elrendezése van (kerek, hatszög, szögletes, kapszula és csempe gombok), az Esc menüben választható; a színe a témádat követi
+- 🔢 Animált számok: az arany és a katonák száma pörögve vált
+- 📈 Élő grafikon az alsó panelen: a katonáid és az aranyad az elmúlt 2 percben
+- 🗺️ Élő háttér a főmenüben: egy csata terjed egy mindig másik térképen
+- ⚙️ Mindhárom ki- és bekapcsolható a Beállítások > Grafika alatt
+- 🧹 Az utolsó nyertes kártya kikerült a főmenüből
 
 🤖 **2026. november 3.**
 

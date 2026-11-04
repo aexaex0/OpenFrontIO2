@@ -32,7 +32,6 @@ import {
 import type { HostLobbyModal } from "./HostLobbyModal";
 import { showInGameAlert } from "./InGameModal";
 import type { JoinLobbyModal } from "./JoinLobbyModal";
-import "./components/LastWinnerCard";
 import "./components/LiveGamesPanel";
 import { whenModalLoaded } from "./LazyModals";
 import { PublicLobbySocket } from "./LobbySocket";
@@ -746,11 +745,6 @@ export class GameModeSelector extends LitElement {
             this.hostedLobbyCount(),
             true,
           )}
-        </div>
-
-        <!-- AlexFront: the last winner, where the quick-play card was. -->
-        <div class="min-w-0 sm:col-span-2 sm:row-start-2">
-          <last-winner-card></last-winner-card>
         </div>
 
         ${heroSlot

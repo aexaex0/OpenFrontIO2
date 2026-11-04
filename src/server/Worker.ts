@@ -1,6 +1,5 @@
 import { isOwnerKey, recentReports } from "./OwnerReports";
 import { ID, isValidGameID } from "@openfront/engine-api/Schemas";
-import { getLastWinner } from "./LastWinner";
 import { CloseCode, CloseReason } from "@openfront/shared/CloseCodes";
 import { GameEnv } from "@openfront/shared/configuration/Env";
 import { withFreeFlares } from "@openfront/shared/FreeCosmetics";
@@ -459,11 +458,6 @@ export async function startWorker() {
   });
 
   // AlexFront: the running games on this worker, for the menu's live list.
-  // AlexFront: the last multiplayer winner, for the menu card.
-  app.get("/api/last_winner", (_req, res) => {
-    res.json({ winner: getLastWinner() });
-  });
-
   // AlexFront: the owner's report list (see OwnerReports.ts).
   app.get("/api/owner/reports", (req, res) => {
     res.set("Cache-Control", "no-store");

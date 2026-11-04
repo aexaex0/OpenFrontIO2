@@ -209,6 +209,8 @@ export const TEAM_STATS_COLUMNS_KEY = "settings.teamStatsColumns";
 export const FAVORITE_EMOJIS_KEY = "settings.favoriteEmojis";
 export const UI_THEME_KEY = "settings.uiTheme";
 export const HUD_SKIN_KEY = "settings.hudSkin";
+export const ANIMATED_NUMBERS_KEY = "settings.animatedNumbers";
+export const MENU_LIVE_BACKGROUND_KEY = "settings.menuLiveBackground";
 /**
  * AlexFront: layouts for the in-game bottom panel — the same buttons in the
  * same order, with other shapes and fonts. Colours always follow the UI theme.
@@ -433,6 +435,21 @@ export class UserSettings {
     return this.getBool("settings.emojis", true);
   }
 
+  /** AlexFront: gold and troop counters roll to their new value. */
+  animatedNumbers() {
+    return this.getBool(ANIMATED_NUMBERS_KEY, true);
+  }
+
+  /** AlexFront: a small live graph of troops and gold in the bottom panel. */
+  liveGraph() {
+    return this.getBool("settings.liveGraph", true);
+  }
+
+  /** AlexFront: an animated map behind the main menu. */
+  menuLiveBackground() {
+    return this.getBool(MENU_LIVE_BACKGROUND_KEY, true);
+  }
+
   /**
    * AlexFront's hidden dev mode. Listed in the settings as "Lower
    * Brightness" so nobody looks twice; it changes no brightness at all.
@@ -549,6 +566,18 @@ export class UserSettings {
 
   toggleEmojis() {
     this.setBool("settings.emojis", !this.emojis());
+  }
+
+  toggleAnimatedNumbers() {
+    this.setBool(ANIMATED_NUMBERS_KEY, !this.animatedNumbers());
+  }
+
+  toggleLiveGraph() {
+    this.setBool("settings.liveGraph", !this.liveGraph());
+  }
+
+  toggleMenuLiveBackground() {
+    this.setBool(MENU_LIVE_BACKGROUND_KEY, !this.menuLiveBackground());
   }
 
   toggleDevMode() {

@@ -1864,6 +1864,30 @@ export class UserSettingModal extends BaseModal {
       ></setting-toggle>
 
       <setting-toggle
+        label="${translateText("user_setting.animated_numbers_label")}"
+        description="${translateText("user_setting.animated_numbers_desc")}"
+        id="animated-numbers-toggle"
+        .checked=${this.userSettings.animatedNumbers()}
+        @change=${() => this.userSettings.toggleAnimatedNumbers()}
+      ></setting-toggle>
+
+      <setting-toggle
+        label="${translateText("user_setting.live_graph_label")}"
+        description="${translateText("user_setting.live_graph_desc")}"
+        id="live-graph-toggle"
+        .checked=${this.userSettings.liveGraph()}
+        @change=${() => this.userSettings.toggleLiveGraph()}
+      ></setting-toggle>
+
+      <setting-toggle
+        label="${translateText("user_setting.menu_live_background_label")}"
+        description="${translateText("user_setting.menu_live_background_desc")}"
+        id="menu-live-background-toggle"
+        .checked=${this.userSettings.menuLiveBackground()}
+        @change=${() => this.userSettings.toggleMenuLiveBackground()}
+      ></setting-toggle>
+
+      <setting-toggle
         label="${translateText("user_setting.lower_brightness_label")}"
         description="${translateText("user_setting.lower_brightness_desc")}"
         id="lower-brightness-toggle"
