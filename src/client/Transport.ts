@@ -1,5 +1,4 @@
 import { SendOrbitalLaserIntentEvent } from "./OrbitalLaser";
-import { getRealName } from "./RealName";
 import { TileRef } from "@openfront/engine-api/game/GameMap";
 import { SendAllyPingIntentEvent } from "./AllyPing";
 import {
@@ -737,7 +736,6 @@ export class Transport {
       spectator: this.lobbyConfig.spectator,
       gitCommit: ClientEnv.gitCommit(),
       platform: clientPlatform(),
-      realName: getRealName() || undefined,
     } satisfies ClientJoinMessage);
   }
 

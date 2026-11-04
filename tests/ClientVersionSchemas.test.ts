@@ -132,33 +132,7 @@ describe("platform on join messages", () => {
   test("a join from a bundle predating the field still decodes", () => {
     // Every optional/nullable field set, so the stale header is at its widest.
     const stale = { ...join, cosmetics: {}, spectator: true };
-    const staleShape = ClientJoinMessageSchema.omit({
-      platform: true,
-      realName: true,
-    }).shape;
-    const bytes = zb.object(staleShape).serialize(stale);
-    const current = zb.object(ClientJoinMessageSchema.shape);
-    expect(current.parseBytes(bytes)).toEqual(stale);
-  });
-});
-
-describe("realName on join messages", () => {
-  const join = { ...baseJoin, type: "join", gitCommit: COMMIT } as const;
-
-  test("round-trips the binary wire", () => {
-    const withName = { ...join, platform: "web", realName: "Attila" } as const;
-    const bytes = ClientMessageSchema.serialize(withName);
-    expect(ClientMessageSchema.parseBytes(bytes)).toEqual(withName);
-  });
-
-  test("a join from a bundle predating the field still decodes", () => {
-    const stale = {
-      ...join,
-      cosmetics: {},
-      spectator: true,
-      platform: "web",
-    } as const;
-    const staleShape = ClientJoinMessageSchema.omit({ realName: true }).shape;
+    const staleShape = ClientJoinMessageSchema.omit({ platform: true }).shape;
     const bytes = zb.object(staleShape).serialize(stale);
     const current = zb.object(ClientJoinMessageSchema.shape);
     expect(current.parseBytes(bytes)).toEqual(stale);

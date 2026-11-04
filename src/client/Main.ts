@@ -1,5 +1,4 @@
 import { GAME_ID_REGEX } from "@openfront/engine-api/Schemas";
-import { getRealName, REAL_NAME_REQUIRED_EVENT } from "./RealName";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import { EventBus } from "@openfront/shared/EventBus";
@@ -1548,15 +1547,6 @@ class Client {
       if (startingModal instanceof GameStartingModal) {
         startingModal.hide();
       }
-      return;
-    }
-    if (lobby.gameRecord === undefined && getRealName() === "") {
-      // AlexFront: a real name is required to play (see RealName.ts).
-      const startingModal = document.querySelector("game-starting-modal");
-      if (startingModal instanceof GameStartingModal) {
-        startingModal.hide();
-      }
-      document.dispatchEvent(new CustomEvent(REAL_NAME_REQUIRED_EVENT));
       return;
     }
     if (this.blockedJoin(lobby)) {

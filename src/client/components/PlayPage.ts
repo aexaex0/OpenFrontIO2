@@ -5,7 +5,6 @@ import "./CosmeticBackground";
 import "./ThemePicker";
 import "./NavUtilityIcons";
 import "./NewsBox";
-import "./RealNameInput";
 import "./StreamingNow";
 
 @customElement("play-page")
@@ -106,7 +105,6 @@ export class PlayPage extends LitElement {
                 ></username-input>
               </div>
             </div>
-            <real-name-input class="block px-3 sm:px-0"></real-name-input>
           </div>
 
           <!-- Right column: Streaming Now (desktop only), stretched to the left column's
