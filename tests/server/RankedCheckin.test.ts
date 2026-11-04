@@ -5,6 +5,7 @@ import {
   RankedCheckinGate,
   rankedCheckinPass,
   type RankedCheckinDeps,
+  UnreachableBackoff,
 } from "../../src/server/RankedCheckin";
 import { mockLogger } from "../util/GameServerHarness";
 
@@ -300,5 +301,35 @@ describe("rankedCheckinPass", () => {
     await rankedCheckinPass("1v1", gate, deps);
 
     expect(deps.log.error).not.toHaveBeenCalled();
+  });
+});
+
+describe("UnreachableBackoff", () => {
+  it("skips more passes after each failure and resets on success", () => {
+    const b = new UnreachableBackoff();
+    const skipped = () => {
+      let n = 0;
+      while (b.skip()) n++;
+      return n;
+    };
+    expect(skipped()).toBe(0);
+    b.record("unreachable");
+    expect(skipped()).toBe(1);
+    b.record("unreachable");
+    expect(skipped()).toBe(2);
+    b.record("unreachable");
+    expect(skipped()).toBe(4);
+    b.record("ok");
+    expect(skipped()).toBe(0);
+    b.record("unreachable");
+    expect(skipped()).toBe(1);
+  });
+
+  it("caps the wait", () => {
+    const b = new UnreachableBackoff();
+    for (let i = 0; i < 20; i++) b.record("unreachable");
+    let n = 0;
+    while (b.skip()) n++;
+    expect(n).toBe(120);
   });
 });

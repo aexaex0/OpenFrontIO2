@@ -155,20 +155,20 @@ export async function rankedCheckinPass(
   mode: RankedMode,
   gate: RankedCheckinGate,
   deps: RankedCheckinDeps,
-): Promise<void> {
+): Promise<"ok" | "unreachable"> {
   const { gm, playlist, workerId, log } = deps;
   const fetchFn = deps.fetchFn ?? fetch;
 
   // Before anything else, and before the long poll is opened: a draining,
   // standby or fenced deployment must not be holding a slot in the queue.
-  if (!gate.shouldCheckIn()) return;
+  if (!gate.shouldCheckIn()) return "ok";
 
   try {
     const url = `${ServerEnv.jwtIssuer() + "/matchmaking/checkin"}`;
     const gameId = ServerEnv.generateGameIdForWorker(workerId);
     if (gameId === null) {
       log.warn(`Failed to generate game ID for worker ${workerId}`);
-      return;
+      return "ok";
     }
 
     const controller = new AbortController();
@@ -197,7 +197,7 @@ export async function rankedCheckinPass(
       log.warn(
         `Failed to poll ${mode} lobby: ${response.status} ${response.statusText}`,
       );
-      return;
+      return "ok";
     }
 
     const data = await response.json();
@@ -249,10 +249,12 @@ export async function rankedCheckinPass(
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
       // Abort is expected if no game is scheduled on this worker.
-      return;
+      return "ok";
     }
     log.error(`Error polling ${mode} lobby:`, error);
+    return "unreachable";
   }
+  return "ok";
 }
 
 /**
@@ -263,9 +265,43 @@ export async function rankedCheckinPass(
 export function startRankedCheckinLoops(deps: RankedCheckinDeps): void {
   const gate = new RankedCheckinGate(deps.isActive, deps.log);
   for (const mode of ["1v1", "2v2", "ffa"] as const) {
+    const backoff = new UnreachableBackoff();
     startPolling(
-      async () => rankedCheckinPass(mode, gate, deps),
+      async () => {
+        if (backoff.skip()) return;
+        backoff.record(await rankedCheckinPass(mode, gate, deps));
+      },
       CHECKIN_INTERVAL_MS + Math.random() * CHECKIN_JITTER_MS,
     );
+  }
+}
+
+/** Longest wait between tries while the API is unreachable, in passes. */
+const MAX_SKIPPED_PASSES = 120; // ~10 minutes at one pass per 5 s
+
+/**
+ * While the API can't be reached at all (DNS, TLS, refused), each failed
+ * pass doubles how many passes are skipped before the next try, up to
+ * MAX_SKIPPED_PASSES, instead of retrying (and logging) every few seconds.
+ * One successful pass resets it.
+ */
+export class UnreachableBackoff {
+  private skipLeft = 0;
+  private nextSkip = 1;
+
+  skip(): boolean {
+    if (this.skipLeft <= 0) return false;
+    this.skipLeft--;
+    return true;
+  }
+
+  record(result: "ok" | "unreachable"): void {
+    if (result === "ok") {
+      this.skipLeft = 0;
+      this.nextSkip = 1;
+      return;
+    }
+    this.skipLeft = this.nextSkip;
+    this.nextSkip = Math.min(MAX_SKIPPED_PASSES, this.nextSkip * 2);
   }
 }
