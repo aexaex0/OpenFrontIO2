@@ -33,6 +33,7 @@ import type { HostLobbyModal } from "./HostLobbyModal";
 import { showInGameAlert } from "./InGameModal";
 import type { JoinLobbyModal } from "./JoinLobbyModal";
 import "./components/LiveGamesPanel";
+import "./components/QuickSoloCard";
 import { whenModalLoaded } from "./LazyModals";
 import { PublicLobbySocket } from "./LobbySocket";
 import { JoinLobbyEvent } from "./Main";
@@ -745,6 +746,11 @@ export class GameModeSelector extends LitElement {
             this.hostedLobbyCount(),
             true,
           )}
+        </div>
+
+        <!-- AlexFront: quick solo, in the middle of the menu. -->
+        <div class="min-w-0 sm:col-span-2 sm:row-start-2">
+          <quick-solo-card></quick-solo-card>
         </div>
 
         ${heroSlot

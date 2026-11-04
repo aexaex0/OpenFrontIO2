@@ -8,6 +8,7 @@
 - 📈 Élő grafikon az alsó panelen: a katonáid és az aranyad az elmúlt 2 percben
 - 🗺️ Élő háttér a főmenüben: egy csata terjed egy mindig másik térképen
 - ⚙️ Mindhárom ki- és bekapcsolható a Beállítások > Grafika alatt
+- ⚡ Gyors szóló a főmenü közepén: egy kattintás, véletlen térkép a legutóbbi szóló beállításaiddal (🎲 = másik térkép)
 - 🧹 Az utolsó nyertes kártya kikerült a főmenüből
 
 🤖 **2026. november 3.**

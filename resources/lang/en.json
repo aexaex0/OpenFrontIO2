@@ -2032,6 +2032,13 @@
     "title": "Enjoying AlexFront?",
     "visit_store": "Visit store"
   },
+  "quick_solo": {
+    "default_settings": "default settings",
+    "last_settings": "your last solo settings",
+    "reroll": "Another random map",
+    "subtitle": "One click, straight into a game",
+    "title": "Quick solo"
+  },
   "radial_menu": {
     "delete_unit_description": "Click to delete the nearest unit",
     "delete_unit_title": "Delete Unit",
