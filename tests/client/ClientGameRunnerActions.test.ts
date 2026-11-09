@@ -181,6 +181,33 @@ describe("left click", () => {
     expect(attacks[0].troops).toBe(50); // 100 troops * 0.5 attack ratio
   });
 
+  it("acts as the nation we play now, not the one we started with", async () => {
+    // AlexFront dev mode: our own nation died and we took over another one.
+    const takenOver = {
+      id: () => "taken1",
+      troops: () => 400,
+      actions: vi.fn(async () => ({ canAttack: true, buildableUnits: [] })),
+    };
+    let current: unknown = null;
+    const { eventBus } = makeRunner({
+      hasOwner: true,
+      playerByClientID: () => current,
+    });
+    const attacks: SendAttackIntentEvent[] = [];
+    eventBus.on(SendAttackIntentEvent, (e) => attacks.push(e));
+
+    eventBus.emit(new MouseUpEvent(CLICK.x, CLICK.y));
+    await flushPromises();
+    expect(attacks).toHaveLength(0);
+
+    current = takenOver;
+    eventBus.emit(new MouseUpEvent(CLICK.x, CLICK.y));
+    await flushPromises();
+    expect(takenOver.actions).toHaveBeenCalled();
+    expect(attacks).toHaveLength(1);
+    expect(attacks[0].troops).toBe(200); // the taken-over nation's 400 × 0.5
+  });
+
   it("does nothing when the player is not in the view yet", async () => {
     const { eventBus, gameView } = makeRunner({
       hasOwner: true,

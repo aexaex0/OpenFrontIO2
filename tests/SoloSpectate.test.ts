@@ -11,7 +11,11 @@ async function soloRunner(soloSpectator: boolean) {
     "plains",
     { gameType: GameType.Singleplayer, bots: 0 } as Partial<GameConfig>,
     [],
+    undefined,
+    undefined,
+    false, // keep the spawn phase: the runner decides when it ends
   );
+  expect(game.inSpawnPhase()).toBe(true);
   const runner = new GameRunner(
     game,
     new Executor(game, "solo_spectate", undefined),
