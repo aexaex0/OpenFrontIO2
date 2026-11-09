@@ -3,14 +3,22 @@ import { EventBus } from "@openfront/shared/EventBus";
 import { html, LitElement } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { crazyGamesSDK } from "src/client/CrazyGamesSDK";
-import { PauseGameIntentEvent } from "src/client/Transport";
+import {
+  PauseGameIntentEvent,
+  SendLeaveNationIntentEvent,
+} from "src/client/Transport";
 import { Controller } from "../../Controller";
 import {
   AlternateViewEvent,
   ToggleRenderDebugGuiEvent,
 } from "../../InputHandler";
 import type { UserSettingModal } from "../../UserSettingModal";
-import { getActiveModifiers, homeHref, translateText } from "../../Utils";
+import {
+  getActiveModifiers,
+  homeHref,
+  showToast,
+  translateText,
+} from "../../Utils";
 import {
   lobbySettingTagText,
   notableLobbySettings,
@@ -263,6 +271,21 @@ export class SettingsModal extends LitElement implements Controller {
     `;
   }
 
+  /** AlexFront: leave our nation where it is and watch on as a spectator. */
+  private onLeaveNationClick() {
+    if (this.game === null) return;
+    this.game.markLeftNation();
+    this.eventBus.emit(new SendLeaveNationIntentEvent());
+    showToast(translateText("user_setting.leave_nation_done"), "green");
+    this.closeModal();
+  }
+
+  private canLeaveNation(): boolean {
+    const g = this.game;
+    if (g === null || g.config().isReplay() || g.inSpawnPhase()) return false;
+    return g.myPlayer()?.isAlive() === true;
+  }
+
   private onExitButtonClick() {
     // redirect to the home page
     window.location.href = homeHref();
@@ -366,6 +389,25 @@ export class SettingsModal extends LitElement implements Controller {
             </div>
 
             <div class="border-t border-slate-600 pt-3 mt-4">
+              ${this.canLeaveNation()
+                ? html`<button
+                    class="flex gap-3 items-center w-full text-left p-3 hover:bg-amber-500/20 rounded-sm text-amber-300 transition-colors"
+                    data-leave-nation
+                    @click="${this.onLeaveNationClick}"
+                  >
+                    <span class="w-5 text-center text-lg" aria-hidden="true"
+                      >👁</span
+                    >
+                    <div class="flex-1">
+                      <div class="font-medium">
+                        ${translateText("user_setting.leave_nation_label")}
+                      </div>
+                      <div class="text-sm text-slate-400">
+                        ${translateText("user_setting.leave_nation_info")}
+                      </div>
+                    </div>
+                  </button>`
+                : ""}
               <button
                 class="flex gap-3 items-center w-full text-left p-3 hover:bg-red-600/20 rounded-sm text-red-400 transition-colors"
                 @click="${this.onExitButtonClick}"

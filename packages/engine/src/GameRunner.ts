@@ -90,7 +90,11 @@ export async function createGameRunner(
     ),
     callBack,
   );
-  gr.init();
+  // AlexFront: a solo game with no human is someone watching the AI. With
+  // nobody to pick a spawn, the spawn phase ends on its timer instead.
+  gr.init(
+    gameStart.config.gameType === GameType.Singleplayer && humans.length === 0,
+  );
   return gr;
 }
 
@@ -172,8 +176,11 @@ export class GameRunner {
     });
   }
 
-  init() {
-    if (this.game.config().gameConfig().gameType !== GameType.Singleplayer) {
+  init(soloSpectator = false) {
+    if (
+      this.game.config().gameConfig().gameType !== GameType.Singleplayer ||
+      soloSpectator
+    ) {
       this.game.addExecution(new SpawnTimerExecution());
     }
     if (this.game.config().spawnNations()) {

@@ -997,11 +997,20 @@ export class PlayerPanel extends LitElement implements Controller {
    * and play on as it.
    */
   private renderTakeOver(other: PlayerView) {
+    const dev = this.userSettings.devMode();
+    // Spectators may take nations; with the hidden dev mode, also tribes and
+    // nations someone left. After leaving your own nation it takes dev mode.
+    const takeable =
+      other.type() === PlayerType.Nation ||
+      (dev &&
+        (other.type() === PlayerType.Bot ||
+          (other.type() === PlayerType.Human && other.clientID() === null)));
     if (
       this.g.config().isReplay() ||
       this.g.inSpawnPhase() ||
-      other.type() !== PlayerType.Nation ||
-      !other.isAlive()
+      !takeable ||
+      !other.isAlive() ||
+      (this.g.hasLeftNation() && !dev)
     ) {
       return "";
     }

@@ -599,6 +599,16 @@ export class SinglePlayerModal extends BaseModal {
             .disable=${this.starting}
             @click=${this.startGame}
           ></o-button>
+          <!-- AlexFront: watch the AI play this setup, with no nation. -->
+          <button
+            type="button"
+            data-solo-spectate
+            class="mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white/80 transition-colors hover:bg-white/10 disabled:opacity-50"
+            ?disabled=${this.starting}
+            @click=${() => void this.startGame(true)}
+          >
+            👁 ${translateText("single_modal.spectate")}
+          </button>
         </div>
       </div>
     `;
@@ -681,6 +691,34 @@ export class SinglePlayerModal extends BaseModal {
     const daily = dailyChallenge();
     this.selectedMap = daily.map;
     this.selectedDifficulty = daily.difficulty;
+    // Today's twist (DailyChallenge.ts).
+    switch (daily.modifier) {
+      case "compact":
+        this.compactMap = true;
+        break;
+      case "random_spawn":
+        this.randomSpawn = true;
+        break;
+      case "instant_build":
+        this.instantBuild = true;
+        break;
+      case "starting_gold":
+        this.startingGold = true;
+        this.startingGoldValue = 5; // million
+        break;
+      case "gold_rush":
+        this.goldMultiplier = true;
+        this.goldMultiplierValue = 2;
+        break;
+      case "doomsday":
+        this.doomsdayClock = true;
+        break;
+      case "no_bots":
+        this.bots = 0;
+        break;
+      case "none":
+        break;
+    }
     await this.loadNationCount();
     this.dailyGameID = daily.gameID;
     recordDailyAttempt(daily.day);
@@ -1065,7 +1103,9 @@ export class SinglePlayerModal extends BaseModal {
     );
   }
 
-  private async startGame() {
+  /** `spectate`: start with no player of our own, watching the AI. */
+  private async startGame(spectate: unknown = false) {
+    const asSpectator = spectate === true;
     // A second click while the first is still resolving would dispatch a
     // second join-lobby for a different gameID.
     if (this.starting) return;
@@ -1151,14 +1191,16 @@ export class SinglePlayerModal extends BaseModal {
         gameID: gameID,
         gameStartInfo: {
           gameID: gameID,
-          players: [
-            {
-              clientID,
-              username: resolvedName.name,
-              clanTag: usernameInput?.getClanTag() ?? null,
-              cosmetics,
-            },
-          ],
+          players: asSpectator
+            ? []
+            : [
+                {
+                  clientID,
+                  username: resolvedName.name,
+                  clanTag: usernameInput?.getClanTag() ?? null,
+                  cosmetics,
+                },
+              ],
           config: {
             gameMap: this.selectedMap,
             gameMapSize: this.compactMap

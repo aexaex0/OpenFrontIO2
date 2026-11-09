@@ -1,5 +1,12 @@
 📦 **AlexFront frissítések**
 
+👁 **2026. november 9.**
+
+- 👁 Szóló meccset is lehet nézőként indítani: a Szóló menüben a „Spectate” gombbal csak nézed, ahogy a gépi nemzetek játszanak
+- 🚪 Új „Nemzet elhagyása” gomb az Esc menüben a kilépés mellett: a nemzeted ott marad, ahol volt, és nem csinál semmit, te pedig nézőként maradsz a meccsben
+- 📅 Új napi kihívás minden nap: a térképek sorban váltják egymást (két egymást követő napon soha nem ugyanaz), és minden napnak saját csavarja van (pl. kompakt térkép, aranyláz, végítélet óra)
+- 🔄 A napi kihívás kártyája éjfélkor magától frissül
+
 ✨ **2026. november 4.**
 
 - 🔁 Szóló meccsben újrakezdés gomb a szünet mellett: ugyanaz a térkép és ugyanazok a beállítások (véletlen térképnél új véletlen térkép)

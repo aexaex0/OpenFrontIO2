@@ -1,3 +1,4 @@
+import { generateID } from "@openfront/shared/SharedUtil";
 import {
   AllPlayersStats,
   ClientID,
@@ -145,7 +146,11 @@ export class LocalServer {
     if (this.lobbyConfig.gameStartInfo === undefined) {
       throw new Error("missing gameStartInfo");
     }
-    this.clientID = this.lobbyConfig.gameStartInfo.players[0]?.clientID;
+    // AlexFront: a solo game started as a spectator has no player; the
+    // watcher still needs an ID of its own (it can take over a nation).
+    this.clientID =
+      this.lobbyConfig.gameStartInfo.players[0]?.clientID ??
+      (this.lobbyConfig.gameRecord ? undefined : generateID());
     if (!this.clientID) {
       throw new Error("missing clientID");
     }

@@ -390,9 +390,16 @@ export class GameView implements GameLike {
     if (this._myClientID) {
       // Re-resolved while we have no living player: after a nation takeover
       // or while co-controlling someone, we act as that living player.
-      if (this._myPlayer === null || !this._myPlayer.isAlive()) {
+      // Also when the player we were is no longer ours: we left that
+      // nation (it has no client now), so we watch as a spectator.
+      const mine = this._myPlayer;
+      const notOurs =
+        mine !== null &&
+        mine.clientID() !== this._myClientID &&
+        mine.id() !== this._coControlled;
+      if (mine === null || !mine.isAlive() || notOurs) {
         this._myPlayer =
-          this.playerByClientID(this._myClientID) ?? this._myPlayer;
+          this.playerByClientID(this._myClientID) ?? (notOurs ? null : mine);
       }
     }
 
@@ -822,6 +829,16 @@ export class GameView implements GameLike {
   /** We asked to co-control this player (the engine applies it). */
   setCoControlled(id: PlayerID | null): void {
     this._coControlled = id;
+  }
+
+  /** AlexFront: we left our nation and stay on as a spectator. */
+  private _leftNation = false;
+  markLeftNation(): void {
+    this._leftNation = true;
+    this._coControlled = null;
+  }
+  hasLeftNation(): boolean {
+    return this._leftNation;
   }
   hasPlayer(id: PlayerID): boolean {
     return false;

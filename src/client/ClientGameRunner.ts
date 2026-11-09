@@ -1288,12 +1288,10 @@ export class ClientGameRunner {
     if (this.gameView.inSpawnPhase()) {
       return;
     }
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
     this.myPlayer
       .actions(tile, [UnitType.TransportShip])
       .then((actions) => {
@@ -1328,12 +1326,10 @@ export class ClientGameRunner {
 
     const tile = this.gameView.ref(cell.x, cell.y);
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     if (this.gameView.inSpawnPhase()) {
       return;
@@ -1429,12 +1425,10 @@ export class ClientGameRunner {
       return;
     }
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     this.myPlayer
       .buildables(tile, [UnitType.TransportShip])
@@ -1458,12 +1452,10 @@ export class ClientGameRunner {
       return;
     }
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     this.myPlayer
       .actions(tile, null)
@@ -1487,12 +1479,10 @@ export class ClientGameRunner {
       return;
     }
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     const incomingAttacks = this.myPlayer.incomingAttacks().filter((a) => {
       const t = (
@@ -1521,12 +1511,10 @@ export class ClientGameRunner {
     const tile = this.actionTile(e.tile);
     if (tile === null) return;
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     const myPlayer = this.myPlayer;
 
@@ -1555,12 +1543,10 @@ export class ClientGameRunner {
     const tile = this.actionTile(e.tile);
     if (tile === null) return;
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     const myPlayer = this.myPlayer;
 
@@ -1587,12 +1573,10 @@ export class ClientGameRunner {
     const tile = this.actionTile(e.tile);
     if (tile === null) return;
 
-    if (this.myPlayer === null) {
-      if (!this.clientID) return;
-      const myPlayer = this.gameView.playerByClientID(this.clientID);
-      if (myPlayer === null) return;
-      this.myPlayer = myPlayer;
-    }
+    // Re-read every time: after a takeover, a co-control or leaving a
+    // nation, the player we act as is not the one we started with.
+    this.myPlayer = this.gameView.myPlayer();
+    if (this.myPlayer === null) return;
 
     const tileOwner = this.gameView.owner(tile);
     if (!tileOwner.isPlayer()) return;

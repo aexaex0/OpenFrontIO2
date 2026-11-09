@@ -3,7 +3,13 @@ import {
   GameType,
   maps,
 } from "@openfront/engine-api/game/GameTypes";
-import { dailyChallenge, dailyResult, formatDailyTime } from "./DailyChallenge";
+import {
+  dailyChallenge,
+  DailyModifier,
+  dailyResult,
+  formatDailyTime,
+  msUntilNextDaily,
+} from "./DailyChallenge";
 import { UserMeResponse } from "@openfront/shared/ApiSchemas";
 import { PublicGameInfo, PublicGames } from "@openfront/shared/WireSchemas";
 import { html, LitElement, nothing, type TemplateResult } from "lit";
@@ -66,6 +72,16 @@ import { isReplayShellHost } from "./VersionedReplay";
 // the upcoming list). They stay in the DOM so the join/gating wiring is intact.
 const SUGGESTED_LOBBIES_HIDDEN = "display:none";
 
+/** The daily challenge's twist, as shown on its menu card. */
+const DAILY_MODIFIER_KEYS: Record<Exclude<DailyModifier, "none">, string> = {
+  compact: "main.daily_modifier_compact",
+  random_spawn: "main.daily_modifier_random_spawn",
+  instant_build: "main.daily_modifier_instant_build",
+  starting_gold: "main.daily_modifier_starting_gold",
+  gold_rush: "main.daily_modifier_gold_rush",
+  doomsday: "main.daily_modifier_doomsday",
+  no_bots: "main.daily_modifier_no_bots",
+};
 const PRIMARY_ACTION =
   "bg-malibu-blue hover:bg-aquarius active:bg-malibu-blue/80 hover:scale-y-105 hover:scale-x-[1.01] chrome:chrome-button-dark";
 const SECONDARY_ACTION =
@@ -456,6 +472,8 @@ export class GameModeSelector extends LitElement {
   }
 
   disconnectedCallback() {
+    if (this.dailyRefresh !== null) clearTimeout(this.dailyRefresh);
+    this.dailyRefresh = null;
     this.stop();
     window.clearTimeout(this.retryCooldownTimer);
     this.retryCoolingDown = false;
@@ -883,10 +901,22 @@ export class GameModeSelector extends LitElement {
     document.dispatchEvent(new CustomEvent("start-daily-challenge"));
   };
 
+  private dailyRefresh: ReturnType<typeof setTimeout> | null = null;
+
+  /** Redraws the daily card at midnight, when tomorrow's challenge starts. */
+  private scheduleDailyRefresh() {
+    if (this.dailyRefresh !== null) return;
+    this.dailyRefresh = setTimeout(() => {
+      this.dailyRefresh = null;
+      this.requestUpdate();
+    }, msUntilNextDaily());
+  }
+
   /** Today's daily challenge: map, difficulty and your best time. */
   private renderDailyChallengeCard() {
     const daily = dailyChallenge();
     const result = dailyResult(daily.day);
+    this.scheduleDailyRefresh();
     const mapKey = maps.find((m) => m.type === daily.map)?.translationKey;
     const mapName = mapKey ? translateText(mapKey) : daily.map;
     const status =
@@ -911,6 +941,12 @@ export class GameModeSelector extends LitElement {
         <span class="text-[10px] lg:text-xs opacity-90 truncate max-w-full px-1"
           >${mapName} · ${status}</span
         >
+        ${daily.modifier !== "none"
+          ? html`<span
+              class="text-[10px] lg:text-xs font-bold opacity-95 truncate max-w-full px-1"
+              >✨ ${translateText(DAILY_MODIFIER_KEYS[daily.modifier])}</span
+            >`
+          : nothing}
       </button>
     `;
   }

@@ -26,7 +26,13 @@ export class TakeOverNationExecution implements Execution {
     if (mg.playerByClientID(this.clientID)?.isAlive()) return;
     if (!mg.hasPlayer(this.nationID)) return;
     const nation = mg.player(this.nationID);
-    if (nation.type() !== PlayerType.Nation || !nation.isAlive()) return;
+    // A nation, a tribe, or a player someone left (no client): AlexFront's
+    // dev mode lets a spectator take over any of them (the client gates it).
+    const takeable =
+      nation.type() === PlayerType.Nation ||
+      nation.type() === PlayerType.Bot ||
+      (nation.type() === PlayerType.Human && nation.clientID() === null);
+    if (!takeable || !nation.isAlive()) return;
     mg.clearCoController(this.clientID);
     nation.assumeControl(this.clientID);
   }

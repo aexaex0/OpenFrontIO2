@@ -1,7 +1,9 @@
 import { GAME_ID_REGEX } from "@openfront/engine-api/Schemas";
 import { maps } from "@openfront/engine-api/game/GameTypes";
 import {
+  DAILY_MODIFIERS,
   dailyChallenge,
+  msUntilNextDaily,
   dailyResult,
   formatDailyTime,
   recordDailyAttempt,
@@ -26,6 +28,32 @@ describe("daily challenge", () => {
       ),
     );
     expect(ids.size).toBe(10);
+  });
+
+  it("never repeats yesterday's map or twist", () => {
+    for (let i = 0; i < 400; i++) {
+      const a = dailyChallenge(new Date(2026, 0, 1 + i));
+      const b = dailyChallenge(new Date(2026, 0, 2 + i));
+      expect(b.map).not.toBe(a.map);
+      expect(b.modifier).not.toBe(a.modifier);
+    }
+  });
+
+  it("goes through many different maps and every twist", () => {
+    // 44 days hold at least one whole round of the 22 maps.
+    const days = Array.from({ length: 44 }, (_, i) =>
+      dailyChallenge(new Date(2026, 10, 1 + i)),
+    );
+    expect(new Set(days.map((d) => d.map)).size).toBe(22);
+    expect(new Set(days.map((d) => d.modifier)).size).toBe(
+      DAILY_MODIFIERS.length,
+    );
+  });
+
+  it("knows when the next daily starts", () => {
+    const ms = msUntilNextDaily(new Date(2026, 10, 9, 23, 0, 0));
+    expect(ms).toBeGreaterThan(59 * 60 * 1000);
+    expect(ms).toBeLessThan(62 * 60 * 1000);
   });
 
   it("uses a valid game id and a real map", () => {

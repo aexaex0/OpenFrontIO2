@@ -1,4 +1,4 @@
-﻿import { Structures } from "@openfront/engine-api/game/GameTypes";
+﻿import { PlayerType, Structures } from "@openfront/engine-api/game/GameTypes";
 import { PseudoRandom } from "@openfront/engine-lib/PseudoRandom";
 import {
   VersionedSchema,
@@ -54,6 +54,11 @@ export class TribeExecution implements Execution {
 
     if (!this.tribe.isAlive()) {
       //removeOnDeath is called from tribe's PlayerExecution
+      this.active = false;
+      return;
+    }
+    // Taken over by a spectator: a human plays this tribe now.
+    if (this.tribe.type() !== PlayerType.Bot) {
       this.active = false;
       return;
     }

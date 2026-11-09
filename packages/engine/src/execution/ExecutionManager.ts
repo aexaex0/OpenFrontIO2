@@ -12,6 +12,7 @@ import { AllianceRejectExecution } from "./alliance/AllianceRejectExecution";
 import { AllianceRequestExecution } from "./alliance/AllianceRequestExecution";
 import { BreakAllianceExecution } from "./alliance/BreakAllianceExecution";
 import { AllyPingExecution } from "./AllyPingExecution";
+import { LeaveNationExecution } from "./LeaveNationExecution";
 import { ParasitePlayerExecution } from "./ParasitePlayerExecution";
 import { TakeOverNationExecution } from "./TakeOverNationExecution";
 import { AttackExecution } from "./AttackExecution";
@@ -67,6 +68,9 @@ export class Executor {
     }
     if (intent.type === "parasite_player") {
       return new ParasitePlayerExecution(intent.clientID, intent.player);
+    }
+    if (intent.type === "leave_nation") {
+      return new LeaveNationExecution(intent.clientID);
     }
     const player = this.mg.playerByClientID(intent.clientID);
     if (!player) {

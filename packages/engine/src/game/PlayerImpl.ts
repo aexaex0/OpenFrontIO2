@@ -450,6 +450,21 @@ export class PlayerImpl implements Player {
     );
   }
 
+  releaseControl(): void {
+    const i = this.playerInfo;
+    this.playerInfo = new PlayerInfo(
+      i.name,
+      PlayerType.Human,
+      null,
+      i.id,
+      false,
+      i.clanTag,
+      [],
+      i.teamIndex,
+      i.nationFlag,
+    );
+  }
+
   clientID(): ClientID | null {
     return this.playerInfo.clientID;
   }

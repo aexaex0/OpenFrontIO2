@@ -316,6 +316,8 @@ export interface Player extends PlayerLike {
   clanTag(): string | null;
   /** A spectator takes this nation over: it becomes a human player. */
   assumeControl(clientID: ClientID): void;
+  /** AlexFront: the client lets go; the player stays, with no one at the helm. */
+  releaseControl(): void;
   clientID(): ClientID | null;
   id(): PlayerID;
   type(): PlayerType;

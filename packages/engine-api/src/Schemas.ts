@@ -49,12 +49,14 @@ export type Intent =
   | ToggleGameStartTimer
   | AllyPingIntent
   | TakeOverNationIntent
-  | ParasitePlayerIntent;
+  | ParasitePlayerIntent
+  | LeaveNationIntent;
 
 export type AttackIntent = z.infer<typeof AttackIntentSchema>;
 export type AllyPingIntent = z.infer<typeof AllyPingIntentSchema>;
 export type TakeOverNationIntent = z.infer<typeof TakeOverNationIntentSchema>;
 export type ParasitePlayerIntent = z.infer<typeof ParasitePlayerIntentSchema>;
+export type LeaveNationIntent = z.infer<typeof LeaveNationIntentSchema>;
 export type CancelAttackIntent = z.infer<typeof CancelAttackIntentSchema>;
 export type SpawnIntent = z.infer<typeof SpawnIntentSchema>;
 export type BoatAttackIntent = z.infer<typeof BoatAttackIntentSchema>;
@@ -573,6 +575,12 @@ export const ParasitePlayerIntentSchema = z.object({
   player: MappedID,
 });
 
+// AlexFront: the client stops playing its nation (it stays where it is,
+// doing nothing) and watches on as a spectator.
+export const LeaveNationIntentSchema = z.object({
+  type: z.literal("leave_nation"),
+});
+
 export const IntentSchema = z.discriminatedUnion("type", [
   AttackIntentSchema,
   CancelAttackIntentSchema,
@@ -602,6 +610,7 @@ export const IntentSchema = z.discriminatedUnion("type", [
   AllyPingIntentSchema,
   TakeOverNationIntentSchema,
   ParasitePlayerIntentSchema,
+  LeaveNationIntentSchema,
 ]);
 
 // StampedIntent = Intent with server-stamped clientID (used in turns and execution)

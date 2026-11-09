@@ -8,6 +8,13 @@ import { Difficulty, GameMapType } from "@openfront/engine-api/game/GameTypes";
  */
 
 const DAILY_MAPS: readonly GameMapType[] = [
+  GameMapType.Asia,
+  GameMapType.EastAsia,
+  GameMapType.Oceania,
+  GameMapType.FaroeIslands,
+  GameMapType.GatewayToTheAtlantic,
+  GameMapType.BetweenTwoSeas,
+  GameMapType.Mars,
   GameMapType.Hungary,
   GameMapType.Budapest,
   GameMapType.World,
@@ -36,12 +43,29 @@ const ID_ALPHABET =
   "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
 const STORAGE_PREFIX = "alexfront.daily.";
 
+/**
+ * One twist per day on top of the map and difficulty, so no two days play
+ * alike. The solo modal applies it (SinglePlayerModal.startDailyChallenge).
+ */
+export const DAILY_MODIFIERS = [
+  "none",
+  "compact",
+  "random_spawn",
+  "instant_build",
+  "starting_gold",
+  "gold_rush",
+  "doomsday",
+  "no_bots",
+] as const;
+export type DailyModifier = (typeof DAILY_MODIFIERS)[number];
+
 export interface DailyChallenge {
   /** Local calendar day, "YYYY-MM-DD". */
   day: string;
   gameID: string;
   map: GameMapType;
   difficulty: Difficulty;
+  modifier: DailyModifier;
 }
 
 export interface DailyResult {
@@ -74,18 +98,71 @@ function hashStream(seed: string): () => number {
   };
 }
 
+/** Whole days since 2026-01-01 in local time (DST-proof: noon to noon). */
+function dayNumber(date: Date): number {
+  const noon = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    12,
+  );
+  const epoch = new Date(2026, 0, 1, 12);
+  return Math.round((noon.getTime() - epoch.getTime()) / 86_400_000);
+}
+
+/** A seeded shuffle of `list` (Fisher–Yates). */
+function shuffled<T>(list: readonly T[], seed: string): T[] {
+  const next = hashStream(seed);
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = next() % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * Item `n` of an endless rotation through `list`: every item once per round,
+ * in a new order each round, never the same item twice in a row.
+ */
+function rotation<T>(list: readonly T[], n: number, salt: string): T {
+  const len = list.length;
+  const round = Math.floor(n / len);
+  const at = ((n % len) + len) % len;
+  const order = shuffled(list, `${salt}-${round}`);
+  // The new round must not start with the item the last round ended on.
+  if (at === 0 || at === 1) {
+    const prevLast = shuffled(list, `${salt}-${round - 1}`)[len - 1];
+    if (order[0] === prevLast) [order[0], order[1]] = [order[1], order[0]];
+  }
+  return order[at];
+}
+
 export function dailyChallenge(date: Date = new Date()): DailyChallenge {
   const day = dailyDayKey(date);
   const next = hashStream(`alexfront-daily-${day}`);
   let gameID = "";
   for (let i = 0; i < 8; i++)
     gameID += ID_ALPHABET[next() % ID_ALPHABET.length];
+  const n = dayNumber(date);
   return {
     day,
     gameID,
-    map: DAILY_MAPS[next() % DAILY_MAPS.length],
+    // Every map once before any repeats, and never yesterday's map.
+    map: rotation(DAILY_MAPS, n, "map"),
     difficulty: DAILY_DIFFICULTIES[next() % DAILY_DIFFICULTIES.length],
+    modifier: rotation(DAILY_MODIFIERS, n, "modifier"),
   };
+}
+
+/** Milliseconds until the next local midnight, when a new daily starts. */
+export function msUntilNextDaily(now: Date = new Date()): number {
+  const midnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+  );
+  return Math.max(1000, midnight.getTime() - now.getTime() + 1000);
 }
 
 function load(day: string): DailyResult {

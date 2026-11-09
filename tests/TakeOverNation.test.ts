@@ -1,4 +1,5 @@
 import { PlayerInfo, PlayerType } from "@openfront/engine-api/game/GameTypes";
+import { LeaveNationExecution } from "@openfront/engine/execution/LeaveNationExecution";
 import { ParasitePlayerExecution } from "@openfront/engine/execution/ParasitePlayerExecution";
 import { TakeOverNationExecution } from "@openfront/engine/execution/TakeOverNationExecution";
 import { Game, Player } from "@openfront/engine/game/Game";
@@ -122,5 +123,58 @@ describe("co-controlling a live player", () => {
     expect(game.playerByClientID("otherClient")).toBe(human);
     other.conquer(game.ref(60, 60));
     expect(game.playerByClientID("otherClient")).toBe(other);
+  });
+});
+
+describe("leaving your nation", () => {
+  let tribe: Player;
+
+  beforeEach(async () => {
+    game = await setup("plains", {}, [
+      new PlayerInfo("human", PlayerType.Human, "humanClient", "humanId"),
+    ]);
+    human = game.player("humanId");
+    tribe = game.addPlayer(
+      new PlayerInfo("Tribe", PlayerType.Bot, null, "tribeId"),
+    );
+    human.conquer(game.ref(40, 40));
+    tribe.conquer(game.ref(10, 10));
+    while (game.inSpawnPhase()) game.executeNextTick();
+  });
+
+  function run(e: TakeOverNationExecution | LeaveNationExecution) {
+    game.addExecution(e);
+    game.executeNextTick();
+  }
+
+  test("the nation stays, with nobody playing it, and you spectate", () => {
+    const tiles = human.numTilesOwned();
+    run(new LeaveNationExecution("humanClient"));
+    expect(human.isAlive()).toBe(true);
+    expect(human.numTilesOwned()).toBe(tiles);
+    expect(human.type()).toBe(PlayerType.Human);
+    expect(human.clientID()).toBeNull();
+    expect(game.playerByClientID("humanClient")).toBeNull();
+  });
+
+  test("after leaving you may take over a tribe or the nation you left", () => {
+    run(new LeaveNationExecution("humanClient"));
+    run(new TakeOverNationExecution("humanClient", tribe.id()));
+    expect(tribe.type()).toBe(PlayerType.Human);
+    expect(game.playerByClientID("humanClient")).toBe(tribe);
+    // Someone else can step into the nation that was left.
+    run(new TakeOverNationExecution("spectator1", human.id()));
+    expect(human.clientID()).toBe("spectator1");
+  });
+
+  test("leaving a co-controlled nation only lets go of it", () => {
+    run(new LeaveNationExecution("humanClient"));
+    run(new TakeOverNationExecution("spectator1", human.id()));
+    game.addExecution(new ParasitePlayerExecution("ghost", human.id()));
+    game.executeNextTick();
+    expect(game.playerByClientID("ghost")).toBe(human);
+    run(new LeaveNationExecution("ghost"));
+    expect(game.playerByClientID("ghost")).toBeNull();
+    expect(human.clientID()).toBe("spectator1");
   });
 });

@@ -219,6 +219,9 @@ export class SendParasitePlayerIntentEvent implements GameEvent {
   constructor(public readonly playerID: PlayerID) {}
 }
 
+/** AlexFront: stop playing our nation (it stays, idle) and spectate. */
+export class SendLeaveNationIntentEvent implements GameEvent {}
+
 /** A spectator asks to take over a living nation and play on as it. */
 export class SendTakeOverNationIntentEvent implements GameEvent {
   constructor(public readonly nationID: PlayerID) {}
@@ -323,6 +326,9 @@ export class Transport {
     );
     this.subscribe(SendParasitePlayerIntentEvent, (e) =>
       this.sendIntent({ type: "parasite_player", player: e.playerID }),
+    );
+    this.subscribe(SendLeaveNationIntentEvent, () =>
+      this.sendIntent({ type: "leave_nation" }),
     );
     this.subscribe(SendAllyPingIntentEvent, (e) =>
       this.sendIntent({ type: "ally_ping", tile: e.tile }),
